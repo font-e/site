@@ -157,15 +157,25 @@
     let allExpos = [];
     let currentGallery = [];
 
-    async function init() {
-        try {
-            const res = await fetch('https://font-e.github.io/site/json/exposicoes.json');
-            const data = await res.json();
-            allExpos = data.filter(e => e.PASTA).sort((a, b) => new Date(b.INICIO) - new Date(a.INICIO));
-            populateFilters();
-            renderGrid(allExpos);
-        } catch (e) { console.error("Erro no JSON:", e); }
-    }
+async function init() {
+    try {
+        const res = await fetch('https://font-e.github.io/site/json/exposicoes.json');
+        const data = await res.json();
+        allExpos = data.filter(e => e.PASTA).sort((a, b) => new Date(b.INICIO) - new Date(a.INICIO));
+        populateFilters();
+        renderGrid(allExpos);
+
+        // --- LÓGICA DE DEEP LINKING ---
+        if (window.location.hash) {
+            const slug = window.location.hash.substring(1); // Remove o '#'
+            const index = allExpos.findIndex(e => e.PASTA === slug);
+            if (index !== -1) {
+                // Pequeno atraso para garantir que o grid foi montado no DOM
+                setTimeout(() => toggleDrawer(allExpos[index], index, allExpos.length), 500);
+            }
+        }
+    } catch (e) { console.error("Erro no JSON:", e); }
+}
 
     // ESC só fecha o Lightbox
 window.addEventListener('keydown', (e) => {
@@ -279,6 +289,7 @@ async function toggleDrawer(expo, index, total) {
 
     // ADICIONA A CLASSE ACTIVE NO ITEM CLICADO
     document.getElementById(`card-${expo.PASTA}`).classList.add('active');
+    window.location.hash = expo.PASTA;
 
     const columns = window.innerWidth > 768 ? 4 : 2;
     const insertAfter = Math.min(Math.ceil((index + 1) / columns) * columns, total);
@@ -344,6 +355,7 @@ function closeDrawer() {
     const drawer = document.getElementById('active-drawer');
     if (drawer) {
         drawer.remove(); // Remove a gaveta do DOM [cite: 112]
+        history.replaceState(null, null, ' '); 
     }
     
     // REMOVE A OPACIDADE: Procura todos os itens que têm a classe 'active' e remove-a
