@@ -273,16 +273,15 @@ async function toggleDrawer(expo, index, total) {
 
 function closeDrawer() {
     const drawer = document.getElementById('active-drawer');
-    if (drawer) drawer.remove();
-    
-    // REMOVE A CLASSE ACTIVE DE TODOS OS ITENS
-    document.querySelectorAll('.expo-item').forEach(el => el.classList.remove('active'));
-}
-
-    function closeDrawer() {
-        const drawer = document.getElementById('active-drawer');
-        if (drawer) drawer.remove();
+    if (drawer) {
+        drawer.remove(); // Remove a gaveta do DOM [cite: 112]
     }
+    
+    // REMOVE A OPACIDADE: Procura todos os itens que têm a classe 'active' e remove-a
+    document.querySelectorAll('.expo-item').forEach(el => {
+        el.classList.remove('active');
+    });
+}
 
     function togglePanel(type) {
         const info = document.getElementById('info-panel');
