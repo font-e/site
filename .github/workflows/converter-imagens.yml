@@ -1,0 +1,53 @@
+name: Processamento de Imagens FONTE
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'img/originais/**'
+  workflow_dispatch:
+
+jobs:
+  process_images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar Suporte para Imagens (ImageMagick + HEIF)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick libheif-examples
+
+      - name: Processar Imagens e Gerar Camadas
+        run: |
+          # Procura ficheiros ignorando maiúsculas/minúsculas (-iname)
+          find img/originais -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.heic" -o -iname "*.heif" -o -iname "*.avif" \) | while read -r photo; do
+            
+            rel_path=${photo#img/originais/}
+            slug_folder=$(dirname "$rel_path")
+            filename=$(basename "$photo")
+            basename="${filename%.*}"
+
+            echo "A processar: $photo"
+
+            mkdir -p "img/webp/thumbs/$slug_folder"
+            mkdir -p "img/webp/full/$slug_folder"
+
+            # Conversão e Otimização para WebP
+            # O ImageMagick detecta automaticamente o formato de entrada (mesmo HEIC)
+            convert "$photo" -resize 400x -quality 70 -strip "img/webp/thumbs/$slug_folder/${basename}.webp"
+            convert "$photo" -resize '1600x>' -quality 85 -strip "img/webp/full/$slug_folder/${basename}.webp"
+
+            # Limpeza do original
+            rm "$photo"
+          done
+
+      - name: Guardar Alterações e Limpeza
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Conversão WebP concluída: JPG/PNG/HEIC processados [skip ci]"
+          file_pattern: 'img/webp/** img/originais/**'
