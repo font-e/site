@@ -96,13 +96,37 @@
 
         /* LIGHTBOX */
         #lightbox { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.94); 
             display: none; z-index: 2000; overflow-x: auto; scroll-snap-type: x mandatory; align-items: center;
         }
         .lb-carousel-inner { display: flex; height: 100%; align-items: center; }
         .lb-slide { min-width: 100vw; height: 100vh; scroll-snap-align: center; display: flex; align-items: center; justify-content: center; }
         .lb-slide img { max-width: 90%; max-height: 85%; object-fit: contain; }
         .lb-close { position: fixed; top: 30px; right: 40px; color: white; font-size: 40px; cursor: pointer; z-index: 2100; }
+        /* Estilo das setas de navegação no Lightbox */
+.lb-arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    color: var(--bg);
+    border: none;
+    font-size: 38px;
+    font-family: var(--font-body);
+    font-weight: 100;
+    padding: 20px;
+    cursor: pointer;
+    z-index: 2100;
+    user-select: none;
+}
+
+.lb-arrow:hover {
+    opacity: 0.6;
+}
+
+.lb-prev { left: 10px; }
+.lb-next { right: 10px; }
+
         #lightbox::-webkit-scrollbar { display: none; }
     </style>
 </head>
@@ -144,11 +168,24 @@
     }
 
     // ESC só fecha o Lightbox
-    window.addEventListener('keydown', (e) => {
-        if (e.key === "Escape") {
-            closeLightbox();
+window.addEventListener('keydown', (e) => {
+    // 1. Tecla ESC continua fechando o Lightbox
+    if (e.key === "Escape") {
+        closeLightbox();
+    }
+
+    // 2. Lógica para Setas do Teclado (Comportamento de Slide Único)
+    const lb = document.getElementById('lightbox');
+    if (lb && lb.style.display === 'flex') {
+        if (e.key === "ArrowRight") {
+            e.preventDefault(); // Impede o scroll nativo do navegador
+            changeLBSlide(1);   // Avança uma imagem
+        } else if (e.key === "ArrowLeft") {
+            e.preventDefault(); // Impede o scroll nativo do navegador
+            changeLBSlide(-1);  // Recua uma imagem
         }
-    });
+    }
+});
 
     // Fechar drawer clicando fora do grid
     window.addEventListener('click', (e) => {
@@ -169,6 +206,38 @@
         document.getElementById('filter-type').addEventListener('change', filterData);
         document.getElementById('search-input').addEventListener('input', filterData);
     }
+
+function formatarDataRange(inicioStr, fimStr) {
+    if (!inicioStr || !fimStr) return "";
+
+    // Criamos as datas garantindo que o fuso horário não altere o dia (usando UTC)
+    const d1 = new Date(inicioStr);
+    const d2 = new Date(fimStr);
+
+    const meses = [
+        "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+        "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+    ];
+
+    const dia1 = d1.getUTCDate();
+    const mes1 = meses[d1.getUTCMonth()];
+    const ano1 = d1.getUTCFullYear();
+
+    const dia2 = d2.getUTCDate();
+    const mes2 = meses[d2.getUTCMonth()];
+    const ano2 = d2.getUTCFullYear();
+
+    // Caso 3: Anos diferentes
+    if (ano1 !== ano2) {
+        return `de ${dia1} de ${mes1} de ${ano1} a ${dia2} de ${mes2} de ${ano2}`;
+    }
+    // Caso 2: Meses diferentes (mesmo ano)
+    if (mes1 !== mes2) {
+        return `de ${dia1} de ${mes1} a ${dia2} de ${mes2} de ${ano2}`;
+    }
+    // Caso 1: Mesmo mês e ano
+    return `de ${dia1} a ${dia2} de ${mes1} de ${ano2}`;
+}
 
     function filterData() {
         const y = document.getElementById('filter-year').value;
@@ -251,7 +320,7 @@ async function toggleDrawer(expo, index, total) {
             <button class="btn-toggle" onclick="togglePanel('info')">INFO</button>
             ${expo["TEXTO CRÍTICO"] ? `<button class="btn-toggle" onclick="togglePanel('texto')">TEXTO</button>` : ''}
             <div id="info-panel" class="extra-panel">
-                ${expo.INICIO ? `<p><b>Duração:</b> de ${expo.INICIO} a ${expo.FIM}</p>` : ''}
+                ${expo.INICIO ? `<p><b>Duração:</b> ${formatarDataRange(expo.INICIO, expo.FIM)}</p>` : ''}
                 ${expo.ORGANIZAÇÃO ? `<p><b>Organização:</b> ${expo.ORGANIZAÇÃO}</p>` : ''}
                 ${expo.PRODUCAO ? `<p><b>Produção:</b> ${expo.PRODUCAO}</p>` : ''}
                 ${expo.REALIZACAO ? `<p><b>Realização:</b> ${expo.REALIZACAO}</p>` : ''}
@@ -295,14 +364,37 @@ function closeDrawer() {
         }
     }
 
-    function openLightbox(index) {
-        const lb = document.getElementById('lightbox');
-        const content = document.getElementById('lb-content');
-        content.innerHTML = currentGallery.map(src => `<div class="lb-slide"><img src="${src}"></div>`).join('');
-        lb.style.display = 'flex';
-        const slides = content.querySelectorAll('.lb-slide');
-        slides[index].scrollIntoView();
-    }
+// 1. Atualize a função openLightbox para incluir os botões no HTML
+function openLightbox(index) {
+    const lb = document.getElementById('lightbox');
+    const content = document.getElementById('lb-content');
+    
+    // Adiciona as setas e o conteúdo
+    lb.innerHTML = `
+        <span class="lb-close" onclick="closeLightbox()">&times;</span>
+        <button class="lb-arrow lb-prev" onclick="event.stopPropagation(); changeLBSlide(-1)">&#10094;</button>
+        <button class="lb-arrow lb-next" onclick="event.stopPropagation(); changeLBSlide(1)">&#10095;</button>
+        <div class="lb-carousel-inner" id="lb-content">
+            ${currentGallery.map(src => `<div class="lb-slide"><img src="${src}"></div>`).join('')}
+        </div>
+    `;
+
+    lb.style.display = 'flex';
+    
+    // Faz scroll para a imagem selecionada inicialmente
+    const slides = lb.querySelector('.lb-carousel-inner').querySelectorAll('.lb-slide');
+    slides[index].scrollIntoView();
+}
+
+// 2. Adicione esta nova função para navegar via setas
+function changeLBSlide(direction) {
+    const lb = document.getElementById('lightbox');
+    // Como cada slide tem 100vw, movemos o scroll a largura total da janela
+    lb.scrollBy({
+        left: direction * window.innerWidth,
+        behavior: 'smooth'
+    });
+}
 
     function closeLightbox() {
         document.getElementById('lightbox').style.display = 'none';
