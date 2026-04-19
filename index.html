@@ -1,0 +1,21 @@
+---
+layout: default
+title: Exposições
+---
+
+<div class="controls">
+    <select id="filter-year"><option value="">ANO (TODOS)</option></select>
+    <select id="filter-type"><option value="">TIPO (TODOS)</option></select>
+</div>
+
+<main id="expo-grid"></main>
+
+<script>
+    // Aqui ficam apenas as variáveis e funções específicas desta página
+    const API_BASE = "{{ site.api_base }}";
+    const IMG_FULL_BASE = "{{ site.img_full_base }}";
+    const IMG_THUMB_BASE = "{{ site.img_thumb_base }}";
+
+    // ... Funções: init, toggleDrawer, closeDrawer, filterData, etc.
+    // (Aquelas que dependem do JSON de exposições)
+</script>
