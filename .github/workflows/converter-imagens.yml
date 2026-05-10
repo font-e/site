@@ -1,14 +1,14 @@
-name: Processamento de Imagens FONTE
+name: Processamento IMAGENS e JSON Geral
 on:
   push:
     branches:
       - main
     paths:
-      - 'img/originais/**'
+      - 'originais/**' 
   workflow_dispatch:
 
 jobs:
-  process_images:
+  process_and_manifest:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -17,37 +17,48 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Instalar Suporte para Imagens (ImageMagick + HEIF)
+      - name: Instalar ImageMagick e Python
         run: |
           sudo apt-get update
-          sudo apt-get install -y imagemagick libheif-examples
+          sudo apt-get install -y imagemagick
+          # Python 3 já vem pré-instalado nos ambientes do GitHub Actions
 
-      - name: Processar Imagens e Gerar Camadas
+      - name: 1. Processar Imagens (Thumbs e Full)
         run: |
-          # Procura ficheiros ignorando maiúsculas/minúsculas (-iname)
-          find img/originais -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.heic" -o -iname "*.heif" -o -iname "*.avif" \) | while read -r photo; do
+          # Procura imagens na pasta originais
+          find originais -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.heic" -o -iname "*.heif" \) | while read -r photo; do
             
-            rel_path=${photo#img/originais/}
-            slug_folder=$(dirname "$rel_path")
+            rel_path="${photo#originais/}"
+            dir_path=$(dirname "$rel_path")
             filename=$(basename "$photo")
             basename="${filename%.*}"
 
-            echo "A processar: $photo"
+            # Cria as pastas de destino
+            mkdir -p "thumb-jpg/$dir_path"
+            mkdir -p "thumb-webp/$dir_path"
+            mkdir -p "full/$dir_path"
+            mkdir -p "zoom/$dir_path"
 
-            mkdir -p "img/webp/thumbs/$slug_folder"
-            mkdir -p "img/webp/full/$slug_folder"
+            # Gerar THUMB JPG (lado maior máx: 700px)
+            convert "$photo" -resize '700x700>' -quality 70 -interlace plane "thumb-jpg/$dir_path/${basename}.jpg"
 
-            # Conversão e Otimização para WebP
-            # O ImageMagick detecta automaticamente o formato de entrada (mesmo HEIC)
-            convert "$photo" -resize 400x -quality 70 -strip "img/webp/thumbs/$slug_folder/${basename}.webp"
-            convert "$photo" -resize '1600x>' -quality 85 -strip "img/webp/full/$slug_folder/${basename}.webp"
+            # Gerar THUMB WEBM (lado maior máx: 700px)
+            convert "$photo" -resize '700x700>' -quality 70 -interlace plane "thumb-webm/$dir_path/${basename}.webm"
 
-            # Limpeza do original
+            # Gerar FULL (lado maior máx: 1920px)
+            convert "$photo" -resize '1920x1920>' -quality 75 -interlace plane "full/$dir_path/${basename}.jpg"
+
+            # Gerar ZOOM (lado maior máx: 3840px)
+            convert "$photo" -resize '3840x3840>' -quality 80 -interlace plane "zoom/$dir_path/${basename}.jpg"
+            # Limpeza: apaga a original para manter o repo limpo
             rm "$photo"
           done
+          touch originais/.gitkeep
 
-      - name: Guardar Alterações e Limpeza
+      - name: 2. Gerar Manifesto JSON
+        run: python gerar_manifesto.py
+
+      - name: 3. Salvar Alterações (Imagens + Manifesto)
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Conversão WebP concluída: JPG/PNG/HEIC processados [skip ci]"
-          file_pattern: 'img/webp/** img/originais/**'
+          commit_message: "Auto: Imagens processadas e Manifesto atualizado [skip ci]"
