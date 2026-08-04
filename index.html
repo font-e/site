@@ -1,21 +1,224 @@
----
-layout: default
-title: Exposições
----
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Residência FONTE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Reset e Variáveis de Identidade Visual */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-<div class="controls">
-    <select id="filter-year"><option value="">ANO (TODOS)</option></select>
-    <select id="filter-type"><option value="">TIPO (TODOS)</option></select>
-</div>
+        :root {
+            --bg: #e9f0ea;             /* Fundo sutil esverdeado */
+            --text: #1a1c1a;           /* Texto escuro quase preto */
+            --accent: #14401a;         /* Verde escuro institucional */
+            --font-head: 'Epilogue', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
 
-<main id="expo-grid"></main>
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
 
-<script>
-    // Aqui ficam apenas as variáveis e funções específicas desta página
-    const API_BASE = "{{ site.api_base }}";
-    const IMG_FULL_BASE = "{{ site.img_full_base }}";
-    const IMG_THUMB_BASE = "{{ site.img_thumb_base }}";
+        /* Container Principal */
+        .container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
 
-    // ... Funções: init, toggleDrawer, closeDrawer, filterData, etc.
-    // (Aquelas que dependem do JSON de exposições)
-</script>
+        /* Cabeçalho e Comportamento do Logo */
+        header {
+            width: 100%;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo {
+            width: clamp(160px, 100%, 280px);
+            height: auto;
+            display: block;
+            filter: brightness(0) saturate(100%); 
+        }
+
+        /* Texto Informativo */
+        .notice-text {
+            font-family: var(--font-head);
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 50px;
+            color: var(--text);
+            opacity: 0.9;
+        }
+
+        /* Menu de Links Interativos */
+        .links-navigation {
+            width: 80%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Imagens e PDFs */
+        .image-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--accent);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            transition: opacity 0.25s ease;
+            gap: 10px;
+        }
+
+        .image-link:hover {
+            opacity: 0.7;
+        }
+
+        .image-link img {
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--accent);
+        }
+
+        /* Caixa de Contato Sem Botão */
+        .contact-box {
+            border: 1px solid var(--accent);
+            padding: 16px 24px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            background: transparent;
+        }
+
+        .contact-box a {
+            color: var(--accent);
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .contact-box a:hover {
+            color: var(--bg);
+            background-color: var(--accent);
+        }
+
+        /* Botão do Instagram */
+        .nav-button {
+            display: block;
+            text-decoration: none;
+            color: var(--accent);
+            background: transparent;
+            border: 1px solid var(--accent);
+            padding: 16px 24px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .nav-button:hover {
+            background-color: var(--accent);
+            color: var(--bg);
+        }
+
+        /* Rodapé Discreto */
+        .footer {
+            margin-top: 60px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.5;
+        }
+
+        /* REGRAS PARA DESKTOP (Telas Maiores) */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+            }
+
+            header {
+                margin-bottom: 50px;
+            }
+
+            .logo {
+                width: 380px;
+            }
+
+            .nav-button, .contact-box {
+                padding: 18px 30px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <img src="https://font-e.github.io/site/content/logo_fonte_preto.png" alt="Residência FONTE" class="logo">
+        </header>
+
+        <p class="notice-text">Site em manutenção</p>
+
+        <nav class="links-navigation">
+            
+            <!-- Imagem 1: Open Call -->
+            <a href="residency.pdf" class="image-link" target="_blank" title="Baixar PDF - Open Call">
+                <img src="residency.jpg" alt="Open Call - FONTE Residency Program">
+                <span>Open Call - FONTE Residency Program</span>
+            </a>
+
+            <!-- Imagem 2: Activity Report -->
+            <a href="activity_report.pdf" class="image-link" target="_blank" title="Baixar PDF - Activity Report">
+                <img src="activity_report.jpg" alt="Activity Report 2020 - 2026">
+                <span>Activity Report 2020 - 2026</span>
+            </a>
+
+            <!-- Contato -->
+            <div class="contact-box">
+                contato<a href="mailto:contato@font-e.org" title="Enviar e-mail">@</a>font-e.org
+            </div>
+
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/residenciafonte" class="nav-button" target="_blank" rel="noopener noreferrer" title="Visitar o perfil do Instagram">Instagram</a>
+            
+        </nav>
+
+        <div class="footer">
+            © 2026 Residência FONTE
+        </div>
+    </div>
+
+</body>
+</html>

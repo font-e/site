@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Residência FONTE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafafa;
+            --text: #131313;
+            --accent: #242424;
+            --placeholder: #879189;
+            --font-head: 'Epilogue', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            --grid-gap: 20px;
+        }
+
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: var(--font-body); 
+            margin: 0; 
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* TIPOGRAFIA INTRÍNSECA (Clamps) */
+        h1, h2, h3 { font-family: var(--font-head); text-transform: uppercase; margin-top: 0; }
+        h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin-bottom: 5px; font-weight: 400; }
+        h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); margin-bottom: 20px; font-weight: 300; }
+        h3 { font-size: clamp(1.2rem, 3vw, 1.8rem); margin-bottom: 10px; font-weight: 500; }
+        p { font-size: clamp(0.9rem, 2vw, 1.1rem); line-height: 1.5; margin: 0; }
+        
+        a { color: var(--text); text-decoration: none; }
+        
+        .container { max-width: 85vw; margin: 0 auto; padding: 40px 0; }
+        @media (max-width: 768px) { .container { max-width: 90vw; } }
+
+        /* HEADER & NAV */
+        header { 
+            position: sticky; top: 0; z-index: 1000; background: var(--bg);
+            padding: 15px 7.5vw; display: flex; justify-content: space-between; align-items: center;
+        }
+        @media (max-width: 768px) { header { padding: 15px 5vw; } }
+        
+        .logo { width: clamp(120px, 15vw, 180px); }
+        nav { display: flex; gap: 20px; align-items: center; }
+        nav a { font-family: var(--font-head); font-size: 0.85rem; text-transform: uppercase; font-weight: 600; }
+        nav a:hover { color: var(--accent); opacity: 0.7; }
+        
+        .mobile-btn { display: none; background: none; border: none; font-size: 1.5rem; color: var(--accent); cursor: pointer; }
+
+        @media (max-width: 768px) {
+            nav { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: var(--bg); flex-direction: column; padding: 20px 0; border-bottom: 1px solid var(--accent); }
+            nav.open { display: flex; }
+            .mobile-btn { display: block; }
+        }
+
+        /* UI BASE */
+        .btn {
+            display: inline-block; background: transparent; border: 1px solid var(--accent); color: var(--accent); 
+            padding: 10px 20px; cursor: pointer; font-size: 0.75rem; text-transform: uppercase; font-weight: 600;
+            transition: all 0.3s; white-space: nowrap;
+        }
+        .btn:hover, .btn.active { background: var(--accent); color: var(--bg); }
+        
+        /* Botão Voltar Minimalista */
+        .btn-voltar-discreto {
+            display: inline-flex; align-items: center; justify-content: center;
+            color: var(--accent); font-size: 1.6rem; text-decoration: none;
+            transition: opacity 0.3s; line-height: 1; margin-right: 5px;
+        }
+        .btn-voltar-discreto:hover { opacity: 0.5; }
+        
+        .section-divider { border-top: 1px solid var(--accent); margin: 60px 0; width: 100%; }
+
+        /* HERO & INSCRIÇÕES */
+        #hero-desc { font-size: clamp(1.2rem, 2vw, 1.5rem); padding: clamp(20px, 4vw, 40px); margin-bottom: 30px; opacity: 0.8; text-transform: none; font-family: var(--font-head); line-height: 1.2em; }
+        
+        .inscricao-box { 
+            background: rgba(20, 64, 26, 0.05); 
+            padding: clamp(20px, 4vw, 40px); 
+            margin-bottom: 20px; 
+            display: flex; flex-direction: column; gap: 20px;
+        }
+        @media(min-width: 768px) {
+            .inscricao-box { flex-direction: row; justify-content: space-between; align-items: flex-end; }
+            .inscricao-text { flex: 1; padding-right: 40px; }
+        }
+
+        /* DESTAQUES */
+        .destaque-card { margin-bottom: 60px; }
+        .destaque-header { margin-bottom: 20px; }
+        .destaque-subtitle { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--accent); opacity: 0.8; font-weight: 500; font-family: var(--font-body); }
+        .destaque-img { width: 100%; aspect-ratio: 21 / 9; background-color: var(--placeholder); object-fit: cover; }
+        @media (max-width: 768px) { .destaque-img { aspect-ratio: 16 / 9; } }
+
+        /* CARDS */
+        .card { display: flex; flex-direction: column; gap: 12px; }
+        .card-img { width: 100%; aspect-ratio: 4 / 3; background-color: var(--placeholder); object-fit: cover; }
+        .card-title { font-family: var(--font-head); font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 600; line-height: 1.2; }
+
+        /* CONTAINER QUERIES (Anteriores) */
+        .anteriores-wrapper { container-type: inline-size; container-name: wrapper; }
+        .anteriores-grid { display: grid; gap: 40px; }
+        @container wrapper (min-width: 700px) { .anteriores-grid { grid-template-columns: 1fr 1fr; } }
+        .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--grid-gap); }
+
+        /* VIEWS SPA (Hash Routing) */
+        #view-historico { display: none; }
+        .filtros { display: flex; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+        .grid-historico { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 40px var(--grid-gap); }
+        .header-historico { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+
+    .page-view { animation: fadeIn 0.4s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } 
+
+    /* Tags Auxiliares de Metadados */
+    .artista-sub-meta { font-size: clamp(1rem, 2.5vw, 1.4rem); color: var(--accent); font-family: var(--font-body); margin-top: 5px; opacity: 0.8; }
+
+    /* Layout Imersivo do Artista (image_bd4cc8.png) */
+    .layout-artista-detalhe { display: grid; gap: 40px; margin-top: 40px; }
+    @media (min-width: 900px) {
+        .layout-artista-detalhe { grid-template-columns: 1fr 1fr; alignment-items: start; }
+    }
+    .col-artista-txt { padding-right: 20px; }
+    .col-artista-txt p { font-size: clamp(1rem, 2vw, 1.15rem); line-height: 1.6; text-align: justify; }
+    .main-image-wrapper { width: 100%; }
+    .artista-imagem-principal { width: 100%; aspect-ratio: 4 / 3; background-color: var(--placeholder); object-fit: cover; }
+
+    /* Galeria Coletiva Horizontal (image_be4011.png) */
+    .galeria-horizontal-container { width: 100%; overflow-x: auto; margin-top: 30px; padding-bottom: 15px; scroll-behavior: smooth; }
+    .galeria-horizontal-container::-webkit-scrollbar { height: 6px; }
+    .galeria-horizontal-container::-webkit-scrollbar-track { background: rgba(20, 64, 26, 0.05); }
+    .galeria-horizontal-container::-webkit-scrollbar-thumb { background: var(--accent); }
+    
+    .galeria-horizontal-inner { display: flex; gap: 15px; }
+    .thumb-horizontal { flex: 0 0 clamp(200px, 30vw, 350px); aspect-ratio: 4 / 3; background-color: var(--placeholder); cursor: pointer; transition: opacity 0.2s; }
+    .thumb-horizontal:hover { opacity: 0.85; }
+
+    /* Grid de Participantes Coletiva */
+    .grid-artistas-participantes { display: grid; gap: var(--grid-gap); margin-top: 20px; }
+    @media (max-width: 767px) { .grid-artistas-participantes { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 768px) { .grid-artistas-participantes { grid-template-columns: repeat(4, 1fr); } }
+
+    /* Estilos Lightbox Nativo */
+    .lb-modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(15,15,15,0.95); align-items: center; justify-content: center; }
+    .lb-carousel-inner { display: flex; overflow-x: hidden; width: 100%; height: 100%; scroll-behavior: smooth; }
+    .lb-slide { flex: 0 0 100%; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .lb-slide img { max-width: 90%; max-height: 85%; object-fit: contain; aspect-ratio: auto; }
+    .lb-close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; cursor: pointer; z-index: 10100; }
+    .lb-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: white; font-size: 35px; cursor: pointer; padding: 15px; z-index: 10100; }
+    .lb-prev { left: 20px; } .lb-next { right: 20px; }
+</style>
+</head>
+
+
+
+<body>
+
+<header>
+    <a href="#"><img src="https://font-e.github.io/site/content/logo_fonte_preto.png" class="logo" alt="FONTE"></a>
+    <nav id="menu">
+        <a href="info.html">Info</a>
+        <a href="atelie.html">Ateliês Permanentes</a>
+        <a href="exposicoes.html">Exposições</a>
+        <a href="residencia.html">Residência</a>
+        <a href="cursos.html">Cursos</a>
+        <a href="apoie.html">Apoie</a>
+    </nav>
+    <button class="mobile-btn" onclick="document.getElementById('menu').classList.toggle('open')">☰</button>
+</header>
+
+<div class="container">
+    
+    <div id="view-home" class="page-view">
+        <section id="hero">
+            <div id="hero-desc">A Residência FONTE realiza programas em modalidade COLETIVA e INDIVIDUAL.</div>
+            <div id="box-inscricoes"></div>
+        </section>
+
+        <div class="section-divider" id="div-insc"></div>
+
+        <section id="sec-destaques">
+            <h2>Em Residência</h2>
+            <div id="box-destaques"></div>
+        </section>
+
+        <div class="section-divider" id="div-dest"></div>
+
+        <section id="sec-anteriores" class="anteriores-wrapper">
+            <h2>Anteriores</h2>
+            <div class="anteriores-grid">
+                <div>
+                    <h3>Individuais</h3>
+                    <div id="grid-prev-indiv" class="sub-grid"></div>
+                </div>
+                <div>
+                    <h3>Coletivas</h3>
+                    <div id="grid-prev-colet" class="sub-grid"></div>
+                </div>
+            </div>
+            <div style="margin-top: 60px; text-align: center;">
+                <a href="#historico" class="btn">Histórico de Residências</a>
+            </div>
+        </section>
+    </div>
+
+    <div id="view-historico" class="page-view" style="display: none;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px;">
+            <h2 style="margin-bottom: 0;">Histórico de Residências</h2>
+            <a href="#" class="btn-voltar-discreto" title="Voltar"> ❮ </a>
+        </div>
+        <div class="filtros">
+            <button class="btn" id="btn-indiv" onclick="toggleFiltro('Individual')">Individuais</button>
+            <button class="btn" id="btn-colet" onclick="toggleFiltro('Coletiva')">Coletivas</button>
+        </div>
+        <div id="grid-historico" class="grid-historico"></div>
+    </div>
+
+    <div id="view-grupo" class="page-view" style="display: none;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+            <h1 id="grupo-titulo" style="margin-bottom: 0;">NOME DO GRUPO</h1>
+            <a href="#" class="btn-voltar-discreto" title="Voltar"> ❮ </a>
+        </div>
+        
+        <div class="galeria-horizontal-container">
+            <div id="grupo-galeria" class="galeria-horizontal-inner"></div>
+        </div>
+
+        <div id="grupo-info-container" style="margin-top: 20px; display: none;">
+            <p id="grupo-info" style="text-align: justify;"></p>
+        </div>
+
+        <div class="section-divider"></div>
+        
+        <section>
+            <h2>Artistas Participantes</h2>
+            <div id="grupo-artistas-grid" class="grid-artistas-participantes"></div>
+        </section>
+    </div>
+
+    <div id="view-artista" class="page-view" style="display: none;">
+        <div style="margin-bottom: 40px;">
+            <h1 id="artista-nome">NOME DO ARTISTA</h1>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px;">
+                <div id="artista-meta" class="artista-sub-meta" style="margin-top: 0;">MES de ANO</div>
+                <a href="#" id="btn-voltar-artista" class="btn-voltar-discreto" title="Voltar"> ❮ </a>
+            </div>
+        </div>
+        <div class="layout-artista-detalhe">
+            <div class="col-artista-media">
+                <div class="artista-imagem-principal"></div>
+            </div>
+            <div class="col-artista-txt">
+                <p id="artista-bio">Biografia e texto crítico...</p>
+            </div>
+        </div>
+
+        <div id="artista-relacionados-container" style="display: none;">
+            <div class="section-divider"></div>
+            <section>
+                <h2>Artistas Participantes</h2>
+                <div id="artista-relacionados-grid" class="grid-artistas-participantes"></div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div id="lightbox" class="lb-modal" onclick="closeLightbox()">
+    <span class="lb-close" onclick="closeLightbox()">&times;</span>
+    <button class="lb-arrow lb-prev" onclick="event.stopPropagation(); changeLBSlide(-1)">&#10094;</button>
+    <button class="lb-arrow lb-next" onclick="event.stopPropagation(); changeLBSlide(1)">&#10095;</button>
+    <div class="lb-carousel-inner" id="lb-content"></div>
+</div>
+
+<script>
+    const URL_JSON = 'https://raw.githubusercontent.com/font-e/site/main/data/residencia.json';
+    
+    let bancoDeDadosRaw = [];
+    let historicoCompleto = [];
+    let filtroAtual = null;
+    let currentGalleryImages = [];
+    let currentLBIndex = 0;
+
+    const formatTexto = (txt) => txt ? String(txt).replace(/\\n|\n/g, '<br>') : '';
+    const checarFlag = (valor) => valor && String(valor).trim().toUpperCase() === 'X';
+    const gerarSlug = (texto) => texto ? String(texto).toLowerCase().trim().replace(/[\s_]+/g, '-').replace(/[^\w\-]+/g, '') : '';
+
+    // Entrega a Hash correta da URL baseada na categoria
+    function getLinkHash(item) {
+        if (item.CATEGORIAS === 'Coletiva' && item.GRUPO) return '#' + gerarSlug(item.GRUPO);
+        return item.PASTA ? '#' + item.PASTA : '#' + gerarSlug(item.NOME);
+    }
+
+    // Exibição estrita nos cards de listagem (Parceria institucional exibe o NOME do artista)
+    function getTituloDisplay(item) {
+        if (item.CATEGORIAS === 'Coletiva' && item.GRUPO) return item.GRUPO;
+        return item.NOME;
+    }
+
+    function renderInscricao(item) {
+        return `
+            <div class="inscricao-box">
+                <div class="inscricao-text">
+                    <h3>${getTituloDisplay(item)}</h3>
+                    <p>${formatTexto(item.MINIBIO)}</p>
+                </div>
+                <button class="btn" onclick="window.location.hash='${getLinkHash(item)}'">CONVOCATÓRIA</button>
+            </div>`;
+    }
+
+    function renderDestaque(item) {
+        const local = [item.CIDADE, item.PAIS].filter(Boolean).join(", ");
+        return `
+            <div class="destaque-card" style="cursor:pointer;" onclick="window.location.hash='${getLinkHash(item)}'">
+                <div class="destaque-header">
+                    <h1>${getTituloDisplay(item)}</h1>
+                    <div class="destaque-subtitle">${local}</div>
+                </div>
+                <div class="destaque-img"></div>
+            </div>`;
+    }
+
+    function renderCard(item) {
+        return `
+            <div class="card" style="cursor:pointer;" onclick="window.location.hash='${getLinkHash(item)}'">
+                <div class="card-img"></div>
+                <div class="card-title">${getTituloDisplay(item)}</div>
+            </div>`;
+    }
+
+function renderParticipanteCard(item) {
+        // Força a geração do link individual do artista, ignorando o status de grupo
+        const hashIndividual = item.PASTA ? '#' + item.PASTA : '#' + gerarSlug(item.NOME);
+        return `
+            <div class="card" style="cursor:pointer;" onclick="window.location.hash='${hashIndividual}'">
+                <div class="card-img"></div>
+                <div class="card-title">${item.NOME}</div>
+            </div>`;
+    }
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        fetch(URL_JSON)
+            .then(res => { if (!res.ok) throw new Error(res.status); return res.json(); })
+            .then(dados => { bancoDeDadosRaw = dados; processarEConstruir(); })
+            .catch(err => console.error("Erro fatal de rede/JSON:", err));
+    });
+
+    function processarEConstruir() {
+        let dadosOrdenados = bancoDeDadosRaw.sort((a, b) => (parseInt(b.ANO) || 0) - (parseInt(a.ANO) || 0));
+
+        const baseUnicaHome = [];
+        const gruposVistos = new Set();
+
+        dadosOrdenados.forEach(item => {
+            if (item.CATEGORIAS === 'Coletiva' && item.GRUPO) {
+                if (!gruposVistos.has(item.GRUPO)) {
+                    gruposVistos.add(item.GRUPO);
+                    baseUnicaHome.push(item);
+                }
+            } else {
+                baseUnicaHome.push(item);
+            }
+        });
+
+        const inscricoes = baseUnicaHome.filter(d => checarFlag(d.INSCRICOES));
+        const destaques = baseUnicaHome.filter(d => checarFlag(d.DESTAQUE));
+        historicoCompleto = baseUnicaHome.filter(d => !checarFlag(d.DESTAQUE) && !checarFlag(d.INSCRICOES));
+
+        const boxInsc = document.getElementById('box-inscricoes');
+        if(inscricoes.length > 0) { boxInsc.innerHTML = inscricoes.map(renderInscricao).join(''); } 
+        else { document.getElementById('div-insc').style.display = 'none'; }
+
+        const boxDest = document.getElementById('box-destaques');
+        if(destaques.length > 0) { boxDest.innerHTML = destaques.map(renderDestaque).join(''); } 
+        else { document.getElementById('sec-destaques').style.display = 'none'; document.getElementById('div-dest').style.display = 'none'; }
+
+        // Parceria institucional é assimilada como Individual na Home e no Histórico
+        const prevIndiv = historicoCompleto.filter(d => d.CATEGORIAS !== 'Coletiva').slice(0, 2);
+        const prevColet = historicoCompleto.filter(d => d.CATEGORIAS === 'Coletiva').slice(0, 2);
+        
+        document.getElementById('grid-prev-indiv').innerHTML = prevIndiv.map(renderCard).join('');
+        document.getElementById('grid-prev-colet').innerHTML = prevColet.map(renderCard).join('');
+
+        renderGridHistoricoList(historicoCompleto);
+
+        monitorarRota();
+        window.addEventListener('hashchange', monitorarRota);
+    }
+
+    function renderGridHistoricoList(lista) {
+        document.getElementById('grid-historico').innerHTML = lista.map(renderCard).join('');
+    }
+
+    function toggleFiltro(categoriaClicada) {
+        filtroAtual = (filtroAtual === categoriaClicada) ? null : categoriaClicada;
+        document.getElementById('btn-indiv').classList.toggle('active', filtroAtual === 'Individual');
+        document.getElementById('btn-colet').classList.toggle('active', filtroAtual === 'Coletiva');
+
+        let filtrado = historicoCompleto;
+        if (filtroAtual === 'Individual') {
+            filtrado = historicoCompleto.filter(d => d.CATEGORIAS !== 'Coletiva');
+        } else if (filtroAtual === 'Coletiva') {
+            filtrado = historicoCompleto.filter(d => d.CATEGORIAS === 'Coletiva');
+        }
+        renderGridHistoricoList(filtrado);
+    }
+
+    // CORREÇÃO DA TELA BRANCA: Validação de rotas robusta com fallback por Slug de Nome
+    function monitorarRota() {
+        const hash = window.location.hash;
+        
+        document.querySelectorAll('.page-view').forEach(view => view.style.display = 'none');
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
+        if (!hash || hash === '#') {
+            document.getElementById('view-home').style.display = 'block';
+            return;
+        }
+
+        if (hash === '#historico') {
+            document.getElementById('view-historico').style.display = 'block';
+            return;
+        }
+
+        // 1. Rota de Grupo Coletivo
+        const slugGrupoEncontrado = bancoDeDadosRaw.find(d => d.CATEGORIAS === 'Coletiva' && d.GRUPO && '#' + gerarSlug(d.GRUPO) === hash);
+        if (slugGrupoEncontrado) {
+            renderizarPaginaGrupo(slugGrupoEncontrado); 
+            return;
+        }
+
+        // 2. Rota de Artista (Verifica Chave PASTA ou ignora nulos buscando pelo Slug do NOME do artista)
+        const artistaEncontrado = bancoDeDadosRaw.find(d => {
+            const matchPasta = d.PASTA && '#' + d.PASTA === hash;
+            const matchNome = d.NOME && '#' + gerarSlug(d.NOME) === hash;
+            return matchPasta || matchNome;
+        });
+
+        if (artistaEncontrado) {
+            renderizarPaginaArtista(artistaEncontrado);
+            return;
+        }
+
+        document.getElementById('view-home').style.display = 'block';
+    }
+
+    function renderizarPaginaGrupo(grupoObj) {
+        const viewGrupo = document.getElementById('view-grupo');
+        const nomeGrupo = grupoObj.GRUPO;
+        
+        document.getElementById('grupo-titulo').innerText = nomeGrupo;
+
+        const integrantes = bancoDeDadosRaw.filter(d => d.GRUPO === nomeGrupo);
+
+        const galBox = document.getElementById('grupo-galeria');
+        galBox.innerHTML = '';
+        currentGalleryImages = [];
+        
+        for (let i = 1; i <= 12; i++) {
+            currentGalleryImages.push('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="100%" height="100%" fill="%23879189"/></svg>');
+            galBox.innerHTML += `<div class="thumb-horizontal" onclick="openLightbox(${i-1})"></div>`;
+        }
+
+        const txtInfo = formatTexto(grupoObj.INFO);
+        const boxInfo = document.getElementById('grupo-info-container');
+        if (txtInfo) {
+            document.getElementById('grupo-info').innerHTML = txtInfo;
+            boxInfo.style.display = 'block';
+        } else {
+            boxInfo.style.display = 'none';
+        }
+
+        document.getElementById('grupo-artistas-grid').innerHTML = integrantes.map(renderParticipanteCard).join('');
+        viewGrupo.style.display = 'block';
+    }
+
+function renderizarPaginaArtista(artista) {
+        const viewArtista = document.getElementById('view-artista');
+        document.getElementById('artista-nome').innerText = Math.max ? artista.NOME : artista.NOME;
+        
+        // Formatação da string de data [MES] de [ANO]
+        const mesTexto = artista.MES ? String(artista.MES).trim() : '';
+        const anoTexto = artista.ANO ? String(artista.ANO).trim() : '';
+        let dataMeta = '';
+        
+        if (mesTexto && anoTexto) {
+            dataMeta = `${mesTexto} de ${anoTexto}`;
+        } else {
+            dataMeta = anoTexto || mesTexto || '';
+        }
+        
+        // Estrutura de metadados condicional para Parceria Institucional e Coletivas
+        if (artista.CATEGORIAS === 'Parceria institucional' && artista.GRUPO) {
+            document.getElementById('artista-meta').innerText = `Parceria: ${artista.GRUPO} ${dataMeta ? '  /  ' + dataMeta : ''}`;
+        } else if (artista.CATEGORIAS === 'Coletiva' && artista.GRUPO) {
+            document.getElementById('artista-meta').innerText = `${artista.GRUPO} ${dataMeta ? '  /  ' + dataMeta : ''}`;
+        } else {
+            document.getElementById('artista-meta').innerText = dataMeta;
+        }
+
+        document.getElementById('artista-bio').innerHTML = formatTexto(artista.MINIBIO || 'Nenhuma biografia disponível.');
+
+        // Configuração inteligente do botão voltar
+        const btnVoltar = document.getElementById('btn-voltar-artista');
+        if (artista.CATEGORIAS === 'Coletiva' && artista.GRUPO) {
+            btnVoltar.setAttribute('href', '#' + gerarSlug(artista.GRUPO));
+        } else {
+            btnVoltar.setAttribute('href', '#');
+        }
+
+        // LÓGICA NOVA: Injeção do Grid Relacional de Coletivas (excluindo o artista atual)
+        const boxRelacionados = document.getElementById('artista-relacionados-container');
+        const gridRelacionados = document.getElementById('artista-relacionados-grid');
+        
+        if (artista.CATEGORIAS === 'Coletiva' && artista.GRUPO) {
+            // Busca todos os integrantes do grupo, exceto o próprio artista selecionado
+            const outrosIntegrantes = bancoDeDadosRaw.filter(d => d.GRUPO === artista.GRUPO && d.NOME !== artista.NOME);
+            
+            if (outrosIntegrantes.length > 0) {
+                gridRelacionados.innerHTML = outrosIntegrantes.map(renderParticipanteCard).join('');
+                boxRelacionados.style.display = 'block';
+            } else {
+                boxRelacionados.style.display = 'none';
+            }
+        } else {
+            boxRelacionados.style.display = 'none';
+        }
+
+        viewArtista.style.display = 'block';
+    }
+    
+    function openLightbox(index) {
+        currentLBIndex = index;
+        const lb = document.getElementById('lightbox');
+        const content = document.getElementById('lb-content');
+        content.innerHTML = currentGalleryImages.map(src => `<div class="lb-slide"><img src="${src}"></div>`).join('');
+        lb.style.display = 'flex';
+        const slides = content.querySelectorAll('.lb-slide');
+        if(slides[index]) slides[index].scrollIntoView();
+    }
+
+    function closeLightbox() { document.getElementById('lightbox').style.display = 'none'; }
+
+    function changeLBSlide(direction) {
+        const content = document.getElementById('lb-content');
+        currentLBIndex = (currentLBIndex + direction + currentGalleryImages.length) % currentGalleryImages.length;
+        const slides = content.querySelectorAll('.lb-slide');
+        if(slides[currentLBIndex]) slides[currentLBIndex].scrollIntoView();
+    }
+</script>
+</body>
+</html>

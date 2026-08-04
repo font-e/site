@@ -1,8 +1,0 @@
-title: Residência FONTE
-baseurl: "/site" # O nome do seu repositório
-url: "https://font-e.github.io"
-
-# Variáveis que podemos usar nos scripts para evitar URLs longas
-img_full_base: "https://font-e.github.io/site/img/webp/full/"
-img_thumb_base: "https://font-e.github.io/site/img/webp/thumbs/"
-api_base: "https://api.github.com/repos/font-e/site/contents/img/webp/full/"
