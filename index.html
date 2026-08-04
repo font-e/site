@@ -73,13 +73,35 @@
 
         /* Menu de Links Interativos */
         .links-navigation {
-            width: 80%;
+            width: 100%; 
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
-        /* Imagens e PDFs */
+        /* Grade para as Imagens Lado a Lado */
+        .image-row {
+            display: flex;
+            flex-direction: row;
+            gap: 16px;
+            width: 100%;
+            align-items: stretch; /* Garante que as colunas tenham a mesma altura */
+        }
+
+        /* --- CÁLCULO EXATO DE PROPORÇÃO DAS IMAGENS --- */
+        
+        .image-link:nth-child(1) {
+            /* Imagem Esquerda: Open Call (800 x 566) */
+            flex: calc(800 / 566) 1 0%; 
+        }
+
+        .image-link:nth-child(2) {
+            /* Imagem Direita: Activity Report (800 x 540) */
+            flex: calc(800 / 540) 1 0%; 
+        }
+
+        /* ---------------------------------------------- */
+
         .image-link {
             display: flex;
             flex-direction: column;
@@ -87,23 +109,36 @@
             text-decoration: none;
             color: var(--accent);
             font-family: var(--font-body);
-            font-size: 0.85rem;
+            font-size: 0.8rem; 
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 15px;
-            transition: opacity 0.25s ease;
+            letter-spacing: 1px;
             gap: 10px;
+            text-align: center;
         }
 
-        .image-link:hover {
-            opacity: 0.7;
-        }
-
-        .image-link img {
+        /* Container que trava o tamanho da imagem e aplica a borda */
+        .img-wrapper {
             width: 100%;
-            height: auto;
+            flex: 1; /* Ocupa todo o espaço vertical disponível na sua respectiva coluna */
             border: 1px solid var(--accent);
+            overflow: hidden; 
+            display: flex;
+        }
+
+        /* Imagem com transição fluida */
+        .img-wrapper img {
+            width: 100%;
+            height: 100%;
+            /* O cover aqui preenche 100% da caixa, e como a caixa agora tem a exata proporção da imagem original, NADA será cortado */
+            object-fit: cover; 
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        /* Efeito de zoom no hover */
+        .image-link:hover .img-wrapper img {
+            transform: scale(1.03); 
         }
 
         /* Caixa de Contato Sem Botão */
@@ -121,13 +156,12 @@
 
         .contact-box a {
             color: var(--accent);
+            text-decoration: none;
             font-weight: bold;
-            text-decoration: underline;
         }
 
         .contact-box a:hover {
-            color: var(--bg);
-            background-color: var(--accent);
+            text-decoration: underline;
         }
 
         /* Botão do Instagram */
@@ -164,7 +198,7 @@
         /* REGRAS PARA DESKTOP (Telas Maiores) */
         @media (min-width: 768px) {
             .container {
-                max-width: 600px;
+                max-width: 800px; 
             }
 
             header {
@@ -178,6 +212,11 @@
             .nav-button, .contact-box {
                 padding: 18px 30px;
                 font-size: 0.9rem;
+            }
+            
+            .image-link {
+                font-size: 0.85rem;
+                letter-spacing: 1.5px;
             }
         }
     </style>
@@ -193,17 +232,23 @@
 
         <nav class="links-navigation">
             
-            <!-- Imagem 1: Open Call -->
-            <a href="residency.pdf" class="image-link" target="_blank" title="Baixar PDF - Open Call">
-                <img src="residency.jpg" alt="Open Call - FONTE Residency Program">
-                <span>Open Call - FONTE Residency Program</span>
-            </a>
+            <div class="image-row">
+                <!-- Imagem 1: Open Call -->
+                <a href="https://www.font-e.org/content/residency_original.pdf" class="image-link" target="_blank" title="Baixar PDF - Open Call">
+                    <div class="img-wrapper">
+                        <img src="https://www.font-e.org/content/residency.jpg" alt="Open Call - FONTE Residency Program">
+                    </div>
+                    <span>Open Call<BR>FONTE Residency Program</span>
+                </a>
 
-            <!-- Imagem 2: Activity Report -->
-            <a href="activity_report.pdf" class="image-link" target="_blank" title="Baixar PDF - Activity Report">
-                <img src="activity_report.jpg" alt="Activity Report 2020 - 2026">
-                <span>Activity Report 2020 - 2026</span>
-            </a>
+                <!-- Imagem 2: Activity Report -->
+                <a href="https://www.font-e.org/content/activity_report_original.pdf" class="image-link" target="_blank" title="Baixar PDF - Activity Report">
+                    <div class="img-wrapper">
+                        <img src="https://www.font-e.org/content/activity_report.jpg" alt="Activity Report 2020 - 2026">
+                    </div>
+                    <span>Activity Report<BR>2020 - 2026</span>
+                </a>
+            </div>
 
             <!-- Contato -->
             <div class="contact-box">
