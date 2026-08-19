@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protótipo Desktop - Ferramenta de Diagramação</title>
+<style>
+  /* =========================================
+     1. VARIÁVEIS E RESET BÁSICO
+     ========================================= */
+  :root {
+    --h-cabecalho: 60px;
+    --hover-bg: #e6eceb;
+    --active-bg: #bebab0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body { 
+    font-family: 'Helvetica Neue', Arial, sans-serif; 
+    background: #ffffff; 
+    color: #000; 
+    overflow-x: hidden;
+  }
+
+  /* =========================================
+     2. CABEÇALHO
+     ========================================= */
+  #main-header {
+    position: sticky;
+    top: 0;
+    height: var(--h-cabecalho);
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+  }
+
+  #main-header img {
+    height: clamp(20px, 2.5vw, 40px);
+    width: auto;
+    cursor: pointer; 
+    transition: transform 0.2s;
+  }
+  
+  #main-header img:hover {
+    transform: scale(1.05);
+  }
+
+  /* =========================================
+     3. PAINEL STICKY HORIZONTAL
+     ========================================= */
+  #control-panel {
+    display: none;
+    position: sticky;
+    top: var(--h-cabecalho);
+    background: #f4f4f4;
+    border-bottom: 2px solid #000;
+    padding: 20px;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 15px;
+    align-items: flex-start;
+    z-index: 95;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  }
+
+  #control-panel.open {
+    display: flex;
+  }
+
+  .control-group {
+    display: inline-block;
+    vertical-align: top;
+    min-width: 280px;
+    width: 280px;
+    border: 1px solid #000;
+    background: #ffffff;
+    padding: 15px;
+    white-space: normal;
+    cursor: grab;
+  }
+  .control-group:active { cursor: grabbing; }
+
+  .control-group.global-group {
+    background: #eef;
+    border: 2px solid #000;
+    min-width: 320px;
+    cursor: default;
+  }
+
+  .control-group h4 {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+  }
+
+  .control-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+  }
+
+  .control-row label { font-weight: bold; margin-bottom: 3px; }
+  .control-row input, .control-row select { padding: 5px; border: 1px solid #000; width: 100%; }
+  
+  .grid-inputs { display: flex; gap: 10px; }
+  .grid-inputs > div { width: 50%; }
+
+  .panel-btn {
+    background: #000;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+  }
+  .panel-btn:hover { background: #333; }
+
+  /* =========================================
+     4. ESTRUTURA DO GRID PRINCIPAL
+     ========================================= */
+  #events-container {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    align-items: stretch;
+  }
+
+  .event-row {
+    display: contents; 
+  }
+
+  /* =========================================
+     5. CAIXA DE TEXTO E ACCORDION
+     ========================================= */
+  .text-box {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff; 
+    position: relative;
+    z-index: 10;
+    transition: background-color 0.15s ease;
+    
+    grid-column: var(--txt-col);
+    grid-row: var(--txt-row);
+  }
+
+  .text-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid #000;
+    padding-bottom: 5px;
+    margin-bottom: 25px;
+    font-size: clamp(0.85rem, 1vw, 1.2rem);
+  }
+  
+  .text-title { 
+    font-size: var(--title-fs, clamp(1.8rem, 3.5vw, 4.5rem)); 
+    line-height: 1.1; 
+    font-weight: bold; 
+    margin-bottom: 15px; 
+    transition: font-size 0.2s ease;
+  }
+  
+  .text-desc { 
+    font-size: var(--desc-fs, clamp(1rem, 1.2vw, 1.8rem)); 
+    line-height: 1.4; 
+    margin-bottom: 15px; 
+    transition: font-size 0.2s ease;
+    white-space: pre-wrap;
+  }
+
+  .expand-wrapper {
+    display: grid;
+    grid-template-rows: 0fr; 
+    transition: grid-template-rows 0.3s ease-out; 
+  }
+  .expand-wrapper.open { grid-template-rows: 1fr; }
+  .expand-content { overflow: hidden; }
+
+  .btn-plus {
+    margin-top: auto; 
+    align-self: flex-end;
+    font-size: clamp(2rem, 3.5vw, 4rem);
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #000;
+    padding: 15px 5px 0 5px; 
+  }
+  
+  .btn-plus:focus-visible { outline: 2px solid #000; outline-offset: 4px; }
+
+  /* =========================================
+     6. CÁPSULA DA IMAGEM E STICKY
+     ========================================= */
+  .img-col {
+    position: relative;
+    z-index: 10;
+    grid-column: var(--img-col);
+    grid-row: var(--img-row);
+    transition: background-color 0.15s ease;
+  }
+
+  .img-wrapper {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+  }
+
+  .event-row.layout-vertical .img-wrapper {
+    position: relative;
+    height: 40vh; 
+  }
+
+  .img-box {
+    position: sticky;
+    top: var(--h-cabecalho);
+    max-height: min(100%, calc(100vh - var(--h-cabecalho)));
+    height: max-content; 
+    display: flex;
+    width: 100%;
+  }
+
+  .img-box img {
+    width: 100%;
+    max-height: 100%; 
+    object-fit: contain; 
+    display: block;
+    object-position: var(--img-align, left top);
+  }
+
+  /* =========================================
+     HOVER E SELECIONADO / ATIVO UNIFICADO
+     ========================================= */
+  .text-box.row-hover,
+  .img-col.row-hover {
+    background-color: var(--hover-bg) !important;
+  }
+
+  .text-box.active-bg,
+  .img-col.active-bg {
+    background-color: var(--active-bg) !important;
+  }
+
+  /* Bloco de Espaço Vazio */
+  .empty-space {
+    grid-column: var(--space-col);
+    grid-row: var(--space-row);
+    border-bottom: 2px solid #000;
+    background: #ffffff;
+  }
+
+  /* Zona de Drop / Upload Inicial */
+  #drop-zone {
+    grid-column: 1 / 13;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 3px dashed #000;
+    margin: 40px;
+    background: #fafafa;
+    cursor: pointer;
+    text-align: center;
+    padding: 20px;
+  }
+  #drop-zone.dragover {
+    background: #eee;
+    border-color: #555;
+  }
+
+  /* Controles de Ações Inferiores */
+  #actions-container {
+    grid-column: 1 / 13;
+    padding: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    background: #f9f9f9;
+    border-bottom: 2px solid #000;
+  }
+</style>
+</head>
+<body>
+
+  <!-- CABEÇALHO -->
+  <header id="main-header">
+    <img id="logo-btn" src="https://www.font-e.org/content/logo_fonte_branco.png" alt="Configurações">
+  </header>
+
+  <!-- PAINEL HORIZONTAL STICKY -->
+  <aside id="control-panel"></aside>
+
+  <!-- ==============================================
+       LISTA DOS EVENTOS
+       ============================================== -->
+  <main id="events-container">
+    <!-- Renderizado dinamicamente -->
+  </main>
+
+  <div id="actions-container">
+    <button id="addEventBtn" class="panel-btn" style="max-width: 250px;">+ ADICIONAR EVENTO</button>
+    <button id="addSpaceBtn" class="panel-btn" style="max-width: 250px; background: #555;">+ ADICIONAR ESPAÇO</button>
+  </div>
+
+  <div style="height: 100vh; background: #ffffff;"></div>
+  <input type="file" id="importFile" accept=".json" style="display: none;">
+
+  <!-- ==============================================
+       JAVASCRIPT
+       ============================================== -->
+  <script>
+    let initialEventsData = [];
+
+    const logoBtn = document.getElementById('logo-btn');
+    const panel = document.getElementById('control-panel');
+    const container = document.getElementById('events-container');
+    const importFile = document.getElementById('importFile');
+
+    logoBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      panel.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!panel.contains(e.target) && e.target !== logoBtn && !logoBtn.contains(e.target)) {
+        panel.classList.remove('open');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') panel.classList.remove('open');
+    });
+
+    function processJSONData(jsonData) {
+      initialEventsData = jsonData;
+      renderApp(initialEventsData);
+    }
+
+    function truncateTitle(title, max = 22) {
+      if (!title) return 'Sem Título';
+      return title.length > max ? title.substring(0, max) + '...' : title;
+    }
+
+    function renderApp(data) {
+      container.innerHTML = '';
+
+      if (data.length === 0) {
+        const dropZone = document.createElement('div');
+        dropZone.id = 'drop-zone';
+        dropZone.innerHTML = `
+          <h2 style="margin-bottom: 15px;">Arraste e solte seu arquivo JSON aqui</h2>
+          <p style="margin-bottom: 20px; color: #666;">ou clique para selecionar do computador</p>
+          <button class="panel-btn" style="max-width: 200px;">Selecionar Arquivo</button>
+        `;
+
+        dropZone.addEventListener('click', () => importFile.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+          dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('dragover');
+          const file = e.dataTransfer.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              try {
+                processJSONData(JSON.parse(event.target.result));
+              } catch (err) {
+                console.error("Erro ao ler JSON arrastado:", err);
+              }
+            };
+            reader.readAsText(file);
+          }
+        });
+
+        container.appendChild(dropZone);
+        renderControlPanel(data);
+        return;
+      }
+
+      data.forEach((item, index) => {
+        const i = index + 1;
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'event-row';
+        rowDiv.dataset.index = index;
+
+        if (item.type === 'space') {
+          rowDiv.innerHTML = `<div class="empty-space"></div>`;
+        } else {
+          rowDiv.innerHTML = `
+            <div class="text-box">
+              <div class="text-header">
+                <span class="edit-cat" contenteditable="true" spellcheck="false">${item.category || ''}</span>
+                <span class="edit-date" contenteditable="true" spellcheck="false">${item.date || ''}</span>
+              </div>
+              <h3 class="text-title edit-title" contenteditable="true" spellcheck="false">${item.title || ''}</h3>
+              <p class="text-desc edit-desc" contenteditable="true" spellcheck="false">${item.desc || ''}</p>
+              <div class="expand-wrapper">
+                <div class="expand-content">
+                  <p class="text-desc edit-content" contenteditable="true" spellcheck="false">${item.content || ''}</p>
+                </div>
+              </div>
+              <button class="btn-plus">+</button>
+            </div>
+            <div class="img-col">
+              <div class="img-wrapper">
+                <div class="img-box">
+                  <img src="${item.url || ''}" alt="Imagem ${i}">
+                </div>
+              </div>
+            </div>
+          `;
+
+          // Hover unificado (Texto + Imagem)
+          const textBox = rowDiv.querySelector('.text-box');
+          const imgCol = rowDiv.querySelector('.img-col');
+          if (textBox && imgCol) {
+            [textBox, imgCol].forEach(element => {
+              element.addEventListener('mouseenter', () => {
+                textBox.classList.add('row-hover');
+                imgCol.classList.add('row-hover');
+              });
+              element.addEventListener('mouseleave', () => {
+                textBox.classList.remove('row-hover');
+                imgCol.classList.remove('row-hover');
+              });
+            });
+          }
+        }
+        container.appendChild(rowDiv);
+      });
+
+      // Quebra de linha com Enter
+      document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            document.execCommand('insertLineBreak');
+            e.preventDefault();
+          }
+        });
+      });
+
+      // Acordeão com cor ativa fixa
+      document.querySelectorAll('.btn-plus').forEach(button => {
+        button.addEventListener('click', function() {
+          const textBox = this.closest('.text-box');
+          const rowDiv = textBox.closest('.event-row');
+          const imgCol = rowDiv.querySelector('.img-col');
+          const expandWrapper = textBox.querySelector('.expand-wrapper');
+
+          if (expandWrapper.classList.contains('open')) {
+            expandWrapper.classList.remove('open');
+            this.textContent = '+';
+            textBox.classList.remove('active-bg');
+            if (imgCol) imgCol.classList.remove('active-bg');
+          } else {
+            expandWrapper.classList.add('open');
+            this.textContent = '−'; 
+            textBox.classList.add('active-bg');
+            if (imgCol) imgCol.classList.add('active-bg');
+          }
+        });
+      });
+
+      renderControlPanel(data);
+      applyAllLayouts(data);
+    }
+
+    function applyAllLayouts(data) {
+      const rows = container.querySelectorAll('.event-row');
+      const eventBoxes = [];
+
+      rows.forEach((rowDiv, index) => {
+        const item = data[index];
+        if (!item) return;
+        const rLine = parseInt(item.row || 1);
+        const sCol = parseInt(item.startCol || 1);
+
+        if (item.type === 'space') {
+          const spaceEl = rowDiv.querySelector('.empty-space');
+          if (spaceEl) {
+            const spanCols = parseInt(item.txtCols || 4);
+            spaceEl.style.setProperty('--space-row', rLine);
+            spaceEl.style.setProperty('--space-col', `${sCol} / span ${spanCols}`);
+            spaceEl.style.borderRight = 'none';
+            spaceEl.style.borderBottom = '2px solid #000';
+            eventBoxes.push({
+              index,
+              type: 'space',
+              rowStart: rLine,
+              rowEnd: rLine,
+              colStart: sCol,
+              colEnd: sCol + spanCols,
+              elements: [spaceEl]
+            });
+          }
+          return;
+        }
+
+        const textBox = rowDiv.querySelector('.text-box');
+        const imgCol = rowDiv.querySelector('.img-col');
+        const imgEl = rowDiv.querySelector('.img-box img');
+
+        if (textBox && imgCol) {
+          textBox.style.setProperty('--title-fs', `${item.titleSize || 1.75}rem`);
+          textBox.style.setProperty('--desc-fs', `${item.descSize || 1.45}rem`);
+          if (imgEl) imgEl.src = item.url || '';
+
+          rowDiv.classList.remove('layout-vertical');
+
+          textBox.style.cssText += `--txt-col: initial; --txt-row: initial; border-right: none; border-left: none; border-top: none; border-bottom: none;`;
+          imgCol.style.cssText += `--img-col: initial; --img-row: initial; border-right: none; border-left: none; border-top: none; border-bottom: none;`;
+
+          const tCols = parseInt(item.txtCols || 4);
+          const iCols = parseInt(item.imgCols || 2);
+
+          let txtColStart, txtColEnd, txtRow;
+          let imgColStart, imgColEnd, imgRow;
+
+          if (item.pos === 'right') {
+            txtColStart = sCol;
+            txtColEnd = sCol + tCols;
+            txtRow = rLine;
+
+            imgColStart = txtColEnd;
+            imgColEnd = imgColStart + iCols;
+            imgRow = rLine;
+
+            textBox.style.setProperty('--txt-row', txtRow);
+            textBox.style.setProperty('--txt-col', `${txtColStart} / span ${tCols}`);
+            imgCol.style.setProperty('--img-row', imgRow);
+            imgCol.style.setProperty('--img-col', `${imgColStart} / span ${iCols}`);
+            imgCol.style.setProperty('--img-align', 'left top');
+
+            textBox.style.borderBottom = '2px solid #000';
+            imgCol.style.borderBottom = '2px solid #000';
+          } 
+          else if (item.pos === 'left') {
+            imgColStart = sCol;
+            imgColEnd = imgColStart + iCols;
+            imgRow = rLine;
+
+            txtColStart = imgColEnd;
+            txtColEnd = txtColStart + tCols;
+            txtRow = rLine;
+
+            imgCol.style.setProperty('--img-row', imgRow);
+            imgCol.style.setProperty('--img-col', `${imgColStart} / span ${iCols}`);
+            textBox.style.setProperty('--txt-row', txtRow);
+            textBox.style.setProperty('--txt-col', `${txtColStart} / span ${tCols}`);
+            imgCol.style.setProperty('--img-align', 'right top');
+
+            textBox.style.borderBottom = '2px solid #000';
+            imgCol.style.borderBottom = '2px solid #000';
+          } 
+          else {
+            rowDiv.classList.add('layout-vertical');
+            imgCol.style.setProperty('--img-align', 'center center');
+
+            txtColStart = sCol;
+            txtColEnd = sCol + tCols;
+            imgColStart = sCol;
+            imgColEnd = sCol + tCols;
+
+            if (item.pos === 'above') {
+              imgCol.style.setProperty('--img-row', rLine);
+              imgCol.style.setProperty('--img-col', `${imgColStart} / span ${tCols}`);
+              textBox.style.setProperty('--txt-row', rLine + 1);
+              textBox.style.setProperty('--txt-col', `${txtColStart} / span ${tCols}`);
+
+              textBox.style.borderBottom = '2px solid #000';
+            } else { 
+              textBox.style.setProperty('--txt-row', rLine);
+              textBox.style.setProperty('--txt-col', `${txtColStart} / span ${tCols}`);
+              imgCol.style.setProperty('--img-row', rLine + 1);
+              imgCol.style.setProperty('--img-col', `${imgColStart} / span ${tCols}`);
+
+              imgCol.style.borderBottom = '2px solid #000';
+            }
+          }
+
+          const colStart = Math.min(txtColStart, imgColStart);
+          const colEnd = Math.max(txtColEnd, imgColEnd);
+          const rowStart = rLine;
+          const rowEnd = (item.pos === 'above' || item.pos === 'below') ? rLine + 1 : rLine;
+
+          eventBoxes.push({
+            index,
+            type: 'event',
+            rowStart,
+            rowEnd,
+            colStart,
+            colEnd,
+            textBox,
+            imgCol,
+            pos: item.pos
+          });
+        }
+      });
+
+      const maxRow = Math.max(...eventBoxes.map(b => b.rowEnd), 1);
+
+      for (let r = 1; r <= maxRow; r++) {
+        const activeBoxes = eventBoxes.filter(b => b.rowStart <= r && b.rowEnd >= r);
+        activeBoxes.sort((a, b) => a.colStart - b.colStart);
+
+        for (let k = 0; k < activeBoxes.length - 1; k++) {
+          const curr = activeBoxes[k];
+          const next = activeBoxes[k + 1];
+
+          if (curr.colEnd <= next.colStart) {
+            if (curr.type === 'space') {
+              curr.elements[0].style.borderRight = '2px solid #000';
+            } else {
+              if (curr.pos === 'right') {
+                if (r === curr.rowStart) curr.imgCol.style.borderRight = '2px solid #000';
+              } else if (curr.pos === 'left') {
+                if (r === curr.rowStart) curr.textBox.style.borderRight = '2px solid #000';
+              } else {
+                if (curr.pos === 'above') {
+                  if (r === curr.rowStart) curr.imgCol.style.borderRight = '2px solid #000';
+                  if (r === curr.rowEnd) curr.textBox.style.borderRight = '2px solid #000';
+                } else {
+                  if (r === curr.rowStart) curr.textBox.style.borderRight = '2px solid #000';
+                  if (r === curr.rowEnd) curr.imgCol.style.borderRight = '2px solid #000';
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    function renderControlPanel(data) {
+      let panelHTML = `
+        <div class="control-group global-group">
+          <h4>Controles Globais</h4>
+          <div class="grid-inputs">
+            <div class="control-row">
+              <label>Tam. Título</label>
+              <input type="number" step="0.1" min="0.85" value="1.75" id="globalTitleSize">
+            </div>
+            <div class="control-row">
+              <label>Tam. Texto</label>
+              <input type="number" step="0.1" min="0.85" value="1.45" id="globalDescSize">
+            </div>
+          </div>
+          <button id="applyGlobalBtn" class="panel-btn" style="margin-top: 5px;">Aplicar a Todos (Exceto Travados)</button>
+          
+          <div class="control-row" style="margin-top: 15px;">
+            <label>Cor de Fundo (Hover)</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="color" id="hoverColorPicker" value="#e6eceb" style="width: 45px; height: 32px; padding: 0; cursor: pointer; border: 1px solid #000;">
+              <input type="text" id="hoverColorText" value="#e6eceb" style="flex: 1;">
+            </div>
+          </div>
+
+          <div class="control-row" style="margin-top: 10px;">
+            <label>Cor de Fundo (Selecionado / Ativo)</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="color" id="activeColorPicker" value="#bebab0" style="width: 45px; height: 32px; padding: 0; cursor: pointer; border: 1px solid #000;">
+              <input type="text" id="activeColorText" value="#bebab0" style="flex: 1;">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button id="saveBtn" class="panel-btn" style="flex: 1;">Salvar JSON</button>
+            <button id="loadBtn" class="panel-btn" style="flex: 1;">Carregar JSON</button>
+          </div>
+        </div>
+      `;
+
+      data.forEach((item, index) => {
+        const i = index + 1;
+        const displayTitle = item.type === 'space' ? `Espaço Vazio ${i}` : truncateTitle(item.title, 18);
+
+        if (item.type === 'space') {
+          panelHTML += `
+            <div class="control-group" data-event-id="${index}" draggable="true">
+              <h4>${displayTitle}</h4>
+              <div class="grid-inputs">
+                <div class="control-row">
+                  <label>Linha</label>
+                  <input type="number" min="1" max="50" value="${item.row}" class="input-row">
+                </div>
+                <div class="control-row">
+                  <label>Início Col.</label>
+                  <input type="number" min="1" max="12" value="${item.startCol}" class="input-startCol">
+                </div>
+              </div>
+              <div class="control-row">
+                <label>Largura (Colunas)</label>
+                <input type="number" min="1" max="12" value="${item.txtCols}" class="input-txtCols">
+              </div>
+              <button class="panel-btn" style="background:#a00; margin-top:10px;" onclick="removeElement(${index})">Remover Espaço</button>
+            </div>
+          `;
+          return;
+        }
+
+        panelHTML += `
+          <div class="control-group" data-event-id="${index}" draggable="true">
+            <h4>${displayTitle}</h4>
+            
+            <div class="control-row" style="flex-direction: row; align-items: center; gap: 8px;">
+              <input type="checkbox" class="input-lock" ${item.locked ? 'checked' : ''} id="lock-${i}" style="width: 18px; height: 18px;">
+              <label for="lock-${i}" style="margin: 0; cursor: pointer;">Travar (Ignorar Global)</label>
+            </div>
+
+            <div class="grid-inputs">
+              <div class="control-row">
+                <label>Linha</label>
+                <input type="number" min="1" max="50" value="${item.row}" class="input-row">
+              </div>
+              <div class="control-row">
+                <label>Início Col.</label>
+                <input type="number" min="1" max="12" value="${item.startCol}" class="input-startCol">
+              </div>
+            </div>
+
+            <div class="grid-inputs">
+              <div class="control-row">
+                <label>Col. Texto</label>
+                <input type="number" min="1" max="12" value="${item.txtCols}" class="input-txtCols">
+              </div>
+              <div class="control-row">
+                <label>Col. Imagem</label>
+                <input type="number" min="1" max="12" value="${item.imgCols}" class="input-imgCols">
+              </div>
+            </div>
+
+            <div class="control-row">
+              <label>Posição Imagem</label>
+              <select class="input-pos">
+                <option value="right" ${item.pos === 'right' ? 'selected' : ''}>À Direita</option>
+                <option value="left" ${item.pos === 'left' ? 'selected' : ''}>À Esquerda</option>
+                <option value="above" ${item.pos === 'above' ? 'selected' : ''}>Acima</option>
+                <option value="below" ${item.pos === 'below' ? 'selected' : ''}>Abaixo</option>
+              </select>
+            </div>
+
+            <div class="grid-inputs">
+              <div class="control-row">
+                <label>Tam. Título</label>
+                <input type="number" step="0.1" min="0.85" max="10" value="${item.titleSize}" class="input-titleSize">
+              </div>
+              <div class="control-row">
+                <label>Tam. Texto</label>
+                <input type="number" step="0.1" min="0.85" max="5" value="${item.descSize}" class="input-descSize">
+              </div>
+            </div>
+
+            <div class="control-row">
+              <label>URL da Imagem</label>
+              <input type="text" value="${item.url}" class="input-url">
+            </div>
+            <button class="panel-btn" style="background:#a00; margin-top:5px;" onclick="removeElement(${index})">Remover Evento</button>
+          </div>
+        `;
+      });
+
+      panel.innerHTML = panelHTML;
+      attachControlEvents(data);
+      attachPanelDragAndDrop();
+    }
+
+    function attachPanelDragAndDrop() {
+      const groups = panel.querySelectorAll('.control-group[data-event-id]');
+      let draggedCard = null;
+
+      groups.forEach(group => {
+        group.addEventListener('dragstart', (e) => {
+          draggedCard = group;
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        group.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+        });
+
+        group.addEventListener('drop', (e) => {
+          e.preventDefault();
+          if (draggedCard && draggedCard !== group) {
+            const allGroups = Array.from(panel.querySelectorAll('.control-group[data-event-id]'));
+            const draggedIdx = allGroups.indexOf(draggedCard);
+            const targetIdx = allGroups.indexOf(group);
+
+            if (draggedIdx < targetIdx) {
+              group.after(draggedCard);
+            } else {
+              group.before(draggedCard);
+            }
+          }
+        });
+      });
+    }
+
+    function removeElement(index) {
+      syncInlineTexts(initialEventsData);
+      initialEventsData.splice(index, 1);
+      renderApp(initialEventsData);
+    }
+
+    function syncInlineTexts(data) {
+      const rows = container.querySelectorAll('.event-row');
+      rows.forEach((rowDiv, index) => {
+        if (!data[index] || data[index].type === 'space') return;
+        const catEl = rowDiv.querySelector('.edit-cat');
+        const dateEl = rowDiv.querySelector('.edit-date');
+        const titleEl = rowDiv.querySelector('.edit-title');
+        const descEl = rowDiv.querySelector('.edit-desc');
+        const contentEl = rowDiv.querySelector('.edit-content');
+
+        if (catEl) data[index].category = catEl.innerText.trim();
+        if (dateEl) data[index].date = dateEl.innerText.trim();
+        if (titleEl) data[index].title = titleEl.innerText.trim();
+        if (descEl) data[index].desc = descEl.innerText;
+        if (contentEl) data[index].content = contentEl.innerText;
+      });
+    }
+
+    function attachControlEvents(data) {
+      const groups = panel.querySelectorAll('.control-group[data-event-id]');
+
+      groups.forEach(group => {
+        const index = parseInt(group.dataset.eventId);
+        if (!data[index]) return;
+
+        if (data[index].type === 'space') {
+          const rInput = group.querySelector('.input-row');
+          const sInput = group.querySelector('.input-startCol');
+          const wInput = group.querySelector('.input-txtCols');
+
+          const updateSpace = () => {
+            data[index].row = rInput.value;
+            data[index].startCol = sInput.value;
+            data[index].txtCols = wInput.value;
+            applyAllLayouts(data);
+          };
+          [rInput, sInput, wInput].forEach(inp => {
+            if(inp) inp.addEventListener('input', updateSpace);
+          });
+          return;
+        }
+        
+        const controls = {
+          row: group.querySelector('.input-row'),
+          startCol: group.querySelector('.input-startCol'),
+          txtCols: group.querySelector('.input-txtCols'),
+          imgCols: group.querySelector('.input-imgCols'),
+          pos: group.querySelector('.input-pos'),
+          titleSize: group.querySelector('.input-titleSize'),
+          descSize: group.querySelector('.input-descSize'),
+          url: group.querySelector('.input-url'),
+          lock: group.querySelector('.input-lock')
+        };
+
+        const updateItemFromDOM = () => {
+          data[index].row = controls.row.value;
+          data[index].startCol = controls.startCol.value;
+          data[index].txtCols = controls.txtCols.value;
+          data[index].imgCols = controls.imgCols.value;
+          data[index].pos = controls.pos.value;
+          data[index].titleSize = controls.titleSize.value;
+          data[index].descSize = controls.descSize.value;
+          data[index].url = controls.url.value;
+          data[index].locked = controls.lock.checked;
+          
+          applyAllLayouts(data);
+        };
+
+        Object.values(controls).forEach(input => {
+          if (input) {
+            input.addEventListener('input', updateItemFromDOM);
+            input.addEventListener('change', updateItemFromDOM);
+          }
+        });
+      });
+
+      // Sincronização Hover Color Picker
+      const hoverPicker = document.getElementById('hoverColorPicker');
+      const hoverText = document.getElementById('hoverColorText');
+      if (hoverPicker && hoverText) {
+        hoverPicker.addEventListener('input', (e) => {
+          hoverText.value = e.target.value;
+          document.documentElement.style.setProperty('--hover-bg', e.target.value);
+        });
+        hoverText.addEventListener('input', (e) => {
+          if (/^#[0-9A-F]{6}$/i.test(e.target.value)) {
+            hoverPicker.value = e.target.value;
+            document.documentElement.style.setProperty('--hover-bg', e.target.value);
+          }
+        });
+      }
+
+      // Sincronização Active Color Picker
+      const activePicker = document.getElementById('activeColorPicker');
+      const activeText = document.getElementById('activeColorText');
+      if (activePicker && activeText) {
+        activePicker.addEventListener('input', (e) => {
+          activeText.value = e.target.value;
+          document.documentElement.style.setProperty('--active-bg', e.target.value);
+        });
+        activeText.addEventListener('input', (e) => {
+          if (/^#[0-9A-F]{6}$/i.test(e.target.value)) {
+            activePicker.value = e.target.value;
+            document.documentElement.style.setProperty('--active-bg', e.target.value);
+          }
+        });
+      }
+
+      const applyGlobalBtn = document.getElementById('applyGlobalBtn');
+      if (applyGlobalBtn) {
+        applyGlobalBtn.addEventListener('click', () => {
+          syncInlineTexts(data);
+          const gTitle = document.getElementById('globalTitleSize').value;
+          const gDesc = document.getElementById('globalDescSize').value;
+
+          data.forEach((item) => {
+            if (item && item.type !== 'space' && !item.locked) {
+              item.titleSize = gTitle;
+              item.descSize = gDesc;
+            }
+          });
+          renderControlPanel(data);
+          applyAllLayouts(data);
+        });
+      }
+
+      const saveBtn = document.getElementById('saveBtn');
+      if (saveBtn) {
+        saveBtn.addEventListener('click', async () => {
+          syncInlineTexts(data);
+          const jsonString = JSON.stringify(data, null, 2);
+
+          if ('showSaveFilePicker' in window) {
+            try {
+              const handle = await window.showSaveFilePicker({
+                suggestedName: 'diagramacao_fonte.json',
+                types: [{ description: 'JSON Files', accept: { 'application/json': ['.json'] } }]
+              });
+              const writable = await handle.createWritable();
+              await writable.write(jsonString);
+              await writable.close();
+              return;
+            } catch (err) {
+              if (err.name !== 'AbortError') console.error(err);
+              return;
+            }
+          }
+
+          const blob = new Blob([jsonString], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'diagramacao_fonte.json';
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      }
+
+      const loadBtn = document.getElementById('loadBtn');
+
+      if (loadBtn && importFile) {
+        loadBtn.onclick = () => importFile.click();
+
+        importFile.onchange = (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            try {
+              processJSONData(JSON.parse(event.target.result));
+            } catch (err) {
+              console.error(err);
+            }
+          };
+          reader.readAsText(file);
+        };
+      }
+    }
+
+    document.getElementById('addEventBtn').addEventListener('click', () => {
+      syncInlineTexts(initialEventsData);
+      initialEventsData.push({
+        "row": String(initialEventsData.length + 1),
+        "startCol": "1", "txtCols": "4", "imgCols": "2", "pos": "right",
+        "titleSize": "1.75", "descSize": "1.45",
+        "url": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&q=80",
+        "category": "novo evento", "date": "data",
+        "title": "Novo Título", "desc": "Descrição...", "content": "Conteúdo...",
+        "locked": false, "type": "event"
+      });
+      renderApp(initialEventsData);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    });
+
+    document.getElementById('addSpaceBtn').addEventListener('click', () => {
+      syncInlineTexts(initialEventsData);
+      initialEventsData.push({
+        "row": String(initialEventsData.length + 1),
+        "startCol": "1",
+        "txtCols": "4",
+        "type": "space"
+      });
+      renderApp(initialEventsData);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    });
+
+    renderApp(initialEventsData);
+  </script>
+</body>
+</html>
