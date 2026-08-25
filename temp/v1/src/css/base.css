@@ -1,0 +1,58 @@
+:root {
+  --fs-hero: 2.8vw;
+  --fs-title: 1.5rem;
+  --fs-desc: 1.15rem;
+  --fs-nav: 0.95rem;
+  --fs-meta: 0.95rem;
+
+  --bg-page: #eefffe;
+  --bg-white: #ffffff;
+  --bg-black: #000000;
+  --hover-bg: #ccfffe;
+  --active-bg: #ffffff;
+  --border-color: #000000;
+
+  --h-menu: 32px;
+  --menu-gap: 8px;
+  --logo-top: 64px;
+  --logo-bottom-offset: 180px;
+  --section-spacing: 160px;
+  
+  --drawer-max-h: 80vh;
+  --img-max-h: calc(80vh * 0.8);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--bg-black);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utilitário para Esconder Scrollbars */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Grid Mestre de 12 Colunas */
+.grid-12-master {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+}
