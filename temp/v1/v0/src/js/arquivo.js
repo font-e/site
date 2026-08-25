@@ -61,7 +61,6 @@ function normalizeExhibitions(jsonItems) {
       autor_texto: item['AUDITORIA_AUTOR TEXTO'] ? item['AUDITORIA_AUTOR TEXTO'].trim() : '',
       visitacao: item.VISITACAO ? item.VISITACAO.trim() : '',
       resumo: item.RESUMO ? item.RESUMO.trim() : '',
-      disponivel: (item.DISPONIVEL && item.DISPONIVEL.trim().toUpperCase() === 'X'),
       images: galleryImages
     };
   });
@@ -255,17 +254,7 @@ function createDrawerElement(expo) {
   `).join('');
 
   const expandedImagesHtml = expo.images.map((imgUrl, idx) => `
-    <div class="drawer-expanded-item" data-index="${idx}">
-      <div class="drawer-expanded-img-wrap">
-        <img src="${imgUrl}" alt="${expo.titulo}" data-index="${idx}" onload="syncCaptionWidth(this)" onclick="closeExpandedGallery(event, this.closest('.drawer-expanded-overlay'))">
-      </div>
-      <div class="drawer-expanded-caption-row" onclick="event.stopPropagation()">
-        <div class="drawer-expanded-caption">
-          <div class="drawer-caption-text">${expo.titulo}</div>
-        </div>
-        ${expo.disponivel ? `<a href="https://www.artworkarchive.com/profile/fonte/artists" target="_blank" rel="noopener noreferrer" class="drawer-btn-disponivel" aria-label="Disponível" onclick="event.stopPropagation()">$</a>` : ''}
-      </div>
-    </div>
+    <img src="${imgUrl}" alt="${expo.titulo}" data-index="${idx}" onclick="closeExpandedGallery(event, this.closest('.drawer-expanded-overlay'))">
   `).join('');
 
   drawer.innerHTML = `
@@ -496,19 +485,6 @@ window.handleDrawerCloseClick = function(event, btnElement) {
   }
 };
 
-window.syncCaptionWidth = function(imgEl) {
-  if (!imgEl) return;
-  const item = imgEl.closest('.drawer-expanded-item');
-  if (!item) return;
-  const caption = item.querySelector('.drawer-expanded-caption');
-  const imgWrap = item.querySelector('.drawer-expanded-img-wrap');
-  const w = imgEl.getBoundingClientRect().width || imgEl.clientWidth;
-  if (w > 0) {
-    if (imgWrap) imgWrap.style.width = `${w}px`;
-    if (caption) caption.style.width = `${w}px`;
-  }
-};
-
 window.openExpandedGallery = function(event, triggerElement, imageIndex) {
   event.stopPropagation();
   const drawer = triggerElement.closest('.detail-drawer');
@@ -522,45 +498,15 @@ window.openExpandedGallery = function(event, triggerElement, imageIndex) {
   const targetImg = track.children[imageIndex];
   if (targetImg) track.scrollLeft = targetImg.offsetLeft - 60;
 
-  // Sincroniza larguras de legendas com as imagens
-  const syncAll = () => {
-    track.querySelectorAll('.drawer-expanded-item').forEach(item => {
-      const img = item.querySelector('img');
-      const caption = item.querySelector('.drawer-expanded-caption');
-      const imgWrap = item.querySelector('.drawer-expanded-img-wrap');
-      if (img) {
-        const w = img.getBoundingClientRect().width || img.clientWidth;
-        if (w > 0) {
-          if (imgWrap) imgWrap.style.width = `${w}px`;
-          if (caption) caption.style.width = `${w}px`;
-        }
-      }
-    });
-  };
-
-  syncAll();
-
   if (typeof gsap !== 'undefined') {
-    gsap.to(drawer, { height: '80vh', duration: 0.35, ease: 'power2.out', onUpdate: syncAll });
-    gsap.fromTo(overlay, { opacity: 0, scale: 0.99 }, { opacity: 1, scale: 1, duration: 0.25, ease: 'power2.out', onComplete: syncAll });
+    gsap.to(drawer, { height: '80vh', duration: 0.35, ease: 'power2.out' });
+    gsap.fromTo(overlay, { opacity: 0, scale: 0.99 }, { opacity: 1, scale: 1, duration: 0.25, ease: 'power2.out' });
   } else {
     drawer.style.height = '80vh';
     overlay.style.opacity = 1;
-    syncAll();
   }
-
-  const drawerTop = drawer.getBoundingClientRect().top + window.scrollY;
-  const headerEl = document.getElementById('table-header-container');
-  const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 34;
-  const targetScroll = Math.max(0, drawerTop - headerHeight);
-
-  window.scrollTo({
-    top: targetScroll,
-    behavior: 'smooth'
-  });
   
   setTimeout(() => {
-    syncAll();
     if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
     updateNavPhysics();
   }, 350);

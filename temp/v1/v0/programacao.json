@@ -1,0 +1,81 @@
+[
+  {
+    "subsection": "PRESENTE",
+    "events": [
+      {
+        "category": "exposição individual",
+        "date": "até 21.08",
+        "title": "Tudo que eu fizer, eu vou tentar melhor do que já fiz",
+        "desc": "Marcelo Amorim",
+        "content": "A individual de Marcelo Amorim investiga a tênue fronteira entre a alta cultura visual e a obsessão por colecionar imagens vernaculares enquanto repensa a própria trajetória às três da manhã no ateliê. Entre apropriações gráficas e uma pintura a óleo rigorosa, a mostra questiona: até onde vai a ambição artística antes do café esfriar?\n\nCom texto crítico que disseca o conceito do eterno retorno produtivo, o artista apresenta telas monumentais e pequenas séries onde cada pincelada parece reafirmar a promessa de que o próximo trabalho resolverá todos os dilemas da história da arte contemporânea.\n\nUma reflexão bem-humorada sobre perfeccionismo estético, a angústia da tela em branco e a obstinação de quem nunca aceita uma primeira versão como definitiva.",
+        "url": "https://font-e.github.io/site/temp/expo-1.jpg"
+      },
+      {
+        "category": "performance",
+        "date": "10.09",
+        "title": "A poética do movimento no espaço vazio",
+        "desc": "Coletivo Corpo, Greta Fausto & Rodrigo B.",
+        "content": "O trio propõe uma ocupação imersiva em que os performers investigam a densidade do ar em Pinheiros, as leis da gravidade e o sutil ruído dos copos de cerveja sendo apoiados nos parapeitos durante a noite de abertura.\n\nA ação parte de partituras coreográficas mínimas: caminhar milimetricamente devagar, encarar a parede branca com olhar de profunda reflexão fenomenológica e testar a resistência do público ao silêncio absoluto no galpão.\n\nRecomenda-se calçado confortável e mente aberta para a possibilidade real de você se tornar parte da obra ao tentar desviar de um performer deitado no piso de cimento queimado.",
+        "url": "https://font-e.github.io/site/temp/expo-3.jpg"
+      },
+      {
+        "category": "exposição coletiva",
+        "date": "até 03.09",
+        "title": "Romper a superfície é abrir um rio",
+        "desc": "Ana Thomé, Carol Ambrósio, Cynthia Loeb, David Santana, Fernanda Ballvé, Karina Walter, Luís Gasparian, Marina Godoy, Natalia Massi, Olívia Lacerda, Ósi, Sofia Skiarski Tegoshi",
+        "content": "Reunindo doze artistas de diferentes vertentes e temperaturas de ateliê, a mostra coletiva investiga a matéria, a tridimensionalidade e o milagre logístico de pendurar vinte e quatro obras em paredes compartilhadas sem nenhum desentendimento conceitual.\n\nEntre cerâmicas que desafiam o equilíbrio, instalações têxteis suspensas e gravuras em grande escala, o espaço da Fonte se transforma em um fluxo contínuo de experimentação visual onde cada recanto esconde uma provocação poética ou um diálogo formal imprevisto.\n\nUma celebração vibrante da produção contemporânea feita para quem aprecia debates acalorados na calçada da Mourato Coelho até o apagar das luzes.",
+        "url": "https://font-e.github.io/site/temp/expo-2.jpg"
+      }
+    ]
+  },
+  {
+    "subsection": "INSCRIÇÕES ABERTAS",
+    "events": [
+      {
+        "category": "curso",
+        "date": "até 25.09",
+        "title": "NÚCA #3",
+        "desc": "Núcleo de Compartilhamento Artístico (Coord. Equipe Fonte)",
+        "content": "Em sua terceira edição, o NÚCA consolida-se como o espaço oficial da Fonte para desmontar certezas, expor processos inacabados e receber aquele retorno crítico sincero que dói no ego mas salva a sua próxima individual.\n\nAo longo de quatro encontros imersivos, artistas e pesquisadores debatem portfólios, métodos de produção, redação de memoriais conceituais e estratégias práticas para responder à temida pergunta: 'afinal, qual é a pesquisa do seu trabalho?'.\n\nTraga seus cadernos de processo, seus rascunhos empoeirados e a disposição para reconstruir sua prática em um ambiente colaborativo. Café forte e acolhimento conceitual inclusos.",
+        "url": "https://font-e.github.io/site/temp/expo-4.jpg"
+      },
+      {
+        "category": "residência",
+        "date": "até 05.10",
+        "title": "Práticas de Ateliê Aberto",
+        "desc": "Programa de Residência Individual & Acompanhamento Crítico",
+        "content": "A convocatória anual seleciona artistas para três meses de imersão contínua em ateliês dedicados, longe das distrações domésticas e cercados pelo cheiro inconfundível de terebintina, gesso e serragem fresca.\n\nOs residentes contam com interlocução curatorial semanal, suporte de produção e o privilégio de debater angústias estéticas com artistas vizinhos que entendem exatamente o drama de esperar uma camada de tinta secar.\n\nO programa culmina em uma mostra pública de processos, integrando os participantes ao ecossistema cultural e às redes de formação crítica da plataforma.",
+        "url": "https://font-e.github.io/site/temp/expo-11.jpg"
+      },
+      {
+        "category": "ateliê aberto",
+        "date": "20.10",
+        "title": "Fonte jorrando",
+        "desc": "Pra tudo quanto é lado. Só vem, bem!",
+        "content": "O tradicional dia em que as portas dos módulos de trabalho são escancaradas, os cavaletes ficam à mostra e o público pode finalmente testemunhar como as obras nascem de verdade — com direito a respingos de tinta no piso e café passado na hora.\n\nUma oportunidade singular de conversar diretamente com os residentes, folhear cadernos de anotações, compreender os bastidores da criação e desfrutar do ambiente comunitário e acolhedor da casa.\n\nTraga os amigos, a curiosidade e o entusiasmo. A casa é aberta, os artistas estão a postos e a conversa não tem hora para terminar.",
+        "url": "https://font-e.github.io/site/temp/expo-5.jpg"
+      }
+    ]
+  },
+  {
+    "subsection": "PRÓXIMA",
+    "events": [
+      {
+        "category": "programa de vídeos",
+        "date": "15.10",
+        "title": "Teria sido na praia? M-E-D-O!",
+        "desc": "João Vieira",
+        "content": "Sessão especial dedicada à pesquisa audiovisual de João Vieira, transitando com fluidez entre o registro documental irônico, a ficção poética e aquela atmosfera misteriosa de imagens litorâneas em baixa resolução gravadas nos anos 2000.\n\nOs vídeos articulam memórias fragmentadas, imagens de arquivo e narrativas de suspense cotidiano que colocam o espectador em um ponto de equilíbrio instigante entre o riso nervoso e a contemplação estética.\n\nApós a exibição, haverá uma conversa descontraída com o artista sobre montagem, trilhas sonoras atmosféricas e os acasos que transformam gravações caseiras em poética visual.",
+        "url": "https://font-e.github.io/site/temp/expo-7.jpg"
+      },
+      {
+        "category": "oficina",
+        "date": "01.11",
+        "title": "Drink & Draw",
+        "desc": "Manguaçano e cantano e siguino a canção...",
+        "content": "Uma noite despretensiosa pensada para soltar o traço, desarmar o rigor acadêmico e desenhar modelo vivo com um copo na mão e boa trilha sonora de fundo.\n\nNão importa se você domina a proporção áurea renascentista ou se desenha bonecos de palito: a proposta é exercitar a observação direta, arriscar manchas com carvão e nanquim e redescobrir o prazer espontâneo de riscar o papel sem medo do erro.\n\nPranchetas e papéis fornecidos no local, bebidas geladas no balcão e poses dinâmicas para você passar a noite produzindo em ótima companhia.",
+        "url": "https://font-e.github.io/site/temp/expo-12.jpg"
+      }
+    ]
+  }
+]

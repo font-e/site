@@ -1,0 +1,186 @@
+/* =========================================
+   CENÁRIO 3D PERSISTENTE NO FUNDO
+   ========================================= */
+.cena-3d {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  perspective: 1200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.angulo-visao {
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(-30deg) translateX(15vw);
+}
+
+.parede-volume {
+  position: relative;
+  width: 50vw; height: 62.5vh; 
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.face {
+  position: absolute;
+  background-color: var(--bg-white); 
+  box-sizing: border-box;
+  border: none;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.frente, .costas { width: 50vw; height: 62.5vh; }
+.frente { transform: translateZ(25px); display: flex; align-items: center; justify-content: center; }
+.costas { transform: rotateY(180deg) translateZ(25px); }
+.esquerda, .direita { width: 50px; height: 62.5vh; top: 0; }
+.esquerda { left: -25px; transform: rotateY(-90deg); }
+.direita { right: -25px; transform: rotateY(90deg); }
+.topo, .base { width: 50vw; height: 50px; left: 0; }
+.topo { top: -25px; transform: rotateX(90deg); }
+.base { bottom: -25px; transform: rotateX(-90deg); }
+
+.texto-plotado {
+  color: color-mix(in srgb, #000000, #ccfffe 25%);
+  text-align: left;
+  font-size: var(--fs-hero); 
+  line-height: 1.1; 
+  font-weight: bold; 
+  will-change: opacity;
+  padding: 20px;
+}
+
+/* =========================================
+   LOGOTIPO DINÂMICO UNIFICADO
+   ========================================= */
+#logo-controller {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 300;
+  mix-blend-mode: difference;
+}
+
+.logo-hero-wrap {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+#site-logo {
+  position: absolute;
+  display: block;
+  width: auto;
+  pointer-events: auto;
+  cursor: pointer;
+  will-change: transform, width, height, top, left;
+}
+
+/* =========================================
+   BANNER DE INTRODUÇÃO DA PROGRAMAÇÃO
+   ========================================= */
+.intro-image-section {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.intro-lead-image {
+  grid-column: 3 / span 5;
+  width: 100%;
+  background-color: var(--hover-bg);
+  position: relative;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.intro-card-inner {
+  width: 100%; height: auto;
+  background-color: var(--hover-bg);
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
+.intro-card-inner img {
+  width: 100%; height: auto;
+  display: block;
+  filter: grayscale(100%) contrast(1.1) brightness(0.95);
+  mix-blend-mode: multiply;
+}
+
+.initial-spacer {
+  height: 142vh;
+  width: 100%;
+  position: relative;
+}
+
+/* =========================================
+   CAMADA DE NAVEGAÇÃO À ESQUERDA
+   ========================================= */
+#nav-layer {
+  position: fixed;
+  top: 0; left: 0; right: auto;
+  width: auto; height: 100vh;
+  pointer-events: none;
+  z-index: 250;
+}
+
+.menu-item-btn {
+  position: absolute;
+  top: 0; left: 0;
+  height: var(--h-menu);
+  background: var(--bg-black);
+  color: var(--bg-white);
+  font-weight: 500;
+  font-size: var(--fs-nav);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 15px;
+  cursor: pointer;
+  pointer-events: auto;
+  border: none;
+  will-change: transform;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.menu-item-btn:hover {
+  background-color: var(--bg-black);
+}
+
+.menu-item-btn.active {
+  color: #ccfffe;
+}
+
+/* =========================================
+   SEÇÕES ESTÁTICAS & FOOTER
+   ========================================= */
+#main-content {
+  position: relative;
+  z-index: 10;
+}
+
+.scroll-end-pad {
+  height: 90vh;
+  background: var(--bg-white);
+  display: flex;
+  align-items: flex-end;
+  padding: 30px 20px;
+  border-top: 2px solid var(--border-color);
+}
+
+.footer-stamp {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
