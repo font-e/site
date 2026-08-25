@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FONTE - Residência Artística</title>
+
+  <!-- CSS Modular -->
+  <link rel="stylesheet" href="./src/css/base.css">
+  <link rel="stylesheet" href="./src/css/nav-hero.css">
+  <link rel="stylesheet" href="./src/css/programacao.css">
+  <link rel="stylesheet" href="./src/css/arquivo.css">
+
+  <!-- Filtro SVG Duótono Preciso (#ccfffe nos tons claros) -->
+  <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true">
+    <filter id="duotone-cyan" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="
+        0.2126 0.7152 0.0722 0 0
+        0.2126 0.7152 0.0722 0 0
+        0.2126 0.7152 0.0722 0 0
+        0      0      0      1 0" result="gray" />
+      <feComponentTransfer in="gray">
+        <feFuncR type="table" tableValues="0 0.80" />
+        <feFuncG type="table" tableValues="0 1.00" />
+        <feFuncB type="table" tableValues="0 0.996" />
+      </feComponentTransfer>
+    </filter>
+  </svg>
+</head>
+<body>
+  <!-- 3D BACKGROUND -->
+  <div class="cena-3d" id="cena-3d-bg">
+    <div class="angulo-visao">
+      <div class="parede-volume" id="parede-3d">
+        <div class="face frente">
+          <div class="texto-plotado" id="texto-intro">
+            é uma plataforma <br> independente em São Paulo <br> dedicada ao fomento da arte <br>
+            contemporânea por meio de <br> exposições, residências, <br> cursos e práticas de ateliê.
+          </div>
+        </div>
+        <div class="face costas"></div>
+        <div class="face esquerda"></div>
+        <div class="face direita"></div>
+        <div class="face topo"></div>
+        <div class="face base"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGO -->
+  <div id="logo-controller">
+    <div class="logo-hero-wrap">
+      <a href="#top" title="FONTE - Início">
+        <img id="site-logo" src="https://www.font-e.org/content/logo_fonte_branco.png" alt="FONTE">
+      </a>
+    </div>
+  </div>
+
+  <!-- MENU ESQUERDO -->
+  <nav id="nav-layer" aria-label="Navegação Principal">
+    <button class="menu-item-btn" id="btn-prog" onclick="scrollToSection('sec-programacao')">programação</button>
+    <button class="menu-item-btn" id="btn-res" onclick="scrollToSection('sec-residencia')">residência</button>
+    <button class="menu-item-btn" id="btn-ate" onclick="scrollToSection('sec-ateliers')">ateliês</button>
+    <button class="menu-item-btn" id="btn-arq" onclick="scrollToSection('sec-arquivo')">arquivo</button>
+    <button class="menu-item-btn" id="btn-inf" onclick="scrollToSection('sec-info')">info</button>
+  </nav>
+
+  <!-- ESPAÇADOR INTRO -->
+  <div id="top" class="initial-spacer"></div>
+
+  <!-- BANNER INTRO -->
+  <div class="intro-image-section">
+    <div id="intro-lead-image" class="intro-lead-image">
+      <div class="intro-card-inner">
+        <img src="https://www.font-e.org/temp/expo-13.jpg" onerror="this.onerror=null; this.src='https://font-e.github.io/site/temp/expo-13.jpg'" alt="Exposição FONTE">
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main id="main-content">
+
+    <!-- PROGRAMAÇÃO -->
+    <section class="section-block" id="sec-programacao">
+      <div class="section-menu-slot"></div>
+      <div class="grid-12" id="programacao-grid-container">
+        <!-- Injetado via JS -->
+      </div>
+    </section>
+
+    <!-- RESIDÊNCIA -->
+    <div class="intro-image-section">
+      <div class="intro-lead-image">
+        <div class="intro-card-inner">
+          <img src="https://www.font-e.org/temp/evento-1.jpg" onerror="this.onerror=null; this.src='https://font-e.github.io/site/temp/evento-1.jpg'" alt="Residência Artística">
+        </div>
+      </div>
+    </div>
+    <section class="section-block" id="sec-residencia">
+      <div class="section-menu-slot"></div>
+      <div class="grid-12">
+        <div class="sub-header" style="grid-row: 1 / span 1;">
+          <div class="sub-header-inner" style="top: calc(var(--logo-bottom-offset) + 2 * var(--h-menu) + 1 * var(--menu-gap));">PROGRAMA</div>
+        </div>
+        <div class="text-box" style="grid-row: 1;" data-event="sec-res-item">
+          <div class="text-meta"><span>convocatória anual</span><span>2026 / 2027</span></div>
+          <h3 class="text-title">PROGRAMA DE RESIDÊNCIA ARTÍSTICA</h3>
+          <p class="text-desc">O programa de Residência Individual oferece espaço de ateliê imersivo e acompanhamento crítico continuado.</p>
+          <div class="expand-wrapper"><div class="expand-content"><p class="text-desc">Durante o período, o residente conta com interlocução curatorial semanal e suporte técnico.</p></div></div>
+          <button class="btn-plus">+</button>
+        </div>
+        <div class="img-col" style="grid-row: 1;" data-event="sec-res-item">
+          <img src="https://www.font-e.org/temp/residencia-1.jpg" alt="Programa de Residência Artística">
+        </div>
+      </div>
+    </section>
+
+    <!-- ATELIÊS -->
+    <div class="intro-image-section">
+      <div class="intro-lead-image">
+        <div class="intro-card-inner">
+          <img src="https://www.font-e.org/temp/espaco-1.jpg" onerror="this.onerror=null; this.src='https://font-e.github.io/site/temp/espaco-1.jpg'" alt="Espaços de Ateliê">
+        </div>
+      </div>
+    </div>
+    <section class="section-block" id="sec-ateliers">
+      <div class="section-menu-slot"></div>
+      <div class="grid-12">
+        <div class="sub-header" style="grid-row: 1 / span 1;">
+          <div class="sub-header-inner" style="top: calc(var(--logo-bottom-offset) + 3 * var(--h-menu) + 2 * var(--menu-gap));">ESPAÇOS</div>
+        </div>
+        <div class="text-box" style="grid-row: 1;" data-event="sec-ate-item">
+          <div class="text-meta"><span>infraestrutura</span><span>12 módulos</span></div>
+          <h3 class="text-title">ESPAÇOS DE PRODUÇÃO & CRIAÇÃO</h3>
+          <p class="text-desc">Ateliês projetados para acomodar pesquisas em diversas materialidades e portes.</p>
+          <div class="expand-wrapper"><div class="expand-content"><p class="text-desc">Infraestrutura compartilhada para marcenaria, fundição leve e mídias digitais.</p></div></div>
+          <button class="btn-plus">+</button>
+        </div>
+        <div class="img-col" style="grid-row: 1;" data-event="sec-ate-item">
+          <img src="https://font-e.github.io/site/temp/expo-5.jpg" alt="Espaços de Criação">
+        </div>
+      </div>
+    </section>
+
+    <!-- ARQUIVO DINÂMICO INTEGRADO -->
+    <div class="intro-image-section">
+      <div class="intro-lead-image">
+        <div class="intro-card-inner">
+          <img src="https://www.font-e.org/temp/obra-1.jpg" onerror="this.onerror=null; this.src='https://font-e.github.io/site/temp/obra-1.jpg'" alt="Arquivo e Acervo Histórico">
+        </div>
+      </div>
+    </div>
+    <section class="section-block" id="sec-arquivo">
+      <div class="section-menu-slot"></div>
+      <div class="grid-12">
+        <!-- Subseção Lateral: Busca e Filtros Sticky nas Colunas 1 e 2 -->
+        <div class="sub-header" style="grid-column: 1 / span 2;">
+          <div class="sub-header-inner archive-filter-sidebar" style="top: calc(var(--logo-bottom-offset) + 4 * var(--h-menu) + 3 * var(--menu-gap));">
+            <div class="search-input-wrap">
+              <input type="text" id="archive-search-input" class="search-input" onkeydown="if(event.key === 'Enter') executeSearch()" />
+              <button class="search-btn" onclick="executeSearch()" aria-label="Buscar">&#8250;</button>
+            </div>
+            <div id="search-tags-container" class="search-tags-container"></div>
+          </div>
+        </div>
+
+        <!-- Tabela Arquivo: Colunas 3 a 12 -->
+        <div class="table-container" style="grid-column: 3 / span 10;">
+          <div id="table-header-container"></div>
+          <div id="table-body-container"></div>
+          <div id="table-footer-container"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- INFO -->
+    <div class="intro-image-section">
+      <div class="intro-lead-image">
+        <div class="intro-card-inner">
+          <img src="https://www.font-e.org/temp/evento-2.jpg" onerror="this.onerror=null; this.src='https://font-e.github.io/site/temp/evento-2.jpg'" alt="Informações Institucionais">
+        </div>
+      </div>
+    </div>
+    <section class="section-block" id="sec-info">
+      <div class="section-menu-slot"></div>
+      <div class="grid-12">
+        <div class="sub-header" style="grid-row: 1 / span 1;">
+          <div class="sub-header-inner" style="top: calc(var(--logo-bottom-offset) + 5 * var(--h-menu) + 4 * var(--menu-gap));">CONTATO</div>
+        </div>
+        <div class="text-box" style="grid-row: 1;" data-event="sec-inf-item">
+          <div class="text-meta"><span>institucional</span><span>informações</span></div>
+          <h3 class="text-title">FONTE — RESIDÊNCIA ARTÍSTICA</h3>
+          <p class="text-desc">Espaço independente de experimentação, formação crítica e difusão.</p>
+          <div class="expand-wrapper open"><div class="expand-content"><p class="text-desc">Quarta a Sábado, 14h às 19h.<br>Rua Mourato Coelho, 757, SP.</p></div></div>
+        </div>
+        <div class="img-col" style="grid-row: 1;" data-event="sec-inf-item">
+          <img src="https://font-e.github.io/site/temp/expo-2.jpg" alt="Fachada Fonte">
+        </div>
+      </div>
+      
+      <!-- Fim de Scroll -->
+      <div class="scroll-end-pad">
+        <div class="footer-stamp">FONTE © 2026 — TODOS OS DIREITOS RESERVADOS.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <!-- JS Modular -->
+  <script type="module" src="./src/js/app.js"></script>
+</body>
+</html>
