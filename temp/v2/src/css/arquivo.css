@@ -1,0 +1,630 @@
+/* ==========================================================================
+   1. SUBSEÇÃO LATERAL: BUSCA E TAGS STICKY NAS COLUNAS 1 E 2
+   ========================================================================== */
+.archive-filter-sidebar {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+/* Input de Busca + Botão '›' */
+.search-input-wrap {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: var(--h-menu);
+  background: var(--bg-white);
+  box-sizing: border-box;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: var(--bg-white);
+  border: 2px solid var(--border-color);
+  border-right: none;
+  padding: 0 10px;
+  font-family: inherit;
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  outline: none;
+  color: var(--bg-black);
+  box-sizing: border-box;
+  transition: background-color 0.15s ease;
+}
+
+.search-input:focus {
+  background-color: var(--hover-bg);
+}
+
+.search-btn {
+  width: 32px;
+  height: 100%;
+  background: var(--bg-black);
+  color: var(--bg-white);
+  border: 2px solid var(--border-color);
+  padding: 0;
+  font-family: inherit;
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.search-btn:hover {
+  background-color: var(--hover-bg);
+  color: var(--bg-black);
+}
+
+/* Tags Cumulativas Verticais */
+.search-tags-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.search-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: var(--h-menu);
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+  padding: 0 10px;
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  border: 2px solid var(--border-color);
+  letter-spacing: 0.02em;
+  box-sizing: border-box;
+}
+
+.search-chip-close {
+  background: transparent;
+  border: none;
+  color: var(--bg-white);
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  font-size: 1.1rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.search-chip-close:hover {
+  color: #ccfffe;
+}
+
+/* ==========================================================================
+   2. TABELA DE ARQUIVO: CABEÇALHO STICKY NO TOPO (TOP: 0)
+   ========================================================================== */
+.table-container {
+  width: 100%;
+  border-top: 2px solid var(--border-color);
+  border-bottom: 2px solid var(--border-color);
+  border-left: 2px solid var(--border-color);
+  border-right: none;
+  margin-top: -2px;
+  background-color: transparent;
+  position: relative;
+}
+
+#table-header-container {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background-color: var(--bg-black);
+  width: 100%;
+}
+
+.header-row {
+  display: grid;
+  grid-template-columns: 3fr 3fr 1fr 3fr;
+  border-bottom: 2px solid var(--border-color);
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+  font-weight: 500;
+  font-size: var(--fs-meta);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  user-select: none;
+  width: 100%;
+}
+
+.th-cell {
+  height: var(--h-menu);
+  padding: 0 15px;
+  border-right: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  cursor: pointer;
+  color: var(--bg-white);
+  background-color: transparent;
+}
+
+.th-cell:last-child {
+  border-right: none;
+}
+
+.sort-indicator {
+  font-size: 0.8rem;
+  margin-left: 6px;
+}
+
+/* ==========================================================================
+   3. DROPDOWN DE FILTROS COM SCROLLBAR PERSONALIZADA
+   ========================================================================== */
+.filter-dropdown {
+  position: absolute;
+  top: 100%;
+  left: -2px;
+  min-width: calc(100% + 4px);
+  background-color: var(--bg-white);
+  color: var(--bg-black);
+  border: 2px solid var(--border-color);
+  border-top: none;
+  z-index: 60;
+  display: none;
+  flex-direction: column;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  max-height: 240px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg-black) #e2e8f0;
+}
+
+.filter-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+.filter-dropdown::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+.filter-dropdown::-webkit-scrollbar-thumb {
+  background: var(--bg-black);
+}
+
+.filter-dropdown.show {
+  display: flex;
+}
+
+.filter-option {
+  padding: 8px 12px;
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  text-transform: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  color: var(--bg-black);
+  transition: background-color 0.15s ease;
+  text-align: left;
+}
+
+.filter-option:last-child {
+  border-bottom: none;
+}
+
+.filter-option:hover {
+  background-color: var(--hover-bg);
+}
+
+.filter-option.selected {
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   4. CORPO DA TABELA: LINHAS E CÉLULAS
+   ========================================================================== */
+#table-body-container {
+  width: 100%;
+  background-color: transparent;
+  position: relative;
+}
+
+.empty-state-row {
+  width: 100%;
+  padding: 50px 20px;
+  text-align: center;
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  color: var(--bg-black);
+  background-color: var(--bg-white);
+}
+
+/* Linha de Exposição (3fr Título | 3fr Artistas | 1fr Ano | 3fr Tipo) */
+.expo-group-row {
+  width: 100%;
+  border-bottom: 2px solid var(--border-color);
+  background-color: transparent;
+}
+
+.expo-group-row:last-child {
+  border-bottom: none;
+}
+
+.expo-item-clickable {
+  display: grid;
+  grid-template-columns: 3fr 3fr 1fr 3fr;
+  cursor: pointer;
+  min-height: var(--h-menu);
+  align-items: stretch;
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+}
+
+/* Células: Alinhamento ao topo para quebras de linha uniformes */
+.cell {
+  padding: 8px 15px;
+  min-height: var(--h-menu);
+  border-right: 2px solid var(--border-color);
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  line-height: 1.35;
+  display: flex;
+  align-items: flex-start;
+  word-break: break-word;
+}
+
+.cell:last-child {
+  border-right: none;
+}
+
+.expo-item-clickable:hover {
+  background-color: var(--hover-bg);
+}
+
+.expo-group-row.is-open > .expo-item-clickable {
+  background-color: var(--hover-bg) !important;
+  border-bottom: 2px solid var(--border-color);
+}
+
+/* ==========================================================================
+   5. GAVETA DE DETALHES (DRAWER) - ALINHAMENTO EXATO COM A COLUNA ANO
+   ========================================================================== */
+.detail-drawer {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  background-color: var(--bg-white);
+  border-top: none;
+  position: relative;
+}
+
+.drawer-close-btn {
+  position: absolute;
+  top: 22px;
+  left: 18px;
+  background: transparent;
+  border: none;
+  color: var(--bg-black);
+  font-family: Arial, sans-serif;
+  font-size: 2.2rem;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 50;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.drawer-close-btn:hover {
+  color: var(--hover-bg);
+}
+
+/* Grid da Gaveta: 6fr Texto (Título 3fr + Artistas 3fr) | 4fr Galeria (Ano 1fr + Tipo 3fr) */
+.drawer-grid-expo {
+  display: grid;
+  grid-template-columns: 6fr 4fr;
+  height: 100%;
+  max-height: var(--drawer-max-h);
+  align-items: stretch;
+}
+
+.drawer-grid-artist {
+  display: grid;
+  grid-template-columns: 6fr 4fr;
+  height: 100%;
+  max-height: var(--drawer-max-h);
+  align-items: stretch;
+}
+
+.drawer-info-content {
+  padding: 24px 54px 24px 54px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: var(--drawer-max-h);
+  overflow-y: auto;
+  background-color: var(--bg-white);
+}
+
+.drawer-title {
+  font-size: var(--fs-title);
+  font-weight: bold;
+  line-height: 1.15;
+}
+
+.drawer-meta {
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+  padding-bottom: 10px;
+}
+
+.drawer-meta strong {
+  font-weight: bold;
+}
+
+.drawer-desc {
+  font-size: var(--fs-desc);
+  font-weight: 400;
+  line-height: 1.35;
+  white-space: pre-line;
+  margin-top: 6px;
+}
+
+/* Galeria Lateral: Alinhada exatamente à esquerda da 7ª fração (Coluna ANO) */
+.drawer-gallery-lateral {
+  width: calc(100% + 2px);
+  margin-left: -1px;
+  border: none;
+  max-height: var(--drawer-max-h);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 0;
+  background-color: var(--bg-white);
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.drawer-img-wrap {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  flex-shrink: 0;
+  background-color: transparent;
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.drawer-img-wrap img {
+  width: 100%;
+  height: auto;
+  max-height: var(--img-max-h);
+  object-fit: contain;
+  object-position: left top;
+  display: block;
+  border: none;
+  transition: filter 0.2s ease;
+}
+
+.drawer-img-wrap:hover img {
+  filter: url(#duotone-cyan) contrast(1.05);
+}
+
+/* ==========================================================================
+   6. PAGINAÇÃO (ABAIXO DA COLUNA DE TÍTULO)
+   ========================================================================== */
+#table-footer-container {
+  width: 100%;
+  border-top: 2px solid var(--border-color);
+  background-color: transparent;
+}
+
+.table-pagination-row {
+  display: grid;
+  grid-template-columns: 3fr 3fr 1fr 3fr;
+  width: 100%;
+  background: transparent;
+}
+
+.pagination-box {
+  grid-column: 1 / span 1;
+  height: var(--h-menu);
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+  border-right: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: var(--fs-meta);
+  font-weight: 500;
+}
+
+.pagination-btn {
+  background: transparent;
+  border: none;
+  color: var(--bg-white);
+  font-family: inherit;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 100%;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+.pagination-btn:hover:not(.disabled) {
+  color: #ccfffe;
+}
+
+.pagination-btn.disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.pagination-info {
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   7. MODO ZOOM / GALERIA EXPANDIDA COM LINHA DUPLA DE LEGENDAS
+   ========================================================================== */
+.drawer-expanded-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-white);
+  border: none;
+  z-index: 40;
+  display: none;
+  opacity: 0;
+  align-items: stretch;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.drawer-expanded-track {
+  display: flex;
+  flex-direction: row;
+  gap: 64px;
+  height: 100%;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-items: stretch;
+  padding-left: 60px;
+  padding-right: 20px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.drawer-expanded-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-shrink: 0;
+  width: fit-content;
+  align-items: stretch;
+  cursor: default;
+}
+
+.drawer-expanded-img-wrap {
+  height: calc(100% - calc(var(--h-menu) * 2));
+  width: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow: hidden;
+  background: transparent;
+}
+
+.drawer-expanded-img-wrap img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  object-position: left top;
+  display: block;
+  cursor: pointer;
+}
+
+.drawer-expanded-caption-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+}
+
+/* Linha de legenda: altura dupla (2 linhas de tabela = 64px), fundo branco, texto preto e padding idêntico à tabela, sem bordas adicionais */
+.drawer-expanded-caption {
+  height: calc(var(--h-menu) * 3);
+  min-height: calc(var(--h-menu) * 3);
+  max-height: calc(var(--h-menu) * 3);
+  width: 100%;
+  background-color: var(--bg-white);
+  color: var(--bg-black);
+  border-left: 2px solid var(--bg-black);
+  border-top: 2px solid var(--bg-black);
+  padding: 8px 15px;
+  font-size: var(--fs-meta);
+  line-height: 1.35;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+  box-sizing: border-box;
+  overflow: hidden;
+  word-break: break-word;
+  cursor: default;
+}
+
+.drawer-caption-text {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Botão DISPONÍVEL: quadrado, altura da drawer-expanded-caption, sem bordas, fundo #ccfffe e texto preto, hover fundo preto e texto branco */
+.drawer-btn-disponivel {
+  width: calc(var(--h-menu) * 1.5);
+  min-width: calc(var(--h-menu) * 1.5);
+  max-width: calc(var(--h-menu) * 1.5);
+  height: calc(var(--h-menu) * 3);
+  min-height: calc(var(--h-menu) * 3);
+  max-height: calc(var(--h-menu) * 3);
+  background-color: #ccfffe;
+  color: var(--bg-black);
+  border: 2px solid var(--bg-black);
+  border-left: none;
+  border-bottom: none;
+  font-family: inherit;
+  font-size: var(--fs-title);
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+  margin:0;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.drawer-btn-disponivel:hover {
+  background-color: var(--bg-black);
+  border: 2px solid var(--bg-black);
+  border-bottom: none;
+  color: var(--bg-white);
+}
