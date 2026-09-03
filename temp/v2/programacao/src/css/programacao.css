@@ -14,27 +14,6 @@
   border-bottom: 1.5px solid var(--border-color);
 }
 
-/* Título de Seção */
-.programacao-title-wrap {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  padding-bottom: 12px;
-  box-sizing: border-box;
-}
-
-.programacao-section-title {
-  grid-column: 1 / -1;
-  font-size: var(--fs-title);
-  font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.025em;
-  color: var(--bg-black);
-  text-transform: lowercase;
-  margin: 0;
-  padding: 0 20px;
-}
-
 /* Barra superior de categorias/filtro estilo agenda */
 .programacao-filter-bar {
   display: flex;
@@ -61,7 +40,6 @@
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
-  font-family: inherit;
 }
 
 .filter-pill:hover {
@@ -86,9 +64,9 @@
   transition: opacity 0.2s ease, background-color 0.2s ease;
 }
 
-/* Quando houver hover sobre um evento fechado, os demais eventos recebem opacidade 0.6 */
+/* Quando houver hover sobre um evento fechado, os demais eventos recebem opacidade 0.5 */
 .events-list:has(.event-item:not(.is-open):hover) .event-item:not(:hover) {
-  opacity: 0.6;
+    opacity: 0.6;
 }
 
 .event-item:hover {
@@ -178,7 +156,6 @@
   line-height: 1.2;
   transition: all 0.2s ease;
   white-space: nowrap;
-  font-family: inherit;
 }
 
 /* Título Gigante Logo Abaixo (11 colunas) */
@@ -186,6 +163,7 @@
   margin-bottom: 8px;
   line-height: 0.95;
   max-width: calc(100% * 11 / 12);
+  
 }
 
 .event-title-text {
@@ -223,7 +201,7 @@
 }
 
 /* =========================================
-   GAVETA EXPANSÍVEL (ABERTA: 8 COLS TEXTO / 4 COLS IMAGEM)
+   GAVETA EXPANSÍVEL (ABERTA: 7 COLS TEXTO / 5 COLS IMAGEM)
    ========================================= */
 .event-drawer {
   width: 100%;
@@ -394,7 +372,6 @@
     display: none !important;
   }
 }
-
 @media (max-width: 860px) {
   .event-drawer-grid {
     grid-template-columns: 1fr;
@@ -435,3 +412,5 @@
     padding: 10px 16px;
   }
 }
+
+

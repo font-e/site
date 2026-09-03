@@ -18,17 +18,7 @@ export function loadProgramacao() {
   updateHeaderHeight();
   window.addEventListener('resize', updateHeaderHeight);
 
-  // Tenta múltiplos caminhos para garantir carregamento tanto em dev server quanto estático
-  const fetchUrl = './programacao.json';
-
-  return fetch(fetchUrl)
-    .then(response => {
-      if (!response.ok) {
-        // Tenta fallback na raiz ou pasta public
-        return fetch('/programacao.json');
-      }
-      return response;
-    })
+  return fetch('./programacao.json')
     .then(response => {
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       return response.json();
@@ -46,7 +36,7 @@ function renderEmptyState() {
   const container = document.getElementById('programacao-grid-container');
   if (!container) return;
   container.innerHTML = `
-    <div class="empty-state" style="padding: 48px 20px; font-size: var(--fs-meta); border-top: var(--border-width) solid var(--border-color); text-transform: uppercase; letter-spacing: 0.05em;">
+    <div class="empty-state" style="padding: 40px 20px; font-size: var(--fs-meta); border-top: 2px solid var(--border-color);">
       Nenhum evento programado no momento.
     </div>
   `;
@@ -92,6 +82,8 @@ function renderProgramacao(data) {
   const eventsList = document.createElement('div');
   eventsList.className = 'events-list';
   eventsList.id = 'events-list';
+
+  let eventCounter = 0;
 
   data.forEach((group, groupIdx) => {
     group.events.forEach((event, eventIdx) => {
@@ -140,7 +132,7 @@ function renderProgramacao(data) {
                   <button type="button" class="event-drawer-pill" data-section="mapa_exposicao">Mapa de exposição</button>
                   <button type="button" class="event-drawer-pill" data-section="eventos_relacionados">Eventos relacionados</button>
                 </div>
-                <button type="button" class="event-drawer-pill event-drawer-close-btn" aria-label="Fechar gaveta">✕</button>
+                <button type="button" class="event-drawer-pill event-drawer-close-btn" aria-label="Fechar gaveta">X</button>
               </div>
               <div class="event-drawer-text">
                 <p class="event-content-body">${event.content || event.sobre || ''}</p>
@@ -154,6 +146,7 @@ function renderProgramacao(data) {
       `;
 
       eventsList.appendChild(item);
+      eventCounter++;
     });
   });
 
@@ -291,6 +284,8 @@ function filterEvents(category) {
 
 /**
  * Vincula as interações do acordeão tipográfico
+ * - Abre ao clicar em qualquer lugar do item fechado
+ * - Fecha ao clicar na área do título/cabeçalho
  */
 function attachDrawerInteractions() {
   const items = document.querySelectorAll('.event-item');
@@ -299,6 +294,7 @@ function attachDrawerInteractions() {
     const header = item.querySelector('.event-header');
     const titleElements = item.querySelectorAll('.event-title-text, .event-subtitle-text');
 
+    // Mouseover / Mousemove especificamente sobre o texto exato do título e subtítulo (se ativado)
     if (ENABLE_HOVER_PREVIEW) {
       titleElements.forEach(el => {
         el.addEventListener('mouseenter', () => {
@@ -323,16 +319,19 @@ function attachDrawerInteractions() {
       const currentState = item.dataset.state;
 
       if (currentState === 'closed') {
+        // Clicar em qualquer lugar do evento fechado abre a gaveta
         hideHoverImage(true);
         openDrawer(item);
       } else if (currentState === 'open') {
         const closeBtn = e.target.closest('.event-drawer-close-btn');
+        // Clicar no botão ✖ ou na área do título/cabeçalho fecha a gaveta
         if (closeBtn || (header && (header.contains(e.target) || e.target === header))) {
           closeDrawer(item);
         }
       }
     });
 
+    // Acessibilidade via teclado (Enter / Espaço no cabeçalho)
     if (header) {
       header.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -350,7 +349,7 @@ function attachDrawerInteractions() {
 }
 
 /**
- * Abre a gaveta tipográfica com animação GSAP
+ * Abre a gaveta tipográfica com animação GSAP fluida
  */
 function openDrawer(item, animate = true) {
   const drawer = item.querySelector('.event-drawer');
@@ -436,3 +435,4 @@ function closeDrawer(item, animate = true) {
     if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
   }
 }
+

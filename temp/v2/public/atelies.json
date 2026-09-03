@@ -1,0 +1,110 @@
+[
+  {
+    "id": "marcelo-amorim",
+    "nome": "Marcelo Amorim",
+    "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/david-balica/5b1898b685-1788370453/david_balica-1400x1400-q82.webp",
+    "sobre": "Marcelo Amorim desenvolve pesquisas visuais que tensionam as noções de arquivo, memória histórica e apropriação de imagens de circulação pedagógica e popular. Seu trabalho desdobra-se principalmente na pintura, no desenho e em intervenções editoriais.",
+    "pesquisa": "Investigação sobre manuais de instrução, registros escolares e fotografias do século XX, desconstruindo discursos normativos através de sobreposições cromáticas e apagamentos deliberados no plano pictórico.",
+    "obras": "Séries recentes 'Instruções de Uso', 'Gramática Visual' e instalações compostas no espaço do Ateliê.",
+    "links": {
+      "instagram": "@marceloamorim_art",
+      "portfolio": "marceloamorim.com"
+    }
+  },
+  {
+    "id": "osi",
+    "nome": "Ósi",
+    "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/amauri/f69f4196c7-1788370346/amauri-1400x1400-q82.webp",
+    "sobre": "Ósi atua na intersecção entre matéria bruta, peso e arquitetura vernacular. Sua produção articula madeira, ferro e terra crua em composições tridimensionais que desafiam o equilíbrio e a gravidade.",
+    "pesquisa": "Estudo de estruturas portantes e tensões mínimas, investigando como volumes materiais respondem à passagem do tempo e à luz incidida no espaço expositivo.",
+    "obras": "Instalações escultóricas modulares, relevos de parede e experimentos com fundição.",
+    "links": {
+      "instagram": "@osi.estudio",
+      "portfolio": "osi-studio.org"
+    }
+  },
+  {
+    "id": "luah-souza",
+    "nome": "Luah Souza",
+    "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/juliana-cerqueira-leite/afdf16b1f5-1788370288/juliana_cerqueira_leite-1400x1400-q82.webp",
+    "sobre": "Luah Souza investiga a trama têxtil enquanto corpo, território e linguagem ancestral. Utiliza fibras naturais, tingimentos vegetais e técnicas manuais para construir ambientes imersivos que dialogam com a memória sensorial.",
+    "pesquisa": "Coleta e catalogação de pigmentos botânicos urbanos, mapeando tonalidades e texturas criadas pelo entrelaçamento de fios com materiais residuais da cidade.",
+    "obras": "Painéis têxteis de grande escala e intervenções no espaço arquitetônico da FONTE.",
+    "links": {
+      "instagram": "@luahsouza.arte",
+      "portfolio": "luahsouza.com"
+    }
+  },
+  {
+    "id": "caio-borges",
+    "nome": "Caio Borges",
+    "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/daniel-toledo/24888aab92-1788370040/daniel-toledo-1400x1400-q82.webp",
+    "sobre": "Caio Borges opera com o grafite, a litografia e a monotipia em processos de alta repetição gestual. Seu trabalho constrói paisagens abstratas densas onde o acúmulo de linhas gera campos vibrantes de escuridão e luminosidade.",
+    "pesquisa": "Saturação do suporte de papel por meio de camadas densas de carbono e solventes industriais, criando variações táteis e profundidades ópticas.",
+    "obras": "Série de polípticos em grande formato e cadernos de processo.",
+    "links": {
+      "instagram": "@caioborges.studio",
+      "portfolio": "caioborges.art"
+    }
+  },
+  {
+    "id": "gustavo-prata",
+    "nome": "Gustavo Prata",
+    "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/ze-tepedino/d29cf290e7-1788370199/ze_tepedino_3-1400x1400-q82.webp",
+    "sobre": "Gustavo Prata trabalha no limite entre o registro documental e a ficção visual. Suas fotografias investigam a obsolescência da paisagem urbana, ruínas arquitetônicas e os vestígios da atividade humana nos centros metropolitanos.",
+    "pesquisa": "Processamento analógico em câmara escura, experimentos de solarização e impressão direta sobre suportes reflexivos e metálicos.",
+    "obras": "Instalações com caixas de luz, projeções lentas e publicações fotográficas autônomas.",
+    "links": {
+      "instagram": "@gustavoprata_foto",
+      "portfolio": "gustavoprata.com.br"
+    }
+  },
+  {
+    "id": "charlles-cunha",
+    "nome": "Charlles Cunha",
+    "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/wolfram-ullrich/fe7040531a-1788369709/wolfram-ulrich-1400x1400-q82.webp",
+    "sobre": "Charlles Cunha explora a geometria concreta, o ritmo óptico e a interação fenomenológica da cor. Suas pinturas sobre linho e madeira utilizam camadas rigorosas de tinta vinílica para provocar ilusões de profundidade e movimento.",
+    "pesquisa": "Estudo das teorias da cor de Josef Albers aplicadas a suportes poligonais não-ortogonais e estruturas em relevo.",
+    "obras": "Composições em planos modulados, dípticos angulares e relevos acrílicos.",
+    "links": {
+      "instagram": "@charlles.cunha",
+      "portfolio": "charllescunha.art"
+    }
+  },
+  {
+    "id": "nicole-kouts",
+    "nome": "Nicole Kouts",
+    "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-1-edicao/71bc8ece82-1788368976/img_9982-1400x1400-q82.webp",
+    "sobre": "Nicole Kouts combina cerâmica de alta temperatura, resinas e elementos biológicos em esculturas orgânicas. Sua obra aborda a fragilidade dos corpos, processos de cura e a metamorfose da matéria viva.",
+    "pesquisa": "Queimas experimentais de argila com inclusão de minerais e cinzas vegetais, investigando a tensão entre fragilidade e rigidez estrutural.",
+    "obras": "Agrupamentos escultóricos, objetos biomórficos e experimentos táteis.",
+    "links": {
+      "instagram": "@nicolekouts",
+      "portfolio": "nicolekouts.com"
+    }
+  },
+  {
+    "id": "nina-lins",
+    "nome": "Nina Lins",
+    "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/ana-pi/518a8da9f4-1788369412/img_7662-1400x1400-q82.webp",
+    "sobre": "Nina Lins articula o corpo feminino em ação com dispositivos sonoros e captura audiovisual de baixa resolução. Seus trabalhos investigam a repetição gestual, o cansaço e a temporalidade dilatada em ambientes controlados.",
+    "pesquisa": "Gravações performáticas em circuito fechado de vídeo, composições eletroacústicas e partituras coreográficas para o espaço da FONTE.",
+    "obras": "Vídeo-instalações multicanal, registros sonoros e partituras de ação.",
+    "links": {
+      "instagram": "@ninalins.corpo",
+      "portfolio": "ninalins.art"
+    }
+  },
+  {
+    "id": "pedro-gallego",
+    "nome": "Pedro Gallego",
+    "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/giulia-damiani/6046e27781-1788397645/img_1424-1400x1400-q82.webp",
+    "sobre": "Pedro Gallego pesquisa sistemas diagramáticos, tipografia de grande porte e a relação física entre pintura e suporte arquitetônico. Desenvolve obras que articulam o rigor do design suíço com a gestualidade contemporânea.",
+    "pesquisa": "Investigação sobre grades de 12 colunas, descontinuidades espaciais e a materialidade da tinta acrílica e spray sobre suportes industriais e telas expandidas.",
+    "obras": "Pinturas de escala monumental, intervenções murais e diagramas espaciais.",
+    "links": {
+      "instagram": "@pedrogallego_",
+      "portfolio": "pedrogallego.com"
+    }
+  }
+]
