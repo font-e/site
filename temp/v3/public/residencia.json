@@ -1,0 +1,276 @@
+{
+  "institucional": {
+    "titulo": "residência foNTE",
+    "subtitulo": "Pesquisa autodirigida e suporte curatorial em um ambiente intelectualmente estimulante gerido por artistas.",
+    "declaracao": "foNTE é uma plataforma independente no coração de Pinheiros, São Paulo, dedicada ao fomento da arte contemporânea por meio de residências artísticas, ateliês permanentes, cursos e programas públicos. Atuamos no epicentro da produção contemporânea brasileira e internacional, focados na profissionalização do artista, no aprofundamento das pesquisas processuais e no fortalecimento de redes horizontais de colaboração.",
+    "direcao": "Marcelo Amorim e Ósi Magalhães",
+    "localizacao": {
+      "endereco": "R. Mourato Coelho, 751 - Pinheiros, São Paulo - SP",
+      "cep": "05417-011",
+      "horario": "Terça a sábado, 14h – 19h",
+      "contato": "residencia@font-e.org",
+      "whatsapp": "+55 (11) 93344-1976"
+    }
+  },
+  "pilares": [
+    {
+      "id": "autonomia",
+      "numero": "01",
+      "titulo": "Pesquisa Autodirigida",
+      "descricao": "Espaço de imersão total livre de pressões comerciais, permitindo que cada residente investigue métodos, falhas produtivas e novos suportes em seu próprio tempo poético."
+    },
+    {
+      "id": "curadoria",
+      "numero": "02",
+      "titulo": "Acompanhamento Crítico",
+      "descricao": "Sessões individuais e em grupo de interlocução com curadores, críticos, pesquisadores e artistas convidados da cena paulistana e internacional."
+    },
+    {
+      "id": "comunidade",
+      "numero": "03",
+      "titulo": "Convivência & Intercâmbio",
+      "descricao": "Troca cotidiana com os 8 artistas dos ateliês permanentes do foNTE e integração com a intensa dinâmica cultural de Pinheiros e da cidade de São Paulo."
+    },
+    {
+      "id": "difusao",
+      "numero": "04",
+      "titulo": "Open Studios & Difusão",
+      "descricao": "Abertura pública dos ateliês ao final do ciclo de residência, articulando encontros com galeristas, colecionadores, curadores institucionais e o público em geral."
+    }
+  ],
+  "modalidades": [
+    {
+      "id": "individual",
+      "codigo": "MOD.01",
+      "nome": "Investigação Individual",
+      "duracao": "1 a 3 meses",
+      "resumo": "Foco exclusivo em pesquisas poéticas e inserção na cena local através de nossa rede de colaboradores.",
+      "descricao": "Programa imersivo destinado a artistas visuais, pesquisadores e curadores que necessitam de ateliê dedicado e acompanhamento próximo para desenvolvimento de corpo de trabalho inédito ou projeto de pesquisa específico. Inclui acesso integral 24/7 às dependências, estúdio individual climatizado com luz natural e acompanhamento curatorial quinzenal.",
+      "destaques": [
+        "Ateliê privativo de trabalho",
+        "Interlocução curatorial contínua",
+        "Visitas guiadas a ateliês e instituições de SP",
+        "Open Studio individual ou em dupla"
+      ]
+    },
+    {
+      "id": "coletiva",
+      "codigo": "MOD.02",
+      "nome": "Residência Coletiva",
+      "duracao": "4 a 8 semanas",
+      "resumo": "Imersão em grupo, acompanhamento crítico continuado e mostra Open Studio final.",
+      "descricao": "Voltada para grupos ou artistas selecionados em conjunto para experienciar um convívio intensivo. Focado no atrito fértil de poéticas, realização de seminários internos, leituras coletivas e produção de obras em diálogo, culminando em exposição coletiva de processos no cubo branco do foNTE.",
+      "destaques": [
+        "Dinâmica de co-criação e debates semanais",
+        "Workshops técnicos e teóricos com convidados",
+        "Produção de publicação / zine de registro coletivo",
+        "Grande mostra final de ateliês abertos"
+      ]
+    },
+    {
+      "id": "institucional",
+      "codigo": "MOD.03",
+      "nome": "Parceria Institucional & Prêmios",
+      "duracao": "Sob edital / 1 a 6 meses",
+      "resumo": "Editais especiais, bienais e programas de intercâmbio (ex: Prêmio EDP, parcerias internacionais).",
+      "descricao": "Convênios com fundações, prêmios de arte contemporânea, embaixadas e instituições culturais de outros estados e países para acolher artistas laureados em São Paulo com suporte logístico, hospedagem indicada e imersão qualificada na capital paulista.",
+      "destaques": [
+        "Acolhimento institucional estruturado",
+        "Articulação de visitas curatoriais de ponta",
+        "Suporte em produção e montagem expositiva",
+        "Conexão com acervos e bienais em São Paulo"
+      ]
+    },
+    {
+      "id": "ocupacao",
+      "codigo": "MOD.04",
+      "nome": "Ocupação Live & Cubo Branco",
+      "duracao": "2 a 4 semanas",
+      "resumo": "Ações processuais de longa duração, performance e intervenções no espaço expositivo.",
+      "descricao": "Modalidade experimental em que o cubo branco da galeria é transformado em ateliê aberto e laboratório público. O público acompanha o desenvolvimento da obra em tempo real através de ateliê vitrine, ensaios abertos, performances contínuas e conversas com o artista.",
+      "destaques": [
+        "Transformação da galeria em espaço processual",
+        "Interação direta com o público visitante",
+        "Registro audiovisual e difusão transmídia",
+        "Performance ou instalação efêmera no encerramento"
+      ]
+    }
+  ],
+  "infraestrutura": [
+    {
+      "item": "Espaço Físico",
+      "detalhes": "Ateliês com pé-direito generoso, iluminação natural zenital e artificial ajustável, bancadas industriais e pisos laváveis."
+    },
+    {
+      "item": "Acesso e Segurança",
+      "detalhes": "Acesso irrestrito 24 horas por dia, 7 dias por semana, com fechadura eletrônica, alarme e monitoramento."
+    },
+    {
+      "item": "Oficinas e Ferramentas",
+      "detalhes": "Acesso ao espaço de cerâmica supervisionado por Ósi Magalhães, maquinário básico de marcenaria e ferramentas de montagem."
+    },
+    {
+      "item": "Áreas Comuns",
+      "detalhes": "Cozinha completa compartilhada, pátio interno, biblioteca de arte contemporânea e internet fibra ótica de alta velocidade."
+    },
+    {
+      "item": "Localização Privilegiada",
+      "detalhes": "Bairro de Pinheiros, a passos de galerias, museus (Instituto Tomie Ohtake, MIS, MASP), metrô e fornecedores especializados de materiais artísticos."
+    }
+  ],
+  "candidatura": {
+    "titulo": "Inscrições e Candidaturas",
+    "chamada": "O foNTE opera sob regime de fluxo contínuo para avaliação de propostas individuais e lança chamadas públicas específicas (Open Calls) ao longo do ano.",
+    "requisitos": [
+      "Portfólio em PDF com até 15 trabalhos recentes e ficha técnica completa;",
+      "Declaração de intenção / Carta de motivação para a residência no foNTE (máx. 1 lauda);",
+      "Proposta ou plano de trabalho a ser desenvolvido durante a estadia em São Paulo;",
+      "Currículo artístico resumido ou biografia (máx. 2 páginas);",
+      "Período de interesse (mês/ano) e modalidade pretendida."
+    ],
+    "envio": "Os dossiês devem ser enviados para o e-mail residencia@font-e.org com o assunto 'Candidatura Residência foNTE - [Nome do Artista]'.",
+    "contato_cta": "residencia@font-e.org"
+  },
+  "artistas_residentes": [
+    {
+      "id": "ignacio-fanti",
+      "nome": "Ignacio Fanti",
+      "origem": "Buenos Aires, Argentina",
+      "modalidade": "Investigação Individual",
+      "ano": "2024",
+      "resumo": "Investigação escultórica sobre matéria orgânica, modelagem em gesso e cerâmica e a hibridização entre o natural e o construído.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/ignacio-fanti/4ecb8e61eb-1788370427/ignacio_2-1400x1400-q82.webp",
+      "legenda": "Ignacio Fanti em processo no ateliê foNTE."
+    },
+    {
+      "id": "marcelo-brasiliense",
+      "nome": "Marcelo Brasiliense",
+      "origem": "Belo Horizonte / São Paulo",
+      "modalidade": "Investigação Individual",
+      "ano": "2024",
+      "resumo": "Pesquisa cromática em grande formato, relações entre textura, suporte têxtil e a densidade da tinta na pintura contemporânea.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/marcelo-brasiliense/41e3708b83-1788370628/mg_1447-1400x1400-q82.webp",
+      "legenda": "Vista de ateliê durante a residência de Marcelo Brasiliense."
+    },
+    {
+      "id": "carlos-marilyn-monroy",
+      "nome": "Carlos & Marilyn Monroy",
+      "origem": "Bogotá / São Paulo",
+      "modalidade": "Ocupação Live & Performance",
+      "ano": "2023",
+      "resumo": "Performances relacionais, ficções decoloniais latino-americanas e ativação do espaço com rituais cênicos.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/carlos-marilyn-monroy/fe0c97ea94-1788369969/img_20200925_213204216-1400x1400-q82.webp",
+      "legenda": "Ativação no cubo branco durante a residência Live."
+    },
+    {
+      "id": "renata-peixe-boi",
+      "nome": "Renata Peixe-Boi",
+      "origem": "Manaus / São Paulo",
+      "modalidade": "Investigação Individual",
+      "ano": "2023",
+      "resumo": "Memória ribeirinha, tramas vegetais e ecologias visuais traduzidas em instalações suspensas e bioesculturas.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/renata-peixe-boi/b1a118656b-1788369685/renata_peixeboi_2-1400x1400-q82.webp",
+      "legenda": "Processo de montagem de bioesculturas de Renata Peixe-Boi."
+    },
+    {
+      "id": "lava-2",
+      "nome": "Residência LAVA — 2ª Edição",
+      "origem": "Programa Coletivo",
+      "modalidade": "Residência Coletiva",
+      "ano": "2023",
+      "resumo": "Imersão de 6 artistas em ateliê compartilhado, resultando em debates públicos, ateliês abertos e publicação.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-2-edicao/418d7761de-1788369570/dsc01106-1400x1400-q82.webp",
+      "legenda": "Encontro coletivo e debate curatorial na 2ª edição do LAVA."
+    },
+    {
+      "id": "felipe-alvarez-parisi",
+      "nome": "Felipe Alvarez Parisi",
+      "origem": "Santiago, Chile",
+      "modalidade": "Investigação Individual",
+      "ano": "2023",
+      "resumo": "Desdobramentos geométricos, luz incidente e intervenções na arquitetura industrial do espaço foNTE.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/felipe-alvarez-parisi/f6aadd13b6-1788369441/dsc01279-1400x1400-q82.webp",
+      "legenda": "Estudos de iluminação e forma espacial de Felipe Alvarez Parisi."
+    },
+    {
+      "id": "ana-pi",
+      "nome": "Ana Pi",
+      "origem": "Belo Horizonte / Paris",
+      "modalidade": "Ocupação Live",
+      "ano": "2022",
+      "resumo": "Coreografia expandida, arquivo corporal afro-diaspórico e pesquisa para videoinstalação.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/ana-pi/121fa29eac-1788397803/img_4043-1400x1400-q82.webp",
+      "legenda": "Ensaio e laboratório corporal no espaço foNTE."
+    },
+    {
+      "id": "antonio-sobral",
+      "nome": "Antonio Sobral",
+      "origem": "Lisboa, Portugal",
+      "modalidade": "Investigação Individual",
+      "ano": "2022",
+      "resumo": "Publicação experimental, tipografia vernacular e gravura em diálogo com o centro de São Paulo.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/antonio-sobral/8b4f357b26-1788370674/antonio-pronta-1400x1400-q82.webp",
+      "legenda": "Impressão e encadernação artesanal em ateliê."
+    },
+    {
+      "id": "gabrielle-goliath",
+      "nome": "Gabrielle Goliath",
+      "origem": "Joanesburgo, África do Sul",
+      "modalidade": "Parceria Institucional",
+      "ano": "2022",
+      "resumo": "Ambientes sonoros imersivos, performance coral e reflexão crítica sobre violências estruturais e cura coletiva.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/gabrielle-goliath/73751daaa3-1788369316/52292246_394692494420842_9075291876705173504_o-1400x1400-q82.webp",
+      "legenda": "Instalação sonora e performance de Gabrielle Goliath."
+    },
+    {
+      "id": "lava-1",
+      "nome": "Residência LAVA — 1ª Edição",
+      "origem": "Programa Coletivo",
+      "modalidade": "Residência Coletiva",
+      "ano": "2022",
+      "resumo": "Primeira edição do programa de imersão compartilhada com artistas de diversas regiões do Brasil.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-1-edicao/cdefd51843-1788368768/img_0035-1400x1400-q82.webp",
+      "legenda": "Montagem dos trabalhos processuais durante a mostra LAVA 1."
+    },
+    {
+      "id": "lava-1-processo",
+      "nome": "LAVA — Ateliê Aberto & Diálogos",
+      "origem": "Programa Coletivo",
+      "modalidade": "Residência Coletiva",
+      "ano": "2022",
+      "resumo": "Processo de experimentação material e ateliês abertos para a comunidade artística.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-1-edicao/5f3f3d9f69-1788368740/img_9970-1400x1400-q82.webp",
+      "legenda": "Ativação no ateliê e diálogo entre artistas residentes."
+    },
+    {
+      "id": "sandra-gamarra",
+      "nome": "Sandra Gamarra",
+      "origem": "Lima, Peru / Madri, Espanha",
+      "modalidade": "Parceria Institucional",
+      "ano": "2021",
+      "resumo": "Pesquisa para obras do Pavilhão da Espanha na 60ª Bienal de Veneza e reflexões museológicas pós-coloniais.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/sandra-gamarra/53ec45527f-1788368479/img_8735-1400x1400-q82.webp",
+      "legenda": "Sandra Gamarra examinando estudos e pigmentos no foNTE."
+    },
+    {
+      "id": "pilar-quinteros",
+      "nome": "Pilar Quinteros",
+      "origem": "Santiago, Chile",
+      "modalidade": "Investigação Individual",
+      "ano": "2021",
+      "resumo": "Esculturas efêmeras em papelão e gesso, expedições urbanas e reconstrução arqueológica poética em São Paulo.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/pilar-quinteros/d3b20c7e15-1788368342/img_8197-1400x1400-q82.webp",
+      "legenda": "Construção de estrutura escultórica por Pilar Quinteros."
+    },
+    {
+      "id": "pilar-quinteros-acao",
+      "nome": "Pilar Quinteros — Ação Urbana",
+      "origem": "Santiago, Chile",
+      "modalidade": "Ocupação Live",
+      "ano": "2021",
+      "resumo": "Ativação pública e deslocamento de estruturas efêmeras pelas ruas do bairro de Pinheiros.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/pilar-quinteros/773488139e-1788397745/img_2492-1400x1400-q82.webp",
+      "legenda": "Intervenção urbana e registro documental da ação."
+    }
+  ]
+}

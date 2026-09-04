@@ -1,0 +1,8 @@
+{
+  "name": "Remix FONTE / programação + residência + ateliês",
+  "description": "Plataforma de arte contemporânea foNTE: Programa de Residência Artística com pesquisa autodirigida, acompanhamento curatorial e sistema visual suíço.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

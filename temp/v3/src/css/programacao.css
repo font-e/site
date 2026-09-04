@@ -1,0 +1,437 @@
+/* =========================================
+   ESTRUTURA PROGRAMAÇÃO - ESTILO EDITORIAL SUÍÇO
+   ========================================= */
+
+.section-block {
+  width: 100%;
+  background: transparent;
+  position: relative;
+  margin-bottom: 880px;
+}
+
+.programacao-container {
+  width: 100%;
+  border-bottom: 1.5px solid var(--border-color);
+}
+
+/* Título de Seção */
+.programacao-title-wrap {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  padding-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.programacao-section-title {
+  grid-column: 1 / -1;
+  font-size: var(--fs-title);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  color: var(--bg-black);
+  text-transform: lowercase;
+  margin: 0;
+  padding: 0 20px;
+}
+
+/* Barra superior de categorias/filtro estilo agenda */
+.programacao-filter-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 20px;
+  background-color: var(--bg-white);
+}
+
+.filter-pill {
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  padding: 6px 8px;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+  border: 1.5px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-white);
+  color: var(--bg-black);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.filter-pill:hover {
+  background-color: var(--accent-cyan);
+  color: var(--bg-black);
+}
+
+.filter-pill.is-active,
+.filter-pill.is-active:hover {
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+}
+
+/* =========================================
+   ITEM DE EVENTO (GAVETA TIPOGRÁFICA)
+   ========================================= */
+.event-item {
+  position: relative;
+  width: 100%;
+  background-color: var(--bg-white);
+  border-top: 1.5px solid var(--border-color);
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+/* Quando houver hover sobre um evento fechado, apenas os demais eventos FECHADOS recebem opacidade 0.6 */
+.events-list:has(.event-item:not(.is-open):hover) .event-item:not(.is-open):not(:hover) {
+  opacity: 0.6;
+}
+
+.event-item:hover {
+  background-color: var(--hover-bg);
+}
+
+.event-item.is-open {
+  background-color: var(--bg-white);
+}
+
+.event-item.is-open .event-header {
+  background-color: var(--accent-cyan);
+}
+
+/* Cabeçalho do Evento (Área Tipográfica Clicável) */
+.event-header {
+  width: 100%;
+  padding: 0 20px 24px 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+/* Linha Superior: Tags (Col 1), Horário (Col 4) e Data (Col 7) */
+.event-meta-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: stretch;
+  gap: 8px;
+  margin-bottom: 18px;
+  width: 100%;
+}
+
+.event-meta-tags {
+  grid-column: 1 / 4;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+}
+
+.event-meta-horario {
+  grid-column: 4 / 7;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+  padding-left: 10px;
+  border-left: 1.5px solid var(--border-color);
+}
+
+.event-meta-date {
+  grid-column: 7 / -1;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+  padding-left: 10px;
+  border-left: 1.5px solid var(--border-color);
+}
+
+.event-date,
+.event-horario {
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--bg-black);
+  white-space: pre-wrap;
+}
+
+.event-tags-list {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.event-tag-badge {
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  padding: 6px 8px;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+  border: 1.5px solid var(--border-color);
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--bg-black);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+/* Título Gigante Logo Abaixo (11 colunas) */
+.event-title {
+  margin-bottom: 8px;
+  line-height: 0.95;
+  max-width: calc(100% * 11 / 12);
+}
+
+.event-title-text {
+  display: inline;
+  font-size: var(--fs-title);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: var(--bg-black);
+  word-break: break-word;
+  white-space: pre-line;
+}
+
+.event-subtitle-text {
+  display: block;
+  font-size: calc(var(--fs-name) * 1.5);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--bg-black);
+  word-break: break-word;
+  white-space: pre-line;
+  max-width: calc(100% * 11 / 12);
+}
+
+/* Nomes dos Artistas (Metade do Tamanho do Título, 11 colunas) */
+.event-names {
+  font-size: var(--fs-name);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--bg-black);
+  word-break: break-word;
+  max-width: calc(100% * 11 / 12);
+}
+
+/* =========================================
+   GAVETA EXPANSÍVEL (ABERTA: 8 COLS TEXTO / 4 COLS IMAGEM)
+   ========================================= */
+.event-drawer {
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.event-drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  border-top: 1.5px solid var(--border-color);
+  background-color: var(--bg-white);
+  align-items: stretch;
+}
+
+/* Colunas 1 a 8 (8 colunas): Conteúdo Principal da Gaveta */
+.event-drawer-content {
+  grid-column: 1 / span 8;
+  padding: 6px 32px 48px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.event-drawer-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.event-drawer-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.event-drawer-pill {
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  padding: 6px 8px;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+  border: 1.5px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-white);
+  color: var(--bg-black);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-align: left;
+  width: fit-content;
+  font-family: inherit;
+}
+
+.event-drawer-pill:hover {
+  background-color: var(--accent-cyan);
+  color: var(--bg-black);
+}
+
+.event-drawer-pill.is-active,
+.event-drawer-pill.is-active:hover {
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+}
+
+.event-drawer-close-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+/* Área de Texto */
+.event-drawer-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.event-content-body {
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  color: var(--bg-black);
+  white-space: pre-wrap;
+}
+
+/* Colunas 9 a 12 (4 colunas): Imagem (sem borda esquerda, sticky e sem corte) */
+.event-drawer-media {
+  grid-column: 9 / span 4;
+  border-left: none;
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  align-self: stretch;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.event-drawer-media img {
+  position: relative;
+  top: 0;
+  width: auto;
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: right top;
+  margin-left: auto;
+  display: block;
+}
+
+/* Sticky ativado na imagem somente após a gaveta estar aberta e estabilizada */
+.event-item.is-open:not(.is-animating) .event-drawer-media img {
+  position: sticky;
+  top: var(--header-height, 56px);
+}
+
+/* =========================================
+   PREVIEW FLUTUANTE DE IMAGEM NO MOUSEOVER
+   ========================================= */
+.hover-image-preview {
+  position: fixed;
+  top: 0;
+  margin-top: 18px;
+  right: 24px;
+  left: auto;
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  height: 35vh;
+  max-height: 35vh;
+  border: none;
+  background: transparent;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.hover-image-preview img {
+  display: block;
+  height: 33vh;
+  max-height: 33vh;
+  width: auto;
+  object-fit: cover;
+  filter: url(#duotone-cyan);
+  border-radius: 4px;
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE & TABLET)
+   ========================================= */
+@media (max-width: 860px), (hover: none) {
+  .hover-image-preview {
+    display: none !important;
+  }
+}
+
+@media (max-width: 860px) {
+  .event-drawer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-drawer-content {
+    grid-column: 1 / -1;
+    padding: 24px 16px 32px 16px;
+  }
+
+  .event-drawer-toolbar {
+    margin-bottom: 20px;
+  }
+
+  .event-drawer-media {
+    grid-column: 1 / -1;
+    border-left: none;
+    border-top: 1.5px solid var(--border-color);
+    min-height: 0;
+    height: auto;
+    width: 100%;
+  }
+
+  .event-drawer-media img {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: none;
+    object-fit: contain;
+  }
+
+  .event-header {
+    padding: 14px 16px 20px 16px;
+  }
+
+  .programacao-filter-bar {
+    padding: 10px 16px;
+  }
+}
