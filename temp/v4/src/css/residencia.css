@@ -1,0 +1,664 @@
+/* =========================================
+   RESIDÊNCIA FONTE — DESIGN SYSTEM SUIÇO
+   Minimalista, preciso, grid de 12 colunas
+   Bordas estruturais únicas e uniformes (2px #000000)
+   ========================================= */
+
+.residencia-layout-container {
+  width: 100%;
+  border-top: var(--border-width) solid var(--border-color);
+  border-bottom: var(--border-width) solid var(--border-color);
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+/* =========================================
+   1. TÍTULO DA SEÇÃO: PROGRAMAS DE RESIDÊNCIA
+   Inicia na Coluna 1 e termina na Coluna 10 (Linha 11)
+   Alinhado à direita no limite da Coluna 10
+   ========================================= */
+.residencia-title-wrap {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  padding-bottom: 8px;
+  box-sizing: border-box;
+}
+
+.residencia-section-title {
+  grid-column: 1 / 11;
+  font-size: var(--fs-title);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.025em;
+  color: var(--bg-black);
+  text-transform: uppercase;
+  text-align: right;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  align-self: end;
+}
+
+/* =========================================
+   2. TEXTO INTRODUTÓRIO & MODALIDADES EXPANSÍVEIS (GRID 12 COLUNAS)
+   Coluna Esquerda (Cols 1 a 7): Texto + Lista de Modalidades (7 Colunas)
+   Coluna Direita (Cols 8 a 12): Imagem com comportamento Sticky (5 Colunas)
+   ========================================= */
+.residencia-intro-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  border-bottom: var(--border-width) solid var(--border-color);
+  background-color: transparent;
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+.residencia-intro-left-col {
+  grid-column: 1 / span 7;
+  border-right: var(--border-width) solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  background-color: transparent;
+}
+
+.residencia-intro-lead-box {
+  padding: 36px 20px 32px 20px;
+  border-bottom: var(--border-width) solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.residencia-intro-lead-text {
+  font-size: calc(var(--fs-name) * 1.25);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--bg-black);
+}
+
+/* Lista de Itens de Modalidades */
+.residencia-modalidades-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modalidade-item {
+  border-bottom: var(--border-width) solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.modalidade-item:last-child {
+  border-bottom: none;
+}
+
+.modalidade-header {
+  padding: 20px 20px;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-items: baseline;
+  user-select: none;
+  transition: background-color 0.2s ease;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modalidade-item:hover .modalidade-header {
+  background-color: var(--hover-bg);
+}
+
+.modalidade-item.is-open .modalidade-header {
+  background-color: var(--accent-cyan);
+}
+
+.modalidade-name {
+  grid-column: 1 / span 4;
+  font-size: var(--fs-name);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--bg-black);
+  margin: 0;
+  padding: 0;
+}
+
+.modalidade-duration {
+  grid-column: 5 / span 2;
+  font-size: var(--fs-body);
+  font-weight: 400;
+  color: var(--bg-black);
+  text-transform: lowercase;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.modalidade-toggle-icon {
+  grid-column: 7;
+  font-size: calc(var(--fs-name) * 1.1);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--bg-black);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  justify-self: end;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.modalidade-item.is-open .modalidade-toggle-icon {
+  transform: rotate(45deg);
+}
+
+/* Gaveta Expansível com estilo idêntico aos textos content de Programação */
+.modalidade-drawer {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  background-color: var(--bg-white);
+  box-sizing: border-box;
+}
+
+.modalidade-drawer-content {
+  padding: 16px 20px 28px 20px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.modalidade-drawer-text {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modalidade-content-body {
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  color: var(--bg-black);
+  white-space: pre-wrap;
+}
+
+.modalidade-destaques-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
+}
+
+.modalidade-destaques-list li {
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  color: var(--bg-black);
+}
+
+.modalidade-destaques-list li::before {
+  content: "— ";
+  font-weight: 700;
+}
+
+/* Coluna Direita (Cols 8 a 12 - 5 Colunas): Imagem ocupando toda a largura da área com comportamento Sticky */
+.residencia-intro-image-col {
+  grid-column: 8 / span 5;
+  border-left: none;
+  position: relative;
+  display: flex;
+  justify-content: stretch;
+  align-items: flex-start;
+  align-self: stretch;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.residencia-intro-img,
+#residencia-hero-img {
+  position: sticky;
+  top: var(--header-height, 56px);
+  width: 100%;
+  max-width: 100%;
+  max-height: calc(100vh - var(--header-height, 56px));
+  height: auto;
+  object-fit: cover;
+  object-position: center top;
+  margin-left: 0;
+  display: block;
+  filter: url(#duotone-cyan);
+  transition: opacity 0.3s ease;
+}
+
+/* =========================================
+   3. FILTRO DE ARTISTAS & GRID DINÂMICO
+   ========================================= */
+.residencia-subhead-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  border-top: var(--border-width) solid var(--border-color);
+  border-bottom: var(--border-width) solid var(--border-color);
+  padding: 16px 20px;
+  background-color: transparent;
+  box-sizing: border-box;
+  margin-top: 240px;
+}
+
+.residencia-subhead-label {
+  grid-column: 1 / -1;
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--bg-black);
+}
+
+.residencia-filter-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 20px;
+  background-color: transparent;
+  border-bottom: var(--border-width) solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.filter-pill {
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  padding: 6px 10px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--bg-black);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.filter-pill:hover {
+  background-color: var(--accent-cyan);
+  color: var(--bg-black);
+}
+
+.filter-pill.is-active {
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+}
+
+/* Grid de Artistas (Sem resize no mouseover) */
+.artistas-master-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  background-color: transparent;
+  border-bottom: var(--border-width) solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.artista-card {
+  grid-column: span 3;
+  border-right: var(--border-width) solid var(--border-color);
+  border-bottom: var(--border-width) solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+}
+
+.artista-card:nth-child(4n) {
+  border-right: none;
+}
+
+.artista-card:hover {
+  background-color: var(--hover-bg);
+}
+
+.artista-card.is-active {
+  background-color: var(--accent-cyan);
+}
+
+.artista-image-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  position: relative;
+  background-color: transparent;
+  border-bottom: var(--border-width) solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.artista-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* Efeito de resize no hover eliminado */
+}
+
+.artista-meta-box {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-sizing: border-box;
+}
+
+.artista-nome {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--bg-black);
+}
+
+.artista-origem {
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  color: var(--bg-black);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.artista-modalidade-label {
+  font-size: var(--fs-nav);
+  font-weight: 400;
+  color: var(--bg-black);
+  margin-top: 4px;
+}
+
+/* Painel de Inspeção / Processo Inline no Grid */
+.artista-inspect-panel {
+  grid-column: 1 / -1;
+  display: none;
+  grid-template-columns: repeat(12, 1fr);
+  background-color: transparent;
+  border-bottom: var(--border-width) solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.artista-inspect-panel.is-open {
+  display: grid;
+}
+
+.artista-inspect-img-col {
+  grid-column: 1 / span 6;
+  border-right: var(--border-width) solid var(--border-color);
+  overflow: hidden;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.artista-inspect-img-col img {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  display: block;
+}
+
+.artista-inspect-info-col {
+  grid-column: 7 / span 6;
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.artista-inspect-title {
+  font-size: var(--fs-name);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+  color: var(--bg-black);
+}
+
+.artista-inspect-subtitle {
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--bg-black);
+  margin-bottom: 24px;
+}
+
+.artista-inspect-text {
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--bg-black);
+  margin-bottom: 24px;
+}
+
+.artista-inspect-caption {
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  color: var(--bg-black);
+  padding-top: 16px;
+  border-top: var(--border-width) solid var(--border-color);
+}
+
+.artista-inspect-close-btn {
+  align-self: flex-start;
+  margin-top: 24px;
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--bg-black);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.artista-inspect-close-btn:hover {
+  background-color: var(--accent-cyan);
+}
+
+/* =========================================
+   4. CANDIDATURA & INSCRIÇÕES (ESTILO EDITORIAL DISCRETO)
+   ========================================= */
+.candidatura-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  border-bottom: var(--border-width) solid var(--border-color);
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.candidatura-left-col {
+  grid-column: 1 / span 5;
+  padding: 40px 20px;
+  border-right: var(--border-width) solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.candidatura-heading {
+  font-size: var(--fs-name);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  color: var(--bg-black);
+}
+
+.candidatura-chamada {
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--bg-black);
+  margin-bottom: 24px;
+}
+
+.candidatura-email-line {
+  font-size: var(--fs-body);
+  font-weight: 400;
+  color: var(--bg-black);
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.email-at {
+  color: var(--bg-black);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+  padding: 0 1px;
+}
+
+.email-at:hover {
+  background-color: var(--accent-cyan);
+}
+
+.candidatura-right-col {
+  grid-column: 6 / span 7;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+.candidatura-requisitos-label {
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 16px;
+  color: var(--bg-black);
+}
+
+.candidatura-requisitos-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.candidatura-requisitos-list li {
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bg-black);
+}
+
+.candidatura-requisitos-list li::before {
+  content: "— ";
+  font-weight: 700;
+}
+
+/* =========================================
+   5. RESPONSIVIDADE (TABLET & MOBILE)
+   ========================================= */
+@media (max-width: 1024px) {
+  .residencia-intro-left-col {
+    grid-column: 1 / span 6;
+  }
+  .residencia-intro-image-col {
+    grid-column: 7 / span 6;
+  }
+  .artista-card {
+    grid-column: span 6;
+  }
+  .artista-card:nth-child(2n) {
+    border-right: none;
+  }
+  .artista-inspect-img-col {
+    grid-column: 1 / span 12;
+    border-right: none;
+    border-bottom: var(--border-width) solid var(--border-color);
+  }
+  .artista-inspect-info-col {
+    grid-column: 1 / span 12;
+    padding: 28px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modalidade-header {
+    grid-template-columns: 1fr auto;
+    row-gap: 6px;
+  }
+  .modalidade-name {
+    grid-column: 1;
+  }
+  .modalidade-duration {
+    grid-column: 1;
+  }
+  .modalidade-toggle-icon {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+  .residencia-intro-left-col,
+  .residencia-intro-image-col {
+    grid-column: 1 / span 12;
+  }
+  .residencia-intro-left-col {
+    border-right: none;
+    border-bottom: var(--border-width) solid var(--border-color);
+  }
+  .residencia-intro-lead-box {
+    padding: 24px 20px;
+  }
+  .residencia-intro-image-col {
+    border-right: none;
+  }
+  .residencia-intro-img,
+  #residencia-hero-img {
+    position: relative;
+    top: 0;
+    max-height: 50vh;
+    width: 100%;
+    object-fit: cover;
+  }
+  .artista-card {
+    grid-column: 1 / span 12;
+    border-right: none;
+  }
+  .candidatura-left-col,
+  .candidatura-right-col {
+    grid-column: 1 / span 12;
+    padding: 28px 20px;
+  }
+  .candidatura-left-col {
+    border-right: none;
+    border-bottom: var(--border-width) solid var(--border-color);
+  }
+}

@@ -1,0 +1,121 @@
+/* =========================================
+   1. CABEÇALHO (Fundo, Dimensões e Fixação)
+   Botões à esquerda + Logo à direita
+   ========================================= */
+#logo-controller {
+  position: sticky;
+  top: 0;
+  z-index: 300;
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Navegação à esquerda, Logo à direita */
+  align-items: flex-end;
+  padding-top: 24px; /* Espaço para a régua numérica superior (#ff4200) */
+  padding-bottom: 0;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+/* =========================================
+   2. BOTÕES DE NAVEGAÇÃO PRINCIPAL (ESQUERDA)
+   ========================================= */
+.header-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+.header-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 6px 12px;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.88);
+  color: var(--bg-black);
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1.2;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.header-nav-btn:hover {
+  background-color: var(--accent-cyan);
+  color: var(--bg-black);
+}
+
+.header-nav-btn.is-active,
+.header-nav-btn.is-active:hover {
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+  border-color: var(--bg-black);
+}
+
+/* =========================================
+   3. CONTÊINER E POSICIONAMENTO DO LOGO (DIREITA)
+   ========================================= */
+.logo-hero-wrap {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: calc(100vw * (1.3 / 12));
+  max-width: 160px;
+  min-width: 90px;
+  line-height: 0;
+}
+
+.logo-hero-wrap a {
+  display: block;
+  width: 100%;
+  line-height: 0;
+}
+
+#site-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: bottom;
+  cursor: pointer;
+}
+
+/* =========================================
+   4. CONTEÚDO PRINCIPAL
+   ========================================= */
+#main-content {
+  position: relative;
+  z-index: 10;
+  padding-bottom: 120px;
+}
+
+/* =========================================
+   5. RESPONSIVIDADE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+  #logo-controller {
+    padding-top: 14px;
+    padding-bottom: 0;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .header-nav-btn {
+    font-size: 0.72rem;
+    padding: 5px 8px;
+  }
+
+  .logo-hero-wrap {
+    width: 30vw;
+    min-width: 75px;
+  }
+}

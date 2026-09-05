@@ -1,0 +1,458 @@
+/* =========================================
+   ESTRUTURA ATELIÊS - RESIDÊNCIA FONTE
+   GRID CANÔNICO DE 12 COLUNAS (3 COLUNAS NOMES + 9 COLUNAS PALCO/FOTOS)
+   FONTE DA VERDADE: SISTEMA EDITORIAL SUÍÇO (PROGRAMAÇÃO)
+   ========================================= */
+
+.section-block {
+  width: 100%;
+  background: transparent;
+  position: relative;
+  margin-bottom: var(--section-spacing);
+}
+
+/* =========================================
+   TÍTULO DA SEÇÃO: ATELIÊS (COLS 1 A 10, ALINHADO À DIREITA)
+   ========================================= */
+.atelies-title-wrap {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  padding-bottom: 8px;
+  box-sizing: border-box;
+}
+
+.atelies-section-title {
+  grid-column: 1 / 11;
+  font-size: var(--fs-title);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.025em;
+  color: var(--bg-black);
+  text-transform: uppercase;
+  text-align: right;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  align-self: end;
+}
+
+.atelies-layout-container {
+  width: 100%;
+  border-top: 1.5px solid var(--border-color);
+  border-bottom: 1.5px solid var(--border-color);
+  background-color: var(--bg-white);
+  box-sizing: border-box;
+}
+
+/* =========================================
+   GRID MESTRE: 3 COLUNAS NOMES + 9 COLUNAS PALCO
+   ========================================= */
+.atelies-master-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+/* =========================================
+   COLUNA ESQUERDA: LISTA DE NOMES (COLUNAS 1, 2, 3 = 25% EXATO)
+   ========================================= */
+.atelies-names-sidebar {
+  grid-column: 1 / span 3;
+  display: grid;
+  grid-template-rows: repeat(9, 1fr);
+  border-right: 1.5px solid var(--border-color);
+  background-color: var(--bg-white);
+  position: relative;
+  z-index: 20;
+  box-sizing: border-box;
+}
+
+.artist-name-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  background-color: var(--bg-white);
+  border-bottom: 1.5px solid var(--border-color);
+  transition: background-color 0.2s ease, color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.artist-name-item:last-child {
+  border-bottom: none;
+}
+
+.artist-name-title {
+  font-size: var(--fs-name);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--bg-black);
+  word-break: break-word;
+  transition: color 0.2s ease;
+}
+
+/* Estados de Destaque / Hover do Nome */
+.artist-name-item:hover,
+.artist-name-item.is-hovered {
+  background-color: var(--accent-cyan);
+}
+
+.artist-name-item.is-active {
+  background-color: var(--bg-black);
+}
+
+.artist-name-item.is-active .artist-name-title {
+  color: var(--bg-white);
+}
+
+/* =========================================
+   ÁREA DIREITA: PALCO DINÂMICO (COLUNAS 4 A 12 = 75% EXATO)
+   ========================================= */
+.atelies-stage-wrapper {
+  grid-column: 4 / span 9;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-white);
+  height: 100%;
+  min-height: 100%;
+}
+
+/* =========================================
+   ESTÁGIO 1: GRID 3x3 DE FOTOS
+   ========================================= */
+.atelies-photos-stage {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  position: relative;
+  z-index: 5;
+  background-color: var(--bg-white);
+  box-sizing: border-box;
+}
+
+.photo-cell {
+  position: relative;
+  aspect-ratio: 16 / 7;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: var(--bg-black);
+  box-sizing: border-box;
+}
+
+/* Bordas internas no grid 3x3 */
+.photo-cell:not(:nth-child(3n)) {
+  border-right: 1.5px solid var(--border-color);
+}
+
+.photo-cell:nth-child(-n+6) {
+  border-bottom: 1.5px solid var(--border-color);
+}
+
+.photo-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: url(#duotone-cyan);
+  transition: filter 0.35s ease;
+}
+
+/* Quando hover na foto ou no nome correspondente */
+.photo-cell:hover img,
+.photo-cell.is-highlighted img {
+  filter: none;
+}
+
+/* =========================================
+   ESTÁGIO 2: PAINEL DE DETALHES DO ARTISTA (GAVETA ABERTA)
+   ========================================= */
+.atelies-detail-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: none;
+  background-color: var(--bg-white);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.atelies-detail-inner {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Coluna de Mídia do Artista (4 colunas das 9): SEMPRE COLORIDA */
+.detail-media-column {
+  grid-column: span 4;
+  border-right: none;
+  background-color: var(--bg-white);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.detail-media-column::-webkit-scrollbar {
+  display: none;
+}
+
+.detail-image-wrap {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  position: relative;
+}
+
+.detail-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: none;
+  transition: none;
+}
+
+/* Coluna de Conteúdo Editorial do Artista (5 colunas das 9) */
+.detail-content-column {
+  grid-column: span 5;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 20px 24px 20px;
+  background-color: var(--bg-white);
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Toolbar Superior do Detalhe (Estilo idêntico à Programação) */
+.detail-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.detail-tabs-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Botões / Pills em Conformidade Estrita com Programação */
+.detail-tab-btn,
+.detail-close-btn,
+.detail-link-btn {
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  padding: 6px 8px;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+  border: 1.5px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-white);
+  color: var(--bg-black);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-tab-btn:hover,
+.detail-close-btn:hover,
+.detail-link-btn:hover {
+  background-color: var(--accent-cyan);
+  color: var(--bg-black);
+}
+
+.detail-tab-btn.is-active,
+.detail-tab-btn.is-active:hover {
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+}
+
+.detail-close-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+/* Área de Texto Rolável Independente */
+.detail-body-scrollable {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.detail-body-scrollable::-webkit-scrollbar {
+  display: none;
+}
+
+.detail-body-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Texto dos Verbetes (Idêntico ao Content de Programação) */
+.detail-text-content {
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  color: var(--bg-black);
+  white-space: pre-wrap;
+}
+
+/* Botões de Redes e Portfólio */
+.detail-links-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-top: 8px;
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE & TABLET <= 860px)
+   ========================================= */
+@media (max-width: 860px) {
+  .section-block {
+    margin-top: 16px;
+  }
+
+  .atelies-title-wrap {
+    display: block;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 8px;
+  }
+
+  .atelies-section-title {
+    padding: 0;
+  }
+
+  .atelies-master-grid {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  /* Grid 3x3 de nomes no topo no mobile */
+  .atelies-names-sidebar {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    border-right: none;
+    border-bottom: 1.5px solid var(--border-color);
+  }
+
+  .artist-name-item {
+    padding: 10px 8px;
+    justify-content: center;
+    text-align: center;
+    min-height: 58px;
+    border-bottom: none;
+  }
+
+  .artist-name-item:not(:nth-child(3n)) {
+    border-right: 1.5px solid var(--border-color);
+  }
+
+  .artist-name-item:nth-child(-n+6) {
+    border-bottom: 1.5px solid var(--border-color);
+  }
+
+  .artist-name-title {
+    font-size: 0.8rem;
+    line-height: 1.15;
+    text-align: center;
+    word-break: normal;
+  }
+
+  .artist-name-title span {
+    display: block;
+  }
+
+  .atelies-stage-wrapper {
+    grid-column: 1 / -1;
+    min-height: auto;
+  }
+
+  .atelies-photos-stage {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  .photo-cell {
+    aspect-ratio: 1 / 1;
+  }
+
+  .atelies-detail-stage {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+
+  .atelies-detail-inner {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .detail-media-column {
+    grid-column: 1 / -1;
+    border-right: none;
+    border-bottom: 1.5px solid var(--border-color);
+    height: auto;
+    overflow: visible;
+  }
+
+  .detail-image-wrap {
+    min-height: 240px;
+    aspect-ratio: 4 / 3;
+  }
+
+  .detail-content-column {
+    grid-column: 1 / -1;
+    padding: 16px 14px;
+    height: auto;
+    overflow: visible;
+  }
+
+  .detail-body-scrollable {
+    overflow: visible;
+  }
+}
