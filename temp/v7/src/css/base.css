@@ -542,4 +542,20 @@ body {
   opacity: 0.9;
 }
 
+.video-direct-link {
+  display: inline-block;
+  font-size: var(--fs-meta, 0.75rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #000;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  margin-top: 4px;
+}
+
+.video-direct-link:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+}
+
 
