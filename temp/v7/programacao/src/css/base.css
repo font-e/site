@@ -1,0 +1,116 @@
+/* =========================================
+   TIPOGRAFIA: STAG SANS
+   ========================================= */
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansThin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansLight.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansRegular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansMedium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansSemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansBlack.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --fs-title: clamp(2.25rem, 5.5vw + 0.5rem, 4.5rem);
+  --fs-name: clamp(1.125rem, 2.75vw + 0.25rem, 2.25rem);
+  --fs-body: clamp(1rem, 0.4vw + 0.85rem, 1.125rem);
+  --fs-meta: clamp(0.75rem, 0.25vw + 0.7rem, 0.875rem);
+  --fs-nav: clamp(0.69rem, 0.2vw + 0.65rem, 0.775rem);
+
+  --bg-white: #ffffff;
+  --bg-page: var(--bg-white);
+  --bg-black: #000000;
+  --hover-bg: #eefffe;
+  --accent-cyan: #ccfffe;
+  --active-bg: #ffffff;
+  --border-color: #000000;
+  --border-width: 2px;
+
+  --h-menu: 32px;
+  --menu-gap: 8px;
+  --logo-top: 32px;
+  --header-height: 56px;
+  --section-spacing: 80px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Stag Sans', sans-serif;
+  background-color: var(--bg-white);
+  color: var(--bg-black);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utilitário para Esconder Scrollbars */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Grid Mestre de 12 Colunas */
+.grid-12-master {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+}
