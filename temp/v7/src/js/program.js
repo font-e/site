@@ -232,15 +232,6 @@ function renderProgramList(data) {
 
 /**
  * Abre a gaveta universal no item especificado
- * Sequência de animação solicitada:
- * 1. Fade out de opacidade de TODO o conteúdo da linha (headerEl) enquanto a área da gaveta se expande (0.4s).
- * 2. Depois, o scroll posiciona a gaveta aberta na posição final e ocorre o fade in do conteúdo da gaveta aberta (0.45s).
- */
-/**
- * Abre a gaveta universal no item especificado
- * Item 6: Ao navegar entre gavetas (pelas setas ou cliques), ocorre um movimento conjunto:
- * a gaveta do próximo ou anterior evento se abre fechando a gaveta anteriormente aberta,
- * seguido do scroll para alinhar o topo da linha/breadcrumb à base do cabeçalho da página.
  */
 function openUniversalDrawer(itemEl) {
   if (window._arqDrawerClose) window._arqDrawerClose(null);
@@ -268,7 +259,6 @@ function openUniversalDrawer(itemEl) {
   const closedHeight = headerEl ? headerEl.offsetHeight : 120;
   itemEl._closedHeight = closedHeight;
 
-  // Adiciona a classe is-open para atualizar estado da linha
   itemEl.classList.add('is-open');
 
   activeDrawerState = {
@@ -292,11 +282,9 @@ function openUniversalDrawer(itemEl) {
 
   itemEl.appendChild(drawerEl);
 
-  // Renderiza a estrutura interna da gaveta com os 3 botões < x >
   renderCurrentDrawerView();
 
   if (typeof gsap !== 'undefined') {
-    // Estado inicial: gaveta com altura 0 e overflow hidden
     gsap.set(drawerEl, { height: 0, minHeight: 0, overflow: 'hidden' });
     const targetHeight = `calc(100vh - var(--header-height, 56px) - 60px)`;
 
@@ -307,8 +295,6 @@ function openUniversalDrawer(itemEl) {
         }
         gsap.set(drawerEl, { clearProps: 'height,minHeight,overflow' });
         activeDrawerTimeline = null;
-
-        // Executa o scroll alinhando o topo do evento/breadcrumb na base do cabeçalho
         scrollToHeaderBase(itemEl);
 
         if (typeof ScrollTrigger !== 'undefined') {
@@ -318,7 +304,6 @@ function openUniversalDrawer(itemEl) {
     });
     activeDrawerTimeline = tl;
 
-    // Se havia gaveta anterior aberta, fecha-a simultaneamente (movimento conjunto)
     if (prevDrawerEl) {
       gsap.set(prevDrawerEl, { overflow: 'hidden' });
       tl.to(prevDrawerEl, {
@@ -330,7 +315,6 @@ function openUniversalDrawer(itemEl) {
       }, 0);
     }
 
-    // Abre a nova gaveta no mesmo tempo conjunto
     tl.to(drawerEl, {
       height: targetHeight,
       minHeight: targetHeight,
@@ -348,8 +332,7 @@ function openUniversalDrawer(itemEl) {
 }
 
 /**
- * Fecha a gaveta universal ativa com animação simples de deslizamento
- * mantendo a linha do evento intacta na tela
+ * Fecha a gaveta universal ativa com animação de deslizamento
  */
 function closeActiveDrawer(immediate = false) {
   if (!activeDrawerState) return;
@@ -394,15 +377,10 @@ function closeActiveDrawer(immediate = false) {
   }, 0);
 }
 
-/**
- * Rola a janela de modo que o topo do breadcrumb / gaveta (ou do elemento do evento) 
- * coincida exatamente com a base do cabeçalho da página (Item 7)
- */
 function scrollToHeaderBase(targetEl) {
   const performScroll = () => {
     const siteHeader = document.getElementById('logo-controller');
     const headerHeight = siteHeader ? siteHeader.getBoundingClientRect().height : 56;
-    // Se o elemento possui a linha superior de breadcrumb, referencia-a diretamente
     const breadcrumbTopLine = targetEl.querySelector ? targetEl.querySelector('.drawer-top-line') : null;
     const refEl = breadcrumbTopLine || targetEl;
     const targetTop = refEl.getBoundingClientRect().top + window.scrollY;
@@ -421,12 +399,6 @@ function getProgramEventsList() {
   return Array.from(document.querySelectorAll('.events-list .event-item'));
 }
 
-/**
- * Renderiza os 3 botões fixos < x > da gaveta
- * - Modo lista (historyIndex === 0): navega entre eventos da página
- * - Modo relações (historyIndex > 0): navega no histórico de relações
- *   - Botão > fica com classe is-hover-bg quando atinge o fim das relações
- */
 function renderDrawerControlsHtml() {
   if (!activeDrawerState) return '';
 
@@ -444,7 +416,7 @@ function renderDrawerControlsHtml() {
     nextDisabled = currentIdx >= items.length - 1;
     nextIsHoverBg = false;
   } else {
-    prevDisabled = false; // Sempre pode voltar a um passo anterior
+    prevDisabled = false;
     if (historyIndex < history.length - 1) {
       nextDisabled = false;
       nextIsHoverBg = false;
@@ -477,9 +449,6 @@ function renderDrawerControlsHtml() {
   `;
 }
 
-/**
- * Renderiza o conteúdo da gaveta baseado no passo atual do histórico (historyIndex)
- */
 function renderCurrentDrawerView() {
   if (!activeDrawerState) return;
 
@@ -490,7 +459,6 @@ function renderCurrentDrawerView() {
   const currentStep = history[historyIndex] || history[history.length - 1];
   const isZoom = currentStep.type === 'zoom_gallery';
 
-  // Breadcrumbs com suporte a popover e destaque do passo ativo (Item 4 & 5)
   const breadcrumbHtml = renderBreadcrumbsHtml(history, historyIndex);
   const controlsHtml = renderDrawerControlsHtml();
 
@@ -537,7 +505,6 @@ function renderCurrentDrawerView() {
     `;
   }
 
-  // Se estiver na galeria zoom, calcula larguras das legendas e posiciona corte seco no slide clicado
   if (isZoom) {
     applyZoomSlideOffset(drawer, currentStep.data.initialIndex || 0);
     syncZoomCaptionsWidth(drawer);
@@ -546,9 +513,6 @@ function renderCurrentDrawerView() {
   attachViewInteractions(drawer);
 }
 
-/**
- * Item 2: Sincroniza a largura da legenda estritamente com a largura real renderizada da imagem
- */
 function syncZoomCaptionsWidth(drawer) {
   requestAnimationFrame(() => {
     const slides = drawer.querySelectorAll('.drawer-zoom-slide-item');
@@ -574,9 +538,6 @@ function syncZoomCaptionsWidth(drawer) {
   });
 }
 
-/**
- * Posiciona com corte seco no slide indicado da galeria horizontal
- */
 function applyZoomSlideOffset(drawer, targetIndex) {
   requestAnimationFrame(() => {
     const track = drawer.querySelector('.drawer-zoom-horizontal-track');
@@ -587,9 +548,6 @@ function applyZoomSlideOffset(drawer, targetIndex) {
   });
 }
 
-/**
- * Helper global para fechar/abrir o dropdown de breadcrumb estilo Google Drive
- */
 window._toggleBreadcrumbDropdown = function(e) {
   if (e && e.stopPropagation) e.stopPropagation();
   const btn = e.currentTarget;
@@ -622,12 +580,6 @@ if (!window._breadcrumbListenerAdded) {
   window._breadcrumbListenerAdded = true;
 }
 
-/**
- * Breadcrumbs com lógica estilo Google Drive:
- * - Apenas o caminho ativo (até activeIndex) é exibido. Passos futuros não aparecem ao voltar.
- * - Quando há mais de 2 páginas no caminho ativo, os anteriores são colapsados em "..." com menu dropdown.
- * - Exibe apenas os últimos 2 passos do caminho ativo na barra.
- */
 function renderBreadcrumbsHtml(history, activeIndex = 0) {
   const activeHistory = history.slice(0, activeIndex + 1);
 
@@ -703,8 +655,75 @@ function renderBreadcrumbsHtml(history, activeIndex = 0) {
 }
 
 /**
+ * Extrai informações padronizadas de reprodução externa e embed de vídeos
+ */
+function getEmbedInfo(url) {
+  if (!url) return null;
+  const cleanUrl = url.trim();
+
+  // YouTube (Links normais, lives, shorts e encurtados youtu.be)
+  const ytMatch = cleanUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|live|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+  if (ytMatch && ytMatch[1]) {
+    const id = ytMatch[1];
+    return {
+      type: 'youtube',
+      id,
+      embedUrl: `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`,
+      watchUrl: `https://www.youtube.com/watch?v=${id}`,
+      thumbUrl: `https://img.youtube.com/vi/${id}/hqdefault.jpg`
+    };
+  }
+
+  // Vimeo
+  const vimeoMatch = cleanUrl.match(/(?:vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+))/i);
+  if (vimeoMatch && vimeoMatch[1]) {
+    const id = vimeoMatch[1];
+    return {
+      type: 'vimeo',
+      id,
+      embedUrl: `https://player.vimeo.com/video/${id}?dnt=1`,
+      watchUrl: `https://vimeo.com/${id}`,
+      thumbUrl: `https://vumbnail.com/${id}.jpg`
+    };
+  }
+
+  return {
+    type: 'external',
+    id: '',
+    embedUrl: cleanUrl,
+    watchUrl: cleanUrl,
+    thumbUrl: ''
+  };
+}
+
+function getEventVideosParsed(evt) {
+  let rawVideos = evt.videos;
+  if (!rawVideos || !rawVideos.length) {
+    const consolidated = findConsolidatedEvent(evt.rawTitle || evt.title || evt.id);
+    if (consolidated && consolidated.videos && consolidated.videos.length) {
+      rawVideos = consolidated.videos;
+    }
+  }
+
+  if (Array.isArray(rawVideos)) {
+    return rawVideos.map(v => {
+      if (typeof v === 'string') {
+        return { titulo: '', url: v, legenda: '' };
+      }
+      return {
+        titulo: v.titulo || v.title || '',
+        url: v.url || v.link || v.src || '',
+        legenda: v.legenda || v.sinopse || v.ficha_tecnica || v.descricao || v.description || '',
+        thumb: v.thumb_url || ''
+      };
+    }).filter(v => v.url || v.titulo);
+  }
+
+  return [];
+}
+
+/**
  * Renderiza a estrutura da tela de Evento
- * Item 7: Elimina botões de artistas e curadoria universais das abas
  */
 function renderEventBodyHtml(evt, activeTab = 'sobre', selectedTextIndex = null) {
   const videosList = getEventVideosParsed(evt);
@@ -714,7 +733,7 @@ function renderEventBodyHtml(evt, activeTab = 'sobre', selectedTextIndex = null)
   const tabs = [
     { key: 'sobre', label: 'Sobre' },
     { key: 'textos', label: 'Textos' },
-    ...(hasVideos ? [{ key: 'videos', label: 'Vídeos' }] : []),
+    ...(hasVideos ? [{ key: 'videos', label: `Vídeos (${videosList.length})` }] : []),
     { key: 'mapa_exposicao', label: 'Mapa de exposição' },
     { key: 'eventos_relacionados', label: 'Eventos relacionados' }
   ];
@@ -861,24 +880,33 @@ function renderEventBodyHtml(evt, activeTab = 'sobre', selectedTextIndex = null)
             <div class="sobre-block-content">
               <div class="videos-embed-list">
                 ${videosList.map((v, idx) => {
-                  const embedUrl = getEmbedUrl(v.url);
+                  const media = getEmbedInfo(v.url);
                   return `
                     <div class="video-embed-item">
                       ${v.titulo ? `<h4 class="video-item-title">${escapeHtml(v.titulo)}</h4>` : ''}
-                      ${embedUrl ? `
+                      ${media && media.embedUrl ? `
                         <div class="video-iframe-responsive">
-                          <iframe src="${embedUrl}" title="${escapeAttr(v.titulo || `Vídeo ${idx + 1}`)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+                          <iframe src="${media.embedUrl}" 
+                                  title="${escapeAttr(v.titulo || `Vídeo ${idx + 1}`)}" 
+                                  frameborder="0" 
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                  referrerpolicy="strict-origin-when-cross-origin" 
+                                  allowfullscreen 
+                                  loading="lazy"></iframe>
                         </div>
                       ` : `
                         <div class="video-link-fallback">
-                          <a href="${escapeAttr(v.url)}" target="_blank" rel="noopener noreferrer" class="video-external-link">Assistir no YouTube ↗</a>
+                          <a href="${escapeAttr(v.url)}" target="_blank" rel="noopener noreferrer" class="video-external-link">Assistir vídeo ↗</a>
                         </div>
                       `}
-                      ${v.legenda ? `
-                        <div class="video-item-footer">
-                          <p class="video-item-caption">${escapeHtml(v.legenda)}</p>
-                        </div>
-                      ` : ''}
+                      <div class="video-item-footer">
+                        ${v.legenda ? `<p class="video-item-caption">${escapeHtml(v.legenda)}</p>` : ''}
+                        ${media && media.watchUrl ? `
+                          <a href="${escapeAttr(media.watchUrl)}" target="_blank" rel="noopener noreferrer" class="video-direct-link" title="Abrir em nova aba caso o player externo tenha restrições de reprodução">
+                            Assistir diretamente no ${media.type === 'vimeo' ? 'Vimeo' : 'YouTube'} ↗
+                          </a>
+                        ` : ''}
+                      </div>
                     </div>
                   `;
                 }).join('')}
@@ -898,7 +926,6 @@ function renderEventBodyHtml(evt, activeTab = 'sobre', selectedTextIndex = null)
     `;
   }
 
-  // Galeria lateral sem badges de quantidade
   const images = getEventImagesList(evt);
   const eventTitleEsc = escapeAttr(evt.rawTitle || evt.title || '');
 
@@ -925,14 +952,6 @@ function renderEventBodyHtml(evt, activeTab = 'sobre', selectedTextIndex = null)
   };
 }
 
-/**
- * Itens 1, 2 e 3: Modo Zoom na área total da gaveta
- * - Sem bordas nas imagens
- * - Topo toca na borda inferior do breadcrumb
- * - Espaço entre imagens de 24px
- * - Legenda alinhada à esquerda da imagem
- * - Clicar sobre qualquer imagem sai do modo zoom
- */
 function renderZoomGalleryBodyHtml(zoomData) {
   const { images, title } = zoomData;
 
@@ -955,9 +974,6 @@ function renderZoomGalleryBodyHtml(zoomData) {
   `;
 }
 
-/**
- * Renderiza a tela de Perfil do Artista dentro da gaveta
- */
 function renderPersonBodyHtml(person) {
   const locArr = [person.cidade, person.pais].filter(Boolean);
   const locStr = locArr.join(', ');
@@ -1039,9 +1055,6 @@ function renderPersonBodyHtml(person) {
   };
 }
 
-/**
- * Renderiza um nome de artista com popover interativo
- */
 function renderArtistTagWithPopover(artistName) {
   const trimmed = artistName.trim();
   const person = findPersonByName(trimmed);
@@ -1127,18 +1140,11 @@ window._closePopovers = function(e) {
   closeAllPopovers();
 };
 
-// ==========================================================================
-// MÉTODOS GLOBAIS DE CONTROLE DA GAVETA UNIVERSAL
-// ==========================================================================
-
 window._drawerClose = function(e) {
   if (e) e.stopPropagation();
   closeActiveDrawer();
 };
 
-/**
- * Item 3: Fecha APENAS a galeria zoom e retorna à exibição do evento
- */
 window._drawerCloseZoomOnly = function(e) {
   if (e && e.stopPropagation) e.stopPropagation();
   if (!activeDrawerState) return;
@@ -1244,9 +1250,6 @@ window._drawerOpenEventFromTimeline = function(e, eventTitle) {
   });
 };
 
-/**
- * Abre a galeria com zoom na área total da gaveta
- */
 window._drawerOpenZoomGallery = function(e, eventTitle, initialIndex = 0) {
   if (e && e.stopPropagation) e.stopPropagation();
   if (typeof e === 'string') {
@@ -1308,12 +1311,6 @@ window._drawerOpenPersonZoomGallery = function(e, personName, initialIndex = 0) 
   });
 };
 
-/**
- * Botão ‹ (Voltar):
- * - Se estiver navegando em relações (historyIndex > 0): recua um passo no histórico de relações.
- * - Ao recuar até o nível raiz (historyIndex === 0): volta a operar sobre a lista de eventos.
- * - Se estiver no nível raiz (historyIndex === 0): navega para o evento anterior na lista de programação.
- */
 window._drawerNavPrev = function(e) {
   if (e) e.stopPropagation();
   if (!activeDrawerState) return;
@@ -1330,12 +1327,6 @@ window._drawerNavPrev = function(e) {
   }
 };
 
-/**
- * Botão › (Avançar):
- * - Se estiver navegando em relações (historyIndex > 0): avança no histórico de relações até o limite.
- *   Ao atingir o fim da cadeia, navega para o próximo evento na lista.
- * - Se estiver no nível raiz (historyIndex === 0): navega para o próximo evento na lista de programação.
- */
 window._drawerNavNext = function(e) {
   if (e) e.stopPropagation();
   if (!activeDrawerState) return;
@@ -1365,12 +1356,6 @@ window._drawerNavBack = function(e) {
   window._drawerNavPrev(e);
 };
 
-/**
- * Navegação por clique nos breadcrumbs:
- * - Clicar em PROGRAMAÇÃO (stepIndex === -1) fecha a gaveta.
- * - Clicar em qualquer outro passo posiciona o historyIndex naquele nó.
- * - Se retornar a stepIndex === 0, os botões ‹ e › voltam a operar sobre a lista de eventos.
- */
 window._drawerNavStep = function(e, stepIndex) {
   if (e && e.stopPropagation) e.stopPropagation();
   if (typeof e === 'number') {
@@ -1391,15 +1376,6 @@ window._drawerNavStep = function(e, stepIndex) {
 window._togglePopover = function(e, btn) {
   if (e) e.stopPropagation();
 };
-
-window._closePopovers = function(e) {
-  if (e) e.stopPropagation();
-  closeAllPopovers();
-};
-
-// ==========================================================================
-// HELPERS DE BUSCA E FORMATAÇÃO DE DADOS
-// ==========================================================================
 
 function findConsolidatedEvent(title) {
   if (!title || !allConsolidatedEvents.length) return null;
@@ -1454,90 +1430,6 @@ function getEventCuradoria(evt) {
   if (typeof evt.curadoria === 'string' && evt.curadoria.trim()) {
     return evt.curadoria.split(/,\s*/);
   }
-  return [];
-}
-
-function getEmbedUrl(url) {
-  if (!url) return '';
-  const ytMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|live|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-  if (ytMatch && ytMatch[1]) {
-    return `https://www.youtube.com/embed/${ytMatch[1]}`;
-  }
-  const vimeoMatch = url.match(/(?:vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+))/i);
-  if (vimeoMatch && vimeoMatch[1]) {
-    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
-  }
-  return '';
-}
-
-function getEventVideosParsed(evt) {
-  let rawVideos = evt.videos;
-  if (!rawVideos || !rawVideos.length) {
-    const consolidated = findConsolidatedEvent(evt.rawTitle || evt.title || evt.id);
-    if (consolidated && consolidated.videos && consolidated.videos.length) {
-      rawVideos = consolidated.videos;
-    }
-  }
-
-  const idOrTitle = (evt.id || evt.title || evt.rawTitle || '').toLowerCase();
-  if ((!rawVideos || !rawVideos.length) && (idOrTitle.includes('1month') || idOrTitle.includes('monroy'))) {
-    rawVideos = [
-      {
-        titulo: 'Artista troca tudo',
-        url: 'https://www.youtube.com/watch?v=DYZK3glxpfI',
-        legenda: 'Negociação de obras por análise crítica do trabalho'
-      },
-      {
-        titulo: 'Quer que eu faça o quê?',
-        url: 'https://www.youtube.com/live/5OIQ87-oUWo',
-        legenda: 'Live inaugural // #1MONTHROY'
-      },
-      {
-        titulo: 'Strike a Pose #2',
-        url: 'https://www.youtube.com/watch?v=YZll0t40H6o',
-        legenda: 'Escultura // #1MONTHROY'
-      },
-      {
-        titulo: 'Mea Culpa #3',
-        url: 'https://www.youtube.com/watch?v=uRUiEfa9MaU',
-        legenda: 'Confessionário de reality show ao vivo After Troca Tudo'
-      },
-      {
-        titulo: 'Dançando por um sueño #8 - Dance Hall2 com Champion Boy',
-        url: 'https://www.youtube.com/watch?v=WPeVE7hmqGI',
-        legenda: 'Aulas de dança e performance latino-americana'
-      },
-      {
-        titulo: 'Respirartsy #22 - Ines Norton',
-        url: 'https://www.youtube.com/watch?v=3Vj5omm61fQ',
-        legenda: 'Práticas de yoga com projeção de arte contemporânea'
-      },
-      {
-        titulo: 'Performatic Art Attack #2 - 15 Brazucolocho looks com Celina Portella',
-        url: 'https://www.youtube.com/watch?v=TCAd-lrdXX8',
-        legenda: 'After Merce ou 20 looks com Celina Portella'
-      },
-      {
-        titulo: 'Live #70 - SPECIAL Vale a pena ver de novo',
-        url: 'https://www.youtube.com/watch?v=hzyRhcnc_m0',
-        legenda: 'Transmissão especial de encerramento do projeto'
-      }
-    ];
-  }
-
-  if (Array.isArray(rawVideos)) {
-    return rawVideos.map(v => {
-      if (typeof v === 'string') {
-        return { titulo: '', url: v, legenda: '' };
-      }
-      return {
-        titulo: v.titulo || v.title || '',
-        url: v.url || v.link || v.src || '',
-        legenda: v.legenda || v.descricao || v.description || ''
-      };
-    }).filter(v => v.url || v.titulo);
-  }
-
   return [];
 }
 
@@ -1624,7 +1516,7 @@ function getEventTextosParsed(evt) {
 
   if (Array.isArray(rawTextos)) {
     return rawTextos
-      .filter(t => t && (typeof t === 'string' || t.exibir_no_site !== false))
+      .filter(t => t && (typeof t === 'string' || t.exibir_no_site !== false && t.exibir_no_site !== 'false'))
       .map(t => ({
         categoria: t.categoria || 'Texto crítico',
         titulo: t.titulo || t.title || 'Sobre tantos corpos',
@@ -1635,7 +1527,7 @@ function getEventTextosParsed(evt) {
 
   if (typeof rawTextos === 'string' && rawTextos.trim().length > 0) {
     const parsed = parseKirbyYamlStructure(rawTextos);
-    return parsed.filter(t => t && t.exibir_no_site !== false);
+    return parsed.filter(t => t && t.exibir_no_site !== false && t.exibir_no_site !== 'false');
   }
 
   const titleNorm = normalizeText(evt.rawTitle || evt.title || '');
@@ -1644,7 +1536,7 @@ function getEventTextosParsed(evt) {
       categoria: 'Texto crítico',
       titulo: 'Montagem',
       autoria: 'Chico Soll',
-      texto: '<p>A exposição individual <em>Montagem</em>, de Marcelo Amorim, reúne trabalhos baseados em imagens vernaculares para questionar o olhar voyeurístico e as construções da memória coletiva.</p><p>Ao intervir sobre fotografias e arquivos históricos por meio de operações de colagem, pintura e reconfiguração visual, Amorim tensiona o estatuto da representação e a autoridade do documento visual, descortinando narrativas de afeto, identidade e poder que atravessam as pedagogias da imagem no mundo contemporâneo.</p>'
+      texto: '<p>A exposição individual <em>Montagem</em>, de Marcelo Amorim, reúne trabalhos baseados em imagens vernaculares para questionar o olhar voyeurístico e as construções da memória coletiva.</p>'
     }];
   }
 
@@ -1759,34 +1651,22 @@ function getPersonGalleryImages(person) {
     });
   };
 
-  if (person.foto_perfil) {
-    addImage(person.foto_perfil, person.title);
-  }
-  if (person.foto_principal) {
-    addImage(person.foto_principal, person.title);
-  }
+  if (person.foto_perfil) addImage(person.foto_perfil, person.title);
+  if (person.foto_principal) addImage(person.foto_principal, person.title);
 
   if (Array.isArray(person.galeria)) {
     person.galeria.forEach(item => {
       if (!item) return;
-      if (typeof item === 'string') {
-        addImage(item, person.title);
-      } else {
-        const u = item.url || item.thumb;
-        addImage(u, item.legenda || person.title);
-      }
+      if (typeof item === 'string') addImage(item, person.title);
+      else addImage(item.url || item.thumb, item.legenda || person.title);
     });
   }
 
   if (Array.isArray(person.fotos)) {
     person.fotos.forEach(item => {
       if (!item) return;
-      if (typeof item === 'string') {
-        addImage(item, person.title);
-      } else {
-        const u = item.url || item.thumb;
-        addImage(u, item.legenda || person.title);
-      }
+      if (typeof item === 'string') addImage(item, person.title);
+      else addImage(item.url || item.thumb, item.legenda || person.title);
     });
   }
 
@@ -1813,8 +1693,8 @@ function getPersonParticipations(personName) {
 
   allConsolidatedEvents.forEach(evt => {
     let role = null;
-    const artistsList = Array.isArray(evt.artistas) ? evt.artistas : (typeof evt.artistas === 'string' ? evt.artistas.split(/,|\n/).map(s => s.trim()).filter(Boolean) : []);
-    const curadoriaList = Array.isArray(evt.curadoria) ? evt.curadoria : (typeof evt.curadoria === 'string' ? evt.curadoria.split(/,|\n/).map(s => s.trim()).filter(Boolean) : []);
+    const artistsList = Array.isArray(evt.artistas) ? evt.artistas : [];
+    const curadoriaList = Array.isArray(evt.curadoria) ? evt.curadoria : [];
 
     if (artistsList.some(a => normalizeText(a) === q || normalizeText(a).replace(/\s+/g, '-') === qSlug)) {
       role = 'Artista';
@@ -1826,14 +1706,10 @@ function getPersonParticipations(personName) {
       const evtId = evt.id || evt.slug || evt.title;
       if (!seenIds.has(evtId)) {
         seenIds.add(evtId);
-        let ano = evt.ano || '';
-        if (!ano && evt.inicio) {
-          ano = evt.inicio.split('-')[0];
-        }
         participacoes.push({
           id: evtId,
           title: evt.title,
-          ano: ano,
+          ano: evt.ano || '',
           categoria: evt.categoria || 'Evento',
           roleLabel: role
         });
@@ -1845,30 +1721,66 @@ function getPersonParticipations(personName) {
   return participacoes;
 }
 
-function parseCreditsYaml(yamlStr) {
-  if (!yamlStr || typeof yamlStr !== 'string') return [];
-  const cleanStr = yamlStr.trim();
-  const rawBlocks = cleanStr.replace(/^-\s*\n?/, '').split(/\n\s*-\s*\n|\n-\s+/).filter(b => b.trim().length > 0);
-  const result = [];
+function normalizeArchiveData(data) {
+  if (!Array.isArray(data)) return [];
 
-  rawBlocks.forEach(block => {
-    const funcaoMatch = block.match(/funcao:\s*([^\n]+)/i);
-    const nomesMatch = block.match(/nomes:\s*([^\n]+)/i);
-    if (funcaoMatch && nomesMatch) {
-      const funcao = funcaoMatch[1].trim();
-      const nomesRaw = nomesMatch[1].trim();
-      const nomes = nomesRaw.split(/[,;]|\be\b|\n/).map(s => s.trim()).filter(Boolean);
-      result.push({ funcao, nomes });
+  return data.map(item => {
+    const rawYear = item.inicio ? parseInt(item.inicio.substring(0, 4), 10) : null;
+    
+    let artistasArr = [];
+    if (Array.isArray(item.artistas_lista) && item.artistas_lista.length > 0) {
+      artistasArr = item.artistas_lista;
+    } else if (Array.isArray(item.artistas)) {
+      artistasArr = item.artistas.map(a => a.trim()).filter(Boolean);
+    } else if (typeof item.artistas === 'string' && item.artistas.trim()) {
+      artistasArr = item.artistas.split(/,|\n/).map(s => s.trim()).filter(Boolean);
     }
-  });
 
-  return result;
+    let curadoriaArr = [];
+    if (Array.isArray(item.curadoria)) {
+      curadoriaArr = item.curadoria.map(c => c.trim()).filter(Boolean);
+    } else if (typeof item.curadoria === 'string' && item.curadoria.trim()) {
+      curadoriaArr = item.curadoria.split(/,|\n/).map(s => s.trim()).filter(Boolean);
+    }
+
+    let fotosArr = [];
+    if (Array.isArray(item.expanded_images) && item.expanded_images.length > 0) {
+      fotosArr = item.expanded_images.map(img => ({
+        url: img.url,
+        legenda: img.legenda || item.title || '',
+        autoria: img.autoria || ''
+      }));
+    } else if (Array.isArray(item.images) && item.images.length > 0) {
+      fotosArr = item.images.map(url => ({
+        url,
+        legenda: item.title || '',
+        autoria: ''
+      }));
+    }
+
+    let textosArr = parseTextosField(item.textos, item.title);
+    const videosArr = Array.isArray(item.videos) ? item.videos : [];
+    const premiacoesArr = Array.isArray(item.premiacoes) ? item.premiacoes : [];
+
+    return {
+      ...item,
+      id: item.id || item._slug || item.title,
+      slug: item._slug || item.id || normalizeText(item.title).replace(/\s+/g, '-'),
+      ano: rawYear,
+      artistas: artistasArr,
+      curadoria: curadoriaArr,
+      fotos: fotosArr,
+      textos: textosArr,
+      videos: videosArr,
+      premiacoes: premiacoesArr
+    };
+  });
 }
 
 function parseTextosField(textos, fallbackTitle = '') {
   if (Array.isArray(textos) && textos.length > 0) {
     return textos
-      .filter(t => t && (typeof t === 'string' || t.exibir_no_site !== false))
+      .filter(t => t && (typeof t === 'string' || t.exibir_no_site !== false && t.exibir_no_site !== 'false'))
       .map((t, idx) => {
         if (typeof t === 'string') {
           return {
@@ -1888,116 +1800,7 @@ function parseTextosField(textos, fallbackTitle = '') {
         };
       });
   }
-
-  if (typeof textos === 'string' && textos.trim().length > 0) {
-    const str = textos.trim();
-    if (str.startsWith('[')) {
-      try {
-        const parsed = JSON.parse(str);
-        return parseTextosField(parsed, fallbackTitle);
-      } catch (_) {}
-    }
-
-    const blocks = str.replace(/^-\s*\n?/, '').split(/\n\s*-\s*\n|\n-\s+/).filter(b => b.trim().length > 0);
-    const result = [];
-    blocks.forEach((block, idx) => {
-      const catMatch = block.match(/categoria:\s*([^\n]+)/i);
-      const autMatch = block.match(/autoria:\s*([^\n]+)/i);
-      const titMatch = block.match(/titulo:\s*([^\n]+)/i);
-      const txtMatch = block.match(/texto:\s*([\s\S]+)/i);
-      const exMatch = block.match(/exibir_no_site:\s*([^\n]+)/i);
-
-      if (exMatch) {
-        const exVal = exMatch[1].trim().toLowerCase();
-        if (exVal === 'false' || exVal === '0' || exVal === 'no') {
-          return;
-        }
-      }
-
-      let textoVal = txtMatch ? txtMatch[1].trim() : '';
-      if ((textoVal.startsWith("'") && textoVal.endsWith("'")) || (textoVal.startsWith('"') && textoVal.endsWith('"'))) {
-        textoVal = textoVal.slice(1, -1);
-      }
-
-      result.push({
-        id: `texto-yaml-${idx}`,
-        categoria: catMatch ? catMatch[1].trim() : 'Texto crítico',
-        autoria: autMatch ? autMatch[1].trim() : '',
-        titulo: titMatch ? titMatch[1].trim() : (fallbackTitle || 'Texto crítico'),
-        texto: textoVal || block
-      });
-    });
-
-    if (result.length > 0) return result;
-
-    return [{
-      id: `texto-str-0`,
-      categoria: 'Texto crítico',
-      autoria: '',
-      titulo: fallbackTitle || 'Texto crítico',
-      texto: str
-    }];
-  }
-
   return [];
-}
-
-function normalizeArchiveData(data) {
-  if (!Array.isArray(data)) return [];
-
-  return data.map(item => {
-    const rawYear = item.inicio ? parseInt(item.inicio.substring(0, 4), 10) : null;
-    
-    let artistasArr = [];
-    if (Array.isArray(item.artistas)) {
-      artistasArr = item.artistas.map(a => a.trim()).filter(Boolean);
-    } else if (typeof item.artistas === 'string' && item.artistas.trim()) {
-      artistasArr = item.artistas.split(/,|\n/).map(s => s.trim()).filter(Boolean);
-    }
-
-    let curadoriaArr = [];
-    if (Array.isArray(item.curadoria)) {
-      curadoriaArr = item.curadoria.map(c => c.trim()).filter(Boolean);
-    } else if (typeof item.curadoria === 'string' && item.curadoria.trim()) {
-      curadoriaArr = item.curadoria.split(/,|\n/).map(s => s.trim()).filter(Boolean);
-    }
-
-    const creditosParsed = parseCreditsYaml(item.creditos);
-
-    let fotosArr = [];
-    if (Array.isArray(item.expanded_images) && item.expanded_images.length > 0) {
-      fotosArr = item.expanded_images.map(img => ({
-        url: img.url,
-        legenda: img.legenda || item.title || '',
-        autoria: img.autoria || ''
-      }));
-    } else if (Array.isArray(item.images) && item.images.length > 0) {
-      fotosArr = item.images.map(url => ({
-        url,
-        legenda: item.title || '',
-        autoria: ''
-      }));
-    } else if (Array.isArray(item.fotos) && item.fotos.length > 0) {
-      fotosArr = item.fotos.map(f => typeof f === 'string' ? { url: f, legenda: item.title } : f);
-    }
-
-    let textosArr = parseTextosField(item.textos, item.title);
-    if (!textosArr.length && item.texto_critico) {
-      textosArr = parseTextosField(item.texto_critico, item.title);
-    }
-
-    return {
-      ...item,
-      id: item.id || item._slug || item.title,
-      slug: item._slug || item.id || normalizeText(item.title).replace(/\s+/g, '-'),
-      ano: rawYear,
-      artistas: artistasArr,
-      curadoria: curadoriaArr,
-      creditosParsed,
-      fotos: fotosArr,
-      textos: textosArr
-    };
-  });
 }
 
 function buildConsolidatedPersonsDataset(rawPersons, eventsList) {
@@ -2034,78 +1837,11 @@ function buildConsolidatedPersonsDataset(rawPersons, eventsList) {
         status_vinculo: p.status_vinculo || '',
         foto_perfil: p.foto_perfil || null,
         foto_principal: fotoUrl,
-        galeria: Array.isArray(p.galeria) ? p.galeria : [],
-        fotos: Array.isArray(p.fotos) ? p.fotos : [],
         links: Array.isArray(p.links) ? p.links : [],
-        participacoes: []
+        participacoes: Array.isArray(p.participacoes) ? p.participacoes : []
       });
     });
   }
-
-  // Vincula participações a partir do acervo de eventos
-  eventsList.forEach(evt => {
-    const artistsList = Array.isArray(evt.artistas) ? evt.artistas : [];
-    artistsList.forEach(artistName => {
-      const slug = normalizeText(artistName).replace(/\s+/g, '-');
-      if (!personsMap.has(slug)) {
-        personsMap.set(slug, {
-          slug,
-          title: artistName,
-          funcoes: 'Artista',
-          bio: '',
-          cidade: '',
-          pais: '',
-          nascimento: '',
-          falecimento: '',
-          membro_atelie: false,
-          foto_principal: null,
-          links: [],
-          participacoes: []
-        });
-      }
-      const p = personsMap.get(slug);
-      if (!p.participacoes.some(part => part.id === evt.id && part.roleLabel === 'Artista')) {
-        p.participacoes.push({
-          id: evt.id,
-          title: evt.title,
-          ano: evt.ano,
-          categoria: evt.categoria,
-          roleLabel: 'Artista'
-        });
-      }
-    });
-
-    const curatorList = Array.isArray(evt.curadoria) ? evt.curadoria : [];
-    curatorList.forEach(curatorName => {
-      const slug = normalizeText(curatorName).replace(/\s+/g, '-');
-      if (!personsMap.has(slug)) {
-        personsMap.set(slug, {
-          slug,
-          title: curatorName,
-          funcoes: 'Curadoria',
-          bio: '',
-          cidade: '',
-          pais: '',
-          nascimento: '',
-          falecimento: '',
-          membro_atelie: false,
-          foto_principal: null,
-          links: [],
-          participacoes: []
-        });
-      }
-      const p = personsMap.get(slug);
-      if (!p.participacoes.some(part => part.id === evt.id && part.roleLabel === 'Curadoria')) {
-        p.participacoes.push({
-          id: evt.id,
-          title: evt.title,
-          ano: evt.ano,
-          categoria: evt.categoria,
-          roleLabel: 'Curadoria'
-        });
-      }
-    });
-  });
 
   return Array.from(personsMap.values()).map(p => {
     p.participacoes.sort((a, b) => (b.ano || 0) - (a.ano || 0));
@@ -2143,13 +1879,6 @@ function escapeAttr(str) {
   return String(str)
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
-}
-
-function stripHtml(html) {
-  if (!html) return '';
-  const tmp = document.createElement('DIV');
-  tmp.innerHTML = html;
-  return tmp.textContent || tmp.innerText || '';
 }
 
 function formatParagraphs(text) {
