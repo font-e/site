@@ -1,0 +1,1244 @@
+/* 1. SEÇÃO PROGRAMAÇÃO & CABEÇALHO HERO */
+#sec-programacao.section-block,
+.programacao-section {
+  width: 100%;
+  background-color: var(--bg-white, #ffffff);
+  position: relative;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.programacao-hero-bg {
+  width: 100%;
+  height: 118vh;
+  margin-top: 0; 
+  background-image: url('https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-3-edicao/c4be8a7d74-1789374767/capa_arquivo-d-2560x2560-q85.webp');
+  background-size: cover;
+  background-position: center bottom;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header Bar com Efeito de Degrau na base da hero (Título à Esquerda, Botões à Direita) */
+.programacao-header-bar {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  background: transparent;
+  position: relative;
+  z-index: 2;
+  align-items: end;
+}
+
+.programacao-title-box {
+  grid-column: 1 / 5;
+  background-color: var(--accent-cyan);
+  border: 1.5px solid var(--bg-black);
+  height: 96px; /* 2x a altura da barra ao lado */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 8px;
+  box-sizing: border-box;
+}
+
+.programacao-section-title {
+  font-size: var(--fs-name);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: 0.038em;
+  color: var(--bg-black);
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  align-self: flex-start;
+}
+
+#programacao-facets-container,
+.programacao-facets-bar {
+  grid-column: 5 / 13;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  height: 48px;
+  background-color: transparent;
+  border-bottom: 1.5px solid var(--bg-black);
+  border-right: 1.5px solid var(--bg-black);
+  border-top: none;
+  border-left: none;
+  box-sizing: border-box;
+}
+
+.programacao-facet-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  height: 100%;
+  background-color: transparent !important;
+  border: none !important;
+  box-sizing: border-box;
+}
+
+/* =========================================
+   LISTA DE EVENTOS E LINHAS
+   ========================================= */
+.events-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-item {
+  position: relative;
+  width: 100%;
+  background-color: var(--bg-white, #fff);
+  border-bottom: var(--border-width, 1.5px) solid var(--border-color, #000);
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+/* Dimming nos fechados quando houver hover */
+.events-list:has(.event-item:not(.is-open):hover) .event-item:not(.is-open):not(:hover) {
+  opacity: 0.6;
+}
+
+.event-item:not(.is-open):hover {
+  background-color: var(--hover-bg, #eefffe);
+}
+
+/* Cabeçalho do Evento (Área Clicável Fechada) */
+.event-header {
+  width: 100%;
+  padding: 0 0 24px 0;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+/* Linha Superior Fechada: Tags (Cols 1-4), Horário (Cols 5-8), Data (Cols 9-10) */
+.event-meta-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: stretch;
+  gap: 0;
+  height: 38px;
+  min-height: 38px;
+  margin-bottom: 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.event-meta-tags {
+  grid-column: 1 / span 4;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+  padding-left: 20px;
+  padding-right: 10px;
+}
+
+.event-meta-horario {
+  grid-column: 5 / span 4;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-left: var(--border-width, 1.5px) solid var(--border-color, #000);
+  border-right: var(--border-width, 1.5px) solid var(--border-color, #000);
+}
+
+.event-meta-date {
+  grid-column: 9 / span 2;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+  padding-left: 10px;
+  border-left: none;
+}
+
+.event-date,
+.event-horario {
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--bg-black, #000);
+  white-space: pre-wrap;
+}
+
+.event-tags-list {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.event-tag-badge {
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 400;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  color: var(--bg-black, #000);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.event-tag-badge.event-tag-inscricoes,
+.event-tag-inscricoes {
+  padding: 4px 8px;
+  border: var(--border-width, 1.5px) solid var(--border-color, #000);
+  border-radius: 4px;
+  background-color: var(--hover-bg, #eefffe);
+  color: var(--bg-black, #000);
+}
+
+/* Título e Nomes Fechados */
+.event-title {
+  margin-bottom: 8px;
+  line-height: 0.95;
+  padding-left: 20px;
+  padding-right: 20px;
+  max-width: calc(100% * 11 / 12);
+}
+
+.event-title-text {
+  display: inline;
+  font-size: var(--fs-title);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: var(--bg-black, #000);
+  word-break: break-word;
+}
+
+.event-subtitle-text {
+  display: block;
+  font-size: calc(var(--fs-name) * 1.5);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--bg-black, #000);
+  word-break: break-word;
+  max-width: calc(100% * 11 / 12);
+}
+
+.event-names {
+  font-size: var(--fs-name);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--bg-black, #000);
+  word-break: break-word;
+  padding-left: 20px;
+  padding-right: 20px;
+  max-width: calc(100% * 11 / 12);
+}
+
+/* ==========================================================================
+   NOVA GAVETA UNIVERSAL (ESTRUTURA COBRINDO E EXPANDINDO)
+   Item aberto ocupa o espaço restante entre o header e a base da página
+   ========================================================================== */
+.event-item.is-open {
+  background-color: var(--bg-white, #fff);
+  position: relative;
+}
+
+.event-item.is-open .event-header {
+  cursor: pointer;
+}
+
+.event-universal-drawer {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto 1fr;
+  background-color: var(--bg-white, #fff);
+  box-sizing: border-box;
+  min-height: calc(100vh - var(--header-height, 56px) - 60px);
+  height: calc(100vh - var(--header-height, 56px) - 60px);
+  max-height: calc(100vh - var(--header-height, 56px) - 60px);
+  overflow: hidden;
+  position: relative;
+  border-top: var(--border-width, 1.5px) solid var(--border-color, #000);
+  border-bottom: var(--border-width, 1.5px) solid var(--border-color, #000);
+}
+
+/* Coluna Esquerda: Cols 1-8 contendo a linha superior e a caixa de texto */
+.drawer-left-column {
+  grid-column: 1 / 9;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  border-right: var(--border-width, 1.5px) solid var(--border-color, #000);
+  background-color: var(--bg-white, #fff);
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* 4a. LINHA SUPERIOR: Breadcrumbs (Cols 1-7), Ações de Fechar/Voltar (Col 8) com fundo --hover-bg */
+.drawer-top-line {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  height: 38px;
+  min-height: 38px;
+  border-bottom: var(--border-width, 1.5px) solid var(--border-color, #000);
+  background-color: var(--hover-bg, #eefffe);
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+/* Área de Breadcrumbs: Cols 1 a 7 */
+.drawer-breadcrumb-col {
+  grid-column: 1 / 11;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  padding-right: 12px;
+  overflow: visible;
+  white-space: nowrap;
+  font-size: var(--fs-meta, 0.875rem);
+  color: var(--bg-black, #000);
+  background-color: transparent;
+  cursor: default;
+  position: relative;
+}
+
+.breadcrumb-trail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Item 3 & Pedido 1: Todos os breadcrumbs têm o mesmo peso fino uniforme */
+.breadcrumb-step {
+  color: var(--bg-black, #000);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.breadcrumb-step:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+}
+
+.breadcrumb-step.is-current {
+  font-weight: 600;
+  cursor: default;
+}
+
+.breadcrumb-step.is-current:hover {
+  background-color: transparent;
+}
+
+.breadcrumb-step.is-future {
+  opacity: 0.75;
+}
+
+.breadcrumb-sep {
+  color: #888;
+  font-size: 0.8rem;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+/* Item 5: Mouseover em breadcrumb > ... > revela seu conteúdo dinamicamente */
+.breadcrumb-ellipsis-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.breadcrumb-ellipsis-text {
+  transition: all 0.2s ease;
+}
+
+.breadcrumb-ellipsis-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background-color: var(--bg-black, #000);
+  color: var(--bg-white, #fff);
+  padding: 6px 10px;
+  border-radius: 3px;
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(2px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.breadcrumb-ellipsis-wrapper:hover .breadcrumb-ellipsis-popover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Coluna 8: Botões de Fechar, Voltar e Avançar (< X >) com fundo --hover-bg */
+.drawer-control-col {
+  grid-column: 11 / 13;
+  display: flex;
+  align-items: stretch;
+  border-left: var(--border-width, 1.5px) solid var(--border-color, #000);
+  border-right: none;
+  background-color: transparent;
+  position: relative;
+}
+
+.drawer-ctrl-box {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+}
+
+.drawer-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  width: 33.333%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  font-weight: 400;
+  color: var(--bg-black, #000);
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.15s, opacity 0.15s, color 0.15s;
+  user-select: none;
+}
+
+.drawer-btn-icon.drawer-btn-close {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.drawer-ctrl-box .drawer-btn-icon:not(:last-child) {
+  border-right: var(--border-width, 1.5px) solid var(--border-color, #000);
+}
+
+.drawer-btn-icon:hover:not(:disabled):not(.is-disabled):not(.is-hover-bg) {
+  background-color: var(--accent-cyan, #ccfffe);
+}
+
+.drawer-btn-icon:disabled,
+.drawer-btn-icon.is-disabled {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Quando o botão > fica com estilo hover-bg (indicando fim do histórico de relações) */
+.drawer-btn-icon.is-hover-bg {
+  background-color: var(--hover-bg, #eefffe) !important;
+  color: var(--bg-black, #000);
+  cursor: default !important;
+  pointer-events: none;
+  opacity: 1 !important;
+}
+
+/* Colunas 1 a 8: Conteúdo com Scroll Próprio */
+.drawer-content-pane {
+  width: 100%;
+  flex: 1;
+  min-height: 0; /* Permite scroll interno dentro da altura fixa */
+  padding: 24px 0 48px 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-sizing: border-box;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.drawer-content-pane::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Webkit */
+}
+
+/* Item 4: NENHUM SCROLLBAR na galeria lateral da gaveta */
+.drawer-media-pane::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+.drawer-media-pane {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Subseções / Tags de Seções do Evento */
+.drawer-subsections-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding-left: 20px;
+  padding-right: 20px;
+  flex-shrink: 0;
+}
+
+.drawer-dynamic-view {
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.drawer-tab-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--h-menu, 32px);
+  font-size: var(--fs-nav, 0.8125rem);
+  font-weight: 500;
+  padding: 0 12px;
+  border: var(--border-width, 1.5px) solid var(--border-color, #000);
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--bg-black, #000);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.drawer-tab-pill:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+  color: var(--bg-black, #000);
+}
+
+.drawer-tab-pill.is-active {
+  background-color: var(--bg-black, #000);
+  color: var(--bg-white, #fff);
+  border-color: var(--bg-black, #000);
+}
+
+/* Área de Texto Dinâmica da Subseção */
+.drawer-dynamic-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Em SOBRE, 'artistas', 'curadoria' e 'resumo' têm 100 a menos no peso (600) e são pretas.
+   Os nomes têm o mesmo peso do restante do texto (400). */
+.section-sobre-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sobre-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sobre-block-label {
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--bg-black, #000);
+}
+
+.sobre-block-content {
+  font-size: var(--fs-body, 1rem);
+  line-height: 1.55;
+  color: var(--bg-black, #000);
+  font-weight: 400;
+}
+
+.sobre-block-content p {
+  margin: 0 0 1em 0;
+}
+
+.sobre-block-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Formatação Editorial Limpa e Lista Interativa da aba Textos */
+.textos-view-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.texto-list-header {
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+/* Card de pré-visualização quando há mais de 1 texto na lista */
+.texto-preview-card {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18px;
+  border: var(--border-width, 1.5px) solid var(--border-color, #000);
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: var(--bg-white, #fff);
+  transition: background-color 0.15s ease;
+}
+
+.texto-preview-card:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+}
+
+.texto-back-to-list-btn {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px solid var(--border-color, #000);
+  padding: 4px 10px;
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 3px;
+  margin-bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.15s;
+}
+
+.texto-back-to-list-btn:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+}
+
+.texto-article-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.texto-meta-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.texto-header-categoria {
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Título tem o peso do título do evento fechado (500) e tamanho do nome de artistas fechado (--fs-name) */
+.texto-header-titulo {
+  font-size: var(--fs-name);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--bg-black, #000);
+  margin: 0;
+  letter-spacing: -0.015em;
+}
+
+/* Autoria tem o tamanho (--fs-name) e peso (400) do nome de artistas fechado */
+.texto-header-autoria {
+  font-size: var(--fs-name);
+  font-weight: 400;
+  color: var(--bg-black, #000);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+
+.texto-empty-divider {
+  height: 24px;
+  width: 100%;
+}
+
+.texto-body-content {
+  font-size: var(--fs-body, 1rem);
+  line-height: 1.65;
+  color: var(--bg-black, #000);
+}
+
+.texto-body-content p {
+  margin: 0 0 1.2em 0;
+}
+
+.texto-body-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Tags de Pessoas Clicáveis (Artistas / Curadoria) */
+.artist-name-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.artist-name-wrapper.is-open {
+  z-index: 9999999 !important;
+}
+
+.artist-clickable-tag {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 400;
+  color: var(--bg-black, #000);
+  cursor: pointer;
+  border-bottom: 1.5px solid var(--bg-black, #000);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.artist-clickable-tag:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+}
+
+.artist-plain-text {
+  font-weight: 400;
+  color: var(--bg-black, #000);
+}
+
+/* POPOVER PADRÃO DO SITE */
+.artist-popover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  min-width: 240px;
+  max-width: 340px;
+  background-color: var(--bg-black, #000);
+  color: var(--bg-white, #fff);
+  border: var(--border-width, 1.5px) solid var(--bg-black, #000);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 9999999;
+  border-radius: 4px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  pointer-events: none;
+}
+
+.artist-popover.popover-down {
+  bottom: auto;
+  top: calc(100% + 8px);
+  transform: translateY(-4px);
+}
+
+.artist-popover.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.popover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  padding-bottom: 4px;
+  gap: 8px;
+}
+
+.popover-title-text {
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 700;
+  color: var(--bg-white, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.popover-close-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.popover-close-btn:hover {
+  color: var(--bg-white, #fff);
+}
+
+.popover-summary-bio {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.popover-count-meta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-cyan, #ccfffe);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.popover-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.popover-action {
+  background: transparent;
+  color: var(--bg-white, #fff);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 10px;
+  border-radius: 3px;
+  font-size: var(--fs-meta, 0.875rem);
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.15s;
+}
+
+.popover-action:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+  color: var(--bg-black, #000);
+  border-color: var(--accent-cyan, #ccfffe);
+}
+
+/* VISUALIZAÇÃO DE PERFIL DA PESSOA NA GAVETA (Navegação Breadcrumb) */
+.person-drawer-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.person-profile-header {
+  border-bottom: var(--border-width, 1.5px) solid var(--border-color, #000);
+  padding-bottom: 14px;
+}
+
+.person-profile-title {
+  font-size: calc(var(--fs-name) * 1.6);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+}
+
+.person-profile-meta {
+  font-size: var(--fs-meta, 0.875rem);
+  color: #555;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.person-profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.person-bio-box h4,
+.person-actions-box h4 {
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 12px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ddd;
+}
+
+.person-bio-box .bio-text {
+  font-size: var(--fs-body, 1rem);
+  line-height: 1.6;
+  color: var(--bg-black, #000);
+}
+
+.person-timeline-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.person-timeline-item {
+  display: grid;
+  grid-template-columns: 48px 1fr 18px;
+  gap: 8px;
+  align-items: baseline;
+  padding: 8px 10px;
+  border: var(--border-width, 1.5px) solid var(--border-color, #000);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  background-color: var(--bg-white, #fff);
+}
+
+.person-timeline-item:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+}
+
+.person-timeline-item .timeline-year {
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 700;
+}
+
+.person-timeline-item .timeline-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.person-timeline-item .timeline-title {
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.person-timeline-item .timeline-role {
+  font-size: 0.75rem;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.person-timeline-item .timeline-arrow {
+  font-size: 1rem;
+  color: #888;
+  text-align: right;
+}
+
+/* ==========================================================================
+   Colunas 9 a 12: Galeria Lateral (Scroll Vertical de Imagens)
+   Item 2: Ocupa a mesma altura da caixa de texto + linha de breadcrumbs
+   Item 4: Sem scrollbar, scroll contínuo suave e limpo
+   ========================================================================== */
+.drawer-media-pane {
+  grid-column: 9 / 13;
+  grid-row: 2;
+  height: 100%;
+  border-left: none;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-white, #fff);
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.drawer-media-pane::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.drawer-person-media {
+  width: 100%;
+  height: 100%;
+}
+
+.drawer-person-media img,
+.drawer-media-pane > img {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.drawer-gallery-track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.drawer-gallery-item {
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+  border-bottom: var(--border-width, 1.5px) solid var(--border-color, #000);
+  background-color: #f9f9f9;
+}
+
+.drawer-gallery-item:last-child {
+  border-bottom: none;
+}
+
+.drawer-gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: opacity 0.15s ease;
+}
+
+.drawer-gallery-item:hover img {
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   Itens 1, 2 e 3: Modo Zoom na área total da gaveta
+   - As imagens NÃO têm borda
+   - São maiores e seu topo toca diretamente na borda inferior do breadcrumb (padding-top: 0)
+   - Espaçamento exato de 24px entre um slide e outro (gap: 24px)
+   - Legenda alinhada à esquerda da imagem (mesma largura da imagem ou wrapper flex alinhado)
+   - Clique em qualquer imagem sai do modo zoom
+   - Sem botão < (apenas X para fechar a galeria zoom)
+   ========================================================================== */
+.drawer-zoom-wrapper {
+  grid-column: 1 / -1;
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background-color: var(--bg-white, #fff);
+  position: relative;
+  z-index: 20;
+}
+
+.drawer-zoom-wrapper .drawer-top-line {
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.drawer-zoom-wrapper .drawer-breadcrumb-col {
+  grid-column: 1 / span 11;
+}
+
+.drawer-zoom-wrapper .drawer-control-col {
+  grid-column: 12 / span 1;
+}
+
+.drawer-zoom-wrapper .drawer-zoom-gallery-view {
+  flex: 1;
+  min-height: 0;
+}
+
+.drawer-zoom-gallery-view {
+  width: 100%;
+  height: 100%;
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-white, #fff);
+  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.drawer-zoom-horizontal-track {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 24px; /* Item 2: Espaço exato de 24px entre uma imagem e outra */
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 24px 16px 24px; /* Item 1: Topo 0 toca na borda inferior do breadcrumb */
+  box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.drawer-zoom-horizontal-track::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.drawer-zoom-slide-item {
+  display: inline-flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100%;
+  box-sizing: border-box;
+  align-items: flex-start; /* Alinhamento estrito à esquerda */
+  width: auto;
+}
+
+/* Container da Imagem: Altura máxima disponível tocando no topo */
+.drawer-zoom-img-container {
+  flex: 1;
+  min-height: 0;
+  height: calc(100% - 48px);
+  display: flex;
+  align-items: flex-start; /* Item 1: Topo toca na borda inferior da linha de breadcrumb */
+  justify-content: flex-start;
+  cursor: pointer; /* Item 3: Clicar sobre a imagem fecha o zoom */
+}
+
+/* Item 1: Sem borda, maior área visual */
+.drawer-zoom-img-container img {
+  height: 100%;
+  max-height: 100%;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  border: none !important; /* Item 1: Sem borda */
+  background-color: transparent;
+  display: block;
+}
+
+/* Item 2: Legenda alinhada rigorosamente à esquerda da imagem */
+.drawer-zoom-caption-box {
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  padding-top: 8px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.zoom-caption-text {
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--bg-black, #000);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
+}
+
+.zoom-caption-author {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #666;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
+}
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE & TABLET)
+   ========================================= */
+@media (max-width: 860px) {
+  .programacao-section-title {
+    grid-column: 1 / -1;
+    padding-left: 20px;
+  }
+
+  .event-universal-drawer {
+    height: auto;
+    max-height: none;
+    min-height: auto;
+  }
+
+  .drawer-top-line {
+    grid-template-columns: 1fr auto;
+  }
+
+  .drawer-breadcrumb-col {
+    grid-column: 1;
+    padding-left: 12px;
+  }
+
+  .drawer-control-col {
+    grid-column: 2;
+    border-left: none;
+    border-right: none;
+  }
+
+  .drawer-top-spacer-col {
+    display: none;
+  }
+
+  .drawer-main-body {
+    grid-template-columns: 1fr;
+  }
+
+  .drawer-content-pane {
+    grid-column: 1 / -1;
+    padding: 16px 16px 32px 16px;
+    overflow-y: visible;
+  }
+
+  .drawer-media-pane {
+    grid-column: 1 / -1;
+    border-left: none;
+    border-top: var(--border-width, 1.5px) solid var(--border-color, #000);
+    height: 320px;
+  }
+
+  .person-profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .drawer-zoom-img-container img {
+    max-width: 92vw;
+  }
+}

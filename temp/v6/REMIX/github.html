@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FONTE - Residência Artística (Arquivo)</title>
+  <meta name="description" content="Residência Artística FONTE: Programação e Ateliês em sistema editorial suíço de 12 colunas.">
+  <meta property="og:title" content="FONTE - Residência Artística">
+  <meta property="og:description" content="Residência Artística FONTE: Programação e Ateliês em sistema editorial suíço de 12 colunas.">
+
+  <!-- CSS Modular Unificado -->
+  <link rel="stylesheet" href="./src/css/base.css">
+  <link rel="stylesheet" href="./src/css/nav-hero.css">
+  <link rel="stylesheet" href="./src/css/programacao.css">
+  <link rel="stylesheet" href="./src/css/residencia.css">
+  <link rel="stylesheet" href="./src/css/atelies.css">
+  <link rel="stylesheet" href="./src/css/arquivo.css">
+
+  <style>
+    /* Definição estrita da cor azul (#ccfffe) para acentos e estados interativos */
+    :root {
+      --accent-cyan: #ccfffe !important;
+      --hover-bg: #ccfffe !important;
+    }
+
+    /* Fundos transparentes para permitir a visibilidade do fundo duótono em todas as seções */
+    body,
+    #logo-controller,
+    .logo-hero-wrap,
+    #main-content,
+    .section-block,
+    .programacao-title-wrap,
+    #programacao-grid-container,
+    .events-list-container,
+    .event-item,
+    .event-item-header,
+    .residencia-title-wrap,
+    #residencia-container,
+    .residencia-layout-container,
+    .modalidades-grid,
+    .modalidade-card,
+    .atelies-title-wrap,
+    #atelies-grid-container,
+    .atelies-layout-container,
+    .artist-names-col,
+    .artist-name-btn:not(.is-active):not(:hover),
+    .artist-photos-col,
+    .photo-matrix-grid,
+    .photo-cell,
+    .empty-artist-slot,
+    .artist-detail-body,
+    .artist-detail-left,
+    .artist-detail-right,
+    .artist-text-col,
+    .artist-gallery-col,
+    .archive-section,
+    .archive-header-wrapper,
+    .table-container,
+    #archive-facets-container,
+    .archive-facet-bar,
+    .archive-search-box,
+    .archive-search-box input,
+    #table-header-container,
+    .header-row,
+    #table-body-container,
+    .expo-group-row:not(.is-open),
+    .expo-group-row:not(.is-open) .expo-item-clickable,
+    .archive-row-container,
+    .archive-row,
+    #table-footer-container,
+    .table-pagination-row,
+    .pagination-box,
+    .pagination-btn {
+      background-color: transparent !important;
+      background: transparent !important;
+    }
+
+    /* Posicionamento do menu colapsável alinhado à esquerda na referência [print3] */
+    .header-nav-left.header-nav-collapsible,
+    .header-nav-collapsible {
+      margin-left: 20px !important;
+    }
+
+    /* Títulos de seção universais alinhados à direita até a coluna 10 [print3] */
+    .section-title-wrap,
+    .residencia-title-wrap,
+    .programacao-title-wrap,
+    .atelies-title-wrap,
+    .archive-header-wrapper {
+      width: 100% !important;
+      display: grid !important;
+      grid-template-columns: repeat(12, 1fr) !important;
+      padding-bottom: 8px !important;
+      box-sizing: border-box !important;
+    }
+
+    .section-title,
+    .residencia-section-title,
+    .programacao-section-title,
+    .atelies-section-title,
+    .archive-section-title {
+      grid-column: 1 / 10 !important;
+      text-align: right !important;
+      align-self: end !important;
+    }
+
+    /* Botões de filtro em estado fechado/inicial: Transparentes */
+    .filter-pill:not(.is-active) {
+      background-color: transparent !important;
+      color: #000000 !important;
+    }
+
+    .filter-pill:not(.is-active):hover {
+      background-color: var(--accent-cyan, #ccfffe) !important;
+      color: #000000 !important;
+    }
+
+    /* Botão selecionado: Fundo preto e letra branca estrito [print1] */
+    .header-nav-btn.is-active,
+    .filter-pill.is-active {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+      border-color: #000000 !important;
+    }
+
+    /* Linhas da tabela de arquivo no hover */
+    .expo-item-clickable:hover {
+      background-color: var(--accent-cyan, #ccfffe) !important;
+    }
+
+    /* Correção de visualização do dropdown de categorias para eventos e pessoas [print2] */
+    .filter-dropdown-menu {
+      min-width: 240px !important;
+      max-width: 360px !important;
+      background-color: #ffffff !important;
+      background: #ffffff !important;
+      border: 1.5px solid #000000 !important;
+      border-radius: 4px !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+      z-index: 1000 !important;
+    }
+
+    .dropdown-options-list {
+      max-height: 260px !important;
+      overflow-y: auto !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .dropdown-option {
+      flex-shrink: 0 !important; /* Impede colapso de texto quando há muitas categorias */
+      min-height: 36px !important;
+      padding: 8px 12px !important;
+      line-height: 1.4 !important;
+      display: block !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      text-align: left !important;
+      background: transparent !important;
+      color: #000000 !important;
+      border: none !important;
+      cursor: pointer !important;
+      font-size: var(--fs-meta, 0.875rem) !important;
+    }
+
+    .dropdown-option:hover {
+      background-color: var(--accent-cyan, #ccfffe) !important;
+      color: #000000 !important;
+    }
+
+    .dropdown-option.is-selected {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+    }
+
+    /* Gavetas abertas mantêm fundo opaco para máxima legibilidade */
+    .event-drawer,
+    .event-drawer-inner,
+    .drawer-reading-container,
+    .facet-dropdown-menu,
+    .detail-drawer,
+    .person-detail-drawer,
+    .text-detail-drawer,
+    .expo-group-row.is-open,
+    .expo-group-row.is-open .expo-item-clickable {
+      background-color: #ffffff !important;
+      background: #ffffff !important;
+    }
+
+    /* Indicador HUD de Fundo Aleatório [F] */
+    #bg-hud-indicator {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      background: #000000;
+      color: #ccfffe;
+      border: 2px solid #000000;
+      padding: 5px 10px;
+      font-family: var(--font-mono, monospace);
+      font-size: var(--fs-meta, 12px);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    #bg-hud-indicator.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <!-- IMAGEM DE FUNDO FIXA DUÓTONO -->
+  <div id="bg-fixed-container" style="position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; overflow: hidden;">
+    <img 
+      id="bg-fixed-img"
+      src="" 
+      alt="" 
+      style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.55) contrast(888) url(#duotone-accent-cyan-white); display: block; opacity: 1; transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);"
+    />
+  </div>
+
+  <!-- HUD Indicador de troca de fundo [F] -->
+  <div id="bg-hud-indicator" aria-live="polite"></div>
+
+  <!-- Filtros SVG Duótono Padrão & Duótono Accent-Cyan/Branco de Ateliês (#ccfffe) -->
+  <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true">
+    <filter id="duotone-cyan" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="
+        0.2126 0.7152 0.0722 0 0
+        0.2126 0.7152 0.0722 0 0
+        0.2126 0.7152 0.0722 0 0
+        0      0      0      1 0" result="gray" />
+      <feComponentTransfer in="gray">
+        <feFuncR type="table" tableValues="0.0 0.8" />
+        <feFuncG type="table" tableValues="0.0 1.0" />
+        <feFuncB type="table" tableValues="0.0 0.996078" />
+      </feComponentTransfer>
+    </filter>
+    
+    <filter id="duotone-transparent" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="
+        0 0 0 0 0
+        0 0 0 0 0
+        0 0 0 0 0
+        -0.2126 -0.7152 -0.0722 0 1" />
+    </filter>
+
+    <!-- Filtro Duótono de Ateliês: Branco e Accent-Cyan (#ccfffe nas sombras -> Branco nas luzes) -->
+    <filter id="duotone-accent-cyan-white" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="
+        0.2126 0.7152 0.0722 0 0
+        0.2126 0.7152 0.0722 0 0
+        0.2126 0.7152 0.0722 0 0
+        0      0      0      1 0" result="gray" />
+      <feComponentTransfer in="gray">
+        <feFuncR type="table" tableValues="0.8 1.0" />
+        <feFuncG type="table" tableValues="1.0 1.0" />
+        <feFuncB type="table" tableValues="0.996078 1.0" />
+      </feComponentTransfer>
+    </filter>
+  </svg>
+
+  <!-- CABEÇALHO: NAVEGAÇÃO À ESQUERDA + LOGO À DIREITA -->
+  <header id="logo-controller">
+    <nav class="header-nav-left header-nav-collapsible" aria-label="Navegação Principal" id="header-nav-left">
+      <button type="button" class="header-nav-btn menu-toggle-btn" id="menu-toggle-btn" aria-expanded="false" aria-label="Menu de Navegação">
+        <span class="menu-toggle-icon" id="menu-toggle-icon">≡</span>
+      </button>
+      <div class="header-nav-items" id="header-nav-items">
+        <a href="#sec-programacao" class="header-nav-btn is-active" id="nav-btn-programacao">PROGRAMAÇÃO</a>
+        <a href="#sec-residencia" class="header-nav-btn" id="nav-btn-residencia">RESIDÊNCIA</a>
+        <a href="#sec-atelies" class="header-nav-btn" id="nav-btn-atelies">ATELIÊS</a>
+        <a href="#sec-arquivo" class="header-nav-btn" id="nav-btn-arquivo">ARQUIVO</a>
+      </div>
+    </nav>
+    <div class="logo-hero-wrap">
+      <a href="index.html" title="FONTE - Início">
+        <img id="site-logo" src="https://www.font-e.org/content/logo_fonte_preto.png" alt="FONTE">
+      </a>
+    </div>
+  </header>
+
+  <div id="top"></div>
+
+  <!-- CONTEÚDO PRINCIPAL (SPA): PROGRAMAÇÃO -> RESIDÊNCIA -> ATELIÊS -> ARQUIVO -->
+  <main id="main-content">
+    <!-- 1. SEÇÃO PROGRAMAÇÃO -->
+    <section class="section-block" id="sec-programacao">
+      <div class="programacao-title-wrap">
+        <h1 class="programacao-section-title">PROGRAMAÇÃO</h1>
+      </div>
+      <div id="programacao-grid-container">
+        <!-- Injetado via JS -->
+      </div>
+    </section>
+
+    <!-- 2. SEÇÃO RESIDÊNCIA (ENTRE PROGRAMAÇÃO E ATELIÊS) -->
+    <section class="section-block" id="sec-residencia">
+      <div id="residencia-container">
+        <!-- Injetado via JS -->
+      </div>
+    </section>
+
+    <!-- 3. SEÇÃO ATELIÊS -->
+    <section class="section-block" id="sec-atelies">
+      <div class="atelies-title-wrap">
+        <h1 class="atelies-section-title">ATELIÊS</h1>
+      </div>
+      <div id="atelies-grid-container">
+        <!-- Injetado via JS -->
+      </div>
+    </section>
+
+    <!-- 4. SEÇÃO ARQUIVO (NO FINAL) -->
+    <section class="section-block archive-section" id="sec-arquivo">
+      <div class="archive-header-wrapper grid-12">
+        <h2 class="archive-section-title">ARQUIVO</h2>
+      </div>
+      
+      <div id="search-tags-container" class="search-tags-container"></div>
+      
+      <div class="table-container">
+        <!-- Container de facetas (injetado via JS) -->
+        <div id="archive-facets-container"></div>
+        <!-- Cabeçalho da tabela -->
+        <div id="table-header-container"></div>
+        <!-- Corpo da tabela (linhas e gavetas) -->
+        <div id="table-body-container"></div>
+        <!-- Rodapé da tabela (paginação) -->
+        <div id="table-footer-container"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <!-- JS Modular -->
+  <script type="module" src="./src/js/app.js"></script>
+
+  <!-- GERENCIAMENTO DO FUNDO DUÓTONO ALEATÓRIO (20 IMAGENS / TECLA F) -->
+  <script>
+    (function() {
+      // Coleção curada de 20 fotografias de 20 eventos distintos (sem logos, flyers ou repetições de evento)
+      const DUOTONE_IMAGES = [
+        {
+          event: "A duração das coisas",
+          id: "a-duracao-das-coisas",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/a-duracao-das-coisas/8a68ff0b92-1788200645/0056-1400x1400-q82.webp"
+        },
+        {
+          event: "Inês Moura",
+          id: "ines-moura",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/ines-moura/367a031a24-1788370577/inesmoura_plano_geral_estudio_fonte_2013_1_1000-1400x1400-q82.webp"
+        },
+        {
+          event: "Martin Lanezan",
+          id: "martin-lanezan",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/martin-lanezan/b39ed5cc5a-1788370734/martin-pronta-1400x1400-q82.webp"
+        },
+        {
+          event: "Marco Maria Zanin",
+          id: "marco-maria-zanin",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/marco-maria-zanin/81cdc7a740-1788370757/marco-pronta-2-1400x1400-q82.webp"
+        },
+        {
+          event: "Rodrigo Braga",
+          id: "rodrigo-braga",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/rodrigo-braga/c67b7f75fa-1788367950/abrigo_de_paisagem.still003-1400x1400-q82.webp"
+        },
+        {
+          event: "Adrián Balseca",
+          id: "adrian-balseca",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/adrian-balseca/9d0c1002e3-1788368028/adrian-balseca-977x554-1400x1400-q82.webp"
+        },
+        {
+          event: "Pilar Quinteros",
+          id: "pilar-quinteros",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/pilar-quinteros/2fc92d1a38-1788368379/8-1400x1400-q82.webp"
+        },
+        {
+          event: "Sandra Gamarra",
+          id: "sandra-gamarra",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/sandra-gamarra/53ec45527f-1788368479/img_8735-1400x1400-q82.webp"
+        },
+        {
+          event: "Francisco Medail",
+          id: "francisco-medail",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/francisco-medail/952fe62f26-1788370837/francisco-medail_2-1400x1400-q82.webp"
+        },
+        {
+          event: "Ariel Cusnir",
+          id: "ariel-cusnir",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/ariel-cusnir/886b0211ed-1788368591/img_9367-1400x1400-q82.webp"
+        },
+        {
+          event: "Charlotte Marchand",
+          id: "charlotte-marchand",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/charlotte-marchand/7c6df60cb6-1788370846/charlotte_marchand-1400x1400-q82.webp"
+        },
+        {
+          event: "Dudx (Eduardo Araújo Silva)",
+          id: "dudx-eduardo-araujo-silva",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/dudx-eduardo-araujo-silva/cc47e266a1-1788368643/img_9638-1400x1400-q82.webp"
+        },
+        {
+          event: "LAVA! 1ª Edição",
+          id: "lava-1-edicao",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-1-edicao/cdefd51843-1788368768/img_0035-1400x1400-q82.webp"
+        },
+        {
+          event: "Giulia Damiani",
+          id: "giulia-damiani",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/giulia-damiani/6046e27781-1788397645/img_1424-1400x1400-q82.webp"
+        },
+        {
+          event: "Theodore Ereira-Guyer",
+          id: "theodore-ereira-guyer",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/theodore-ereira-guyer/1a3037ae53-1788369092/dscf3885-1400x1400-q82.webp"
+        },
+        {
+          event: "Nani Lamarque",
+          id: "nani-lamarque",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/nani-lamarque/f9acfe398a-1788368314/img_7731-1400x1400-q82.webp"
+        },
+        {
+          event: "Screensaver",
+          id: "screensaver",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/screensaver/35b19e5ae4-1788371412/2017-screensaver_2-1400x1400-q82.webp"
+        },
+        {
+          event: "Tipo nada",
+          id: "tipo-nada",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/tipo-nada/e6f037f49d-1788371487/2017-tipo-nada-1400x1400-q82.webp"
+        },
+        {
+          event: "Camarim de caracterização",
+          id: "camarim-de-caracterizacao",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/camarim-de-caracterizacao/bbb7baa7b6-1788389776/img_9647-1400x1400-q82.webp"
+        },
+        {
+          event: "Circuito SP-Arte Ateliês abertos",
+          id: "circuito-sp-arte-atelies-abertos",
+          url: "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/circuito-sp-arte-atelies-abertos/51f833388c-1788371466/2018-circuito-sparte-atelies-abertos_1-1400x1400-q82.webp"
+        }
+      ];
+
+      let currentIndex = -1;
+      let hudTimer = null;
+
+      const bgImg = document.getElementById("bg-fixed-img");
+      const hud = document.getElementById("bg-hud-indicator");
+
+      function showHud(index) {
+        if (!hud) return;
+        const item = DUOTONE_IMAGES[index];
+        hud.textContent = `[F] FUNDO ${index + 1}/${DUOTONE_IMAGES.length}: ${item.event}`;
+        hud.classList.add("is-visible");
+        if (hudTimer) clearTimeout(hudTimer);
+        hudTimer = setTimeout(() => {
+          hud.classList.remove("is-visible");
+        }, 2200);
+      }
+
+      function applyImage(index, animate = false) {
+        if (!bgImg || index < 0 || index >= DUOTONE_IMAGES.length) return;
+        const item = DUOTONE_IMAGES[index];
+        currentIndex = index;
+
+        if (animate) {
+          bgImg.style.opacity = "0.2";
+          const temp = new Image();
+          temp.onload = () => {
+            bgImg.src = item.url;
+            bgImg.alt = `Fundo: ${item.event}`;
+            bgImg.style.opacity = "1";
+          };
+          temp.onerror = () => {
+            bgImg.src = item.url;
+            bgImg.style.opacity = "1";
+          };
+          temp.src = item.url;
+        } else {
+          bgImg.src = item.url;
+          bgImg.alt = `Fundo: ${item.event}`;
+          bgImg.style.opacity = "1";
+        }
+
+        showHud(index);
+      }
+
+      function nextRandomImage() {
+        if (DUOTONE_IMAGES.length <= 1) return;
+        let newIdx;
+        do {
+          newIdx = Math.floor(Math.random() * DUOTONE_IMAGES.length);
+        } while (newIdx === currentIndex);
+        applyImage(newIdx, true);
+      }
+
+      // Sorteio aleatório inicial ao carregar ou atualizar a página
+      const initialIdx = Math.floor(Math.random() * DUOTONE_IMAGES.length);
+      applyImage(initialIdx, false);
+
+      // Atalho de teclado [F] ou [f] (mesmo comportamento do [G] para o grid)
+      window.addEventListener("keydown", (e) => {
+        const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
+        if (tag === "input" || tag === "textarea" || (e.target && e.target.isContentEditable)) {
+          return;
+        }
+
+        if (e.key === "f" || e.key === "F") {
+          e.preventDefault();
+          nextRandomImage();
+        }
+      });
+
+      // Animação Contínua de Filtros via GSAP ScrollTrigger (do início ao fim de toda a página)
+      window.addEventListener("DOMContentLoaded", () => {
+        if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
+        gsap.registerPlugin(ScrollTrigger);
+
+        if (!bgImg) return;
+
+        const filterState = {
+          brightness: 0.55,
+          contrast: 888
+        };
+
+        const updateFilter = () => {
+          bgImg.style.filter = `brightness(${filterState.brightness.toFixed(3)}) contrast(${filterState.contrast.toFixed(1)}) url(#duotone-accent-cyan-white)`;
+        };
+
+        // Estado inicial imediato
+        updateFilter();
+
+        // Animação estritamente vinculada do início (top top) ao fim absoluto da página (bottom bottom)
+        gsap.to(filterState, {
+          brightness: 1.38,
+          contrast: 3,
+          ease: "none",
+          scrollTrigger: {
+            trigger: document.body,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.8,
+            invalidateOnRefresh: true
+          },
+          onUpdate: updateFilter
+        });
+
+        // Recálculo dinâmico garantindo que a animação acompanhe o carregamento assíncrono dos módulos e termine apenas na base da página
+        const refreshTrigger = () => {
+          ScrollTrigger.refresh();
+        };
+
+        window.addEventListener("load", refreshTrigger);
+        window.addEventListener("resize", refreshTrigger);
+
+        if (window.ResizeObserver) {
+          const ro = new ResizeObserver(() => {
+            ScrollTrigger.refresh();
+          });
+          ro.observe(document.body);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

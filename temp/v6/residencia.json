@@ -1,0 +1,218 @@
+{
+  "institucional": {
+    "titulo": "RESIDÊNCIA",
+    "imagem_inicial": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-3-edicao/642efed40f-1788370389/lava_2023_03-1400x1400-q82.webp",
+    "subtitulo": "Pesquisa autodirigida e suporte curatorial em um ambiente intelectualmente estimulante gerido por artistas.",
+    "declaracao": "FONTE é uma plataforma independente no coração de Pinheiros, São Paulo, dedicada ao fomento da arte contemporânea por meio de residências artísticas, ateliês permanentes, cursos e programas públicos. Atuamos no epicentro da produção contemporânea, focados na profissionalização do artista, no aprofundamento das pesquisas processuais e no fortalecimento de redes horizontais de colaboração.",
+    "email": "residencia@font-e.org"
+  },
+  "modalidades": [
+    {
+      "id": "individual",
+      "nome": "Investigação Individual",
+      "duracao": "1 a 3 meses",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-2-edicao/e99eed1dee-1788369587/dsc01142-1400x1400-q82.webp",
+      "resumo": "Foco em pesquisas poéticas e inserção na cena local através de nossa rede de colaboradores.",
+      "descricao": "Programa imersivo para artistas e pesquisadores que necessitam de ateliê individual e acompanhamento próximo para desenvolvimento de corpo de trabalho inédito ou projeto de pesquisa. Inclui acesso 24/7 às dependências, ateliê de trabalho e acompanhamento curatorial continuado.",
+      "destaques": [
+        "Ateliê individual de trabalho",
+        "Interlocução curatorial contínua",
+        "Inserção na rede de ateliês de São Paulo",
+        "Open Studio individual ao final da residência"
+      ]
+    },
+    {
+      "id": "coletiva",
+      "nome": "Residência Coletiva",
+      "duracao": "4 a 8 semanas",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-3-edicao/a8a20733e0-1788370388/lava_2023_06-1400x1400-q82.webp",
+      "resumo": "Imersão em grupo, acompanhamento crítico continuado e mostra Open Studio final.",
+      "descricao": "Voltada para artistas selecionados em conjunto para experienciar um convívio intensivo. Focado no diálogo de poéticas, realização de seminários internos e produção em ateliê compartilhado, culminando em abertura pública de processos.",
+      "destaques": [
+        "Dinâmica de interlocução coletiva e leituras críticas",
+        "Seminários com pesquisadores convidados",
+        "Mostra final de ateliês abertos e publicação de registro"
+      ]
+    },
+    {
+      "id": "institucional",
+      "nome": "Parceria Institucional",
+      "duracao": "Sob edital / 1 a 6 meses",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/pilar-quinteros/1924564df7-1788368412/img_1879-1400x1400-q82.webp",
+      "resumo": "Editais especiais e programas em cooperação institucional (ex: Prêmio EDP).",
+      "descricao": "Convênios com fundações, prêmios de arte contemporânea e instituições culturais parceiras para acolher artistas laureados em São Paulo com suporte de ateliê e interlocução qualificada.",
+      "destaques": [
+        "Acolhimento estruturado para editais e prêmios",
+        "Articulação de visitas curatoriais dedicadas",
+        "Conexão com a rede institucional paulistana"
+      ]
+    },
+    {
+      "id": "ocupacao",
+      "nome": "Ocupação",
+      "duracao": "2 a 4 semanas",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-1-edicao/5bd344fde1-1788368849/img_0336-1400x1400-q82.webp",
+      "resumo": "Ações de longa duração, performance e intervenções processuais no cubo branco.",
+      "descricao": "Modalidade experimental em que o cubo branco da galeria é transformado em ateliê aberto. O público acompanha o desenvolvimento da obra através de ensaios, performances e conversas com o artista.",
+      "destaques": [
+        "Espaço expositivo como laboratório aberto",
+        "Interlocução direta com o público visitante",
+        "Apresentação ou instalação de encerramento"
+      ]
+    }
+  ],
+  "candidatura": {
+    "titulo": "Inscrições & Candidaturas",
+    "chamada": "O FONTE opera sob regime de fluxo contínuo para avaliação de propostas e organiza chamadas públicas ao longo do ano.",
+    "requisitos": [
+      "Portfólio em PDF com até 15 trabalhos recentes e ficha técnica completa",
+      "Declaração de intenção / carta de motivação (máx. 1 lauda)",
+      "Proposta ou plano de trabalho a ser desenvolvido durante a estadia",
+      "Currículo artístico resumido ou biografia (máx. 2 páginas)",
+      "Período de interesse e modalidade pretendida"
+    ],
+    "email": "residencia@font-e.org"
+  },
+  "artistas_residentes": [
+    {
+      "id": "ignacio-fanti",
+      "nome": "Ignacio Fanti",
+      "origem": "Buenos Aires",
+      "modalidade": "Investigação Individual",
+      "ano": "2024",
+      "resumo": "Investigação escultórica sobre matéria orgânica, modelagem em gesso e cerâmica e a hibridização entre o natural e o construído.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/ignacio-fanti/4ecb8e61eb-1788370427/ignacio_2-1400x1400-q82.webp",
+      "legenda": "Processo de pesquisa e modelagem escultórica no ateliê FONTE."
+    },
+    {
+      "id": "marcelo-brasiliense",
+      "nome": "Marcelo Brasiliense",
+      "origem": "Belo Horizonte",
+      "modalidade": "Investigação Individual",
+      "ano": "2024",
+      "resumo": "Pesquisa cromática em grande formato, relações entre textura, suporte têxtil e a densidade da tinta na pintura contemporânea.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/marcelo-brasiliense/41e3708b83-1788370628/mg_1447-1400x1400-q82.webp",
+      "legenda": "Vista de ateliê e experimentações cromáticas durante a residência."
+    },
+    {
+      "id": "carlos-marilyn-monroy",
+      "nome": "Carlos & Marilyn Monroy",
+      "origem": "Bogotá / São Paulo",
+      "modalidade": "Ocupação Live",
+      "ano": "2023",
+      "resumo": "Performances relacionais, ficções decoloniais latino-americanas e ativação do espaço com rituais cênicos.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/carlos-marilyn-monroy/fe0c97ea94-1788369969/img_20200925_213204216-1400x1400-q82.webp",
+      "legenda": "Ativação no cubo branco durante a residência Live."
+    },
+    {
+      "id": "renata-peixe-boi",
+      "nome": "Renata Peixe-Boi",
+      "origem": "Manaus",
+      "modalidade": "Investigação Individual",
+      "ano": "2023",
+      "resumo": "Memória ribeirinha, tramas vegetais e ecologias visuais traduzidas em instalações suspensas e bioesculturas.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/renata-peixe-boi/b1a118656b-1788369685/renata_peixeboi_2-1400x1400-q82.webp",
+      "legenda": "Montagem e testes de bioesculturas no espaço FONTE."
+    },
+    {
+      "id": "lava-2",
+      "nome": "LAVA — 2ª Edição",
+      "origem": "Programa Coletivo",
+      "modalidade": "Residência Coletiva",
+      "ano": "2023",
+      "resumo": "Imersão coletiva em ateliê compartilhado, resultando em debates públicos, ateliês abertos e publicação de processos.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-2-edicao/418d7761de-1788369570/dsc01106-1400x1400-q82.webp",
+      "legenda": "Encontro coletivo e debate curatorial na 2ª edição do LAVA."
+    },
+    {
+      "id": "felipe-alvarez-parisi",
+      "nome": "Felipe Alvarez Parisi",
+      "origem": "Santiago, Chile",
+      "modalidade": "Investigação Individual",
+      "ano": "2023",
+      "resumo": "Desdobramentos geométricos, luz incidente e intervenções na arquitetura industrial do espaço.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/felipe-alvarez-parisi/f6aadd13b6-1788369441/dsc01279-1400x1400-q82.webp",
+      "legenda": "Estudos de iluminação e forma espacial no ateliê."
+    },
+    {
+      "id": "ana-pi",
+      "nome": "Ana Pi",
+      "origem": "Belo Horizonte / Paris",
+      "modalidade": "Ocupação Live",
+      "ano": "2022",
+      "resumo": "Coreografia expandida, arquivo corporal afro-diaspórico e pesquisa para videoinstalação.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/ana-pi/121fa29eac-1788397803/img_4043-1400x1400-q82.webp",
+      "legenda": "Ensaio e laboratório de movimento no espaço FONTE."
+    },
+    {
+      "id": "antonio-sobral",
+      "nome": "Antonio Sobral",
+      "origem": "Lisboa, Portugal",
+      "modalidade": "Investigação Individual",
+      "ano": "2022",
+      "resumo": "Publicação experimental, tipografia vernacular e gravura em diálogo com o centro de São Paulo.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/antonio-sobral/8b4f357b26-1788370674/antonio-pronta-1400x1400-q82.webp",
+      "legenda": "Impressão e encadernação artesanal em ateliê."
+    },
+    {
+      "id": "gabrielle-goliath",
+      "nome": "Gabrielle Goliath",
+      "origem": "Joanesburgo",
+      "modalidade": "Parceria Institucional",
+      "ano": "2022",
+      "resumo": "Ambientes sonoros imersivos, performance coral e reflexão crítica sobre violências estruturais e escuta coletiva.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/gabrielle-goliath/73751daaa3-1788369316/52292246_394692494420842_9075291876705173504_o-1400x1400-q82.webp",
+      "legenda": "Instalação sonora e performance durante a residência institucional."
+    },
+    {
+      "id": "lava-1",
+      "nome": "LAVA — 1ª Edição",
+      "origem": "Programa Coletivo",
+      "modalidade": "Residência Coletiva",
+      "ano": "2022",
+      "resumo": "Primeira edição do programa de imersão compartilhada com artistas de diversas regiões do país.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-1-edicao/cdefd51843-1788368768/img_0035-1400x1400-q82.webp",
+      "legenda": "Montagem dos trabalhos processuais na mostra LAVA 1."
+    },
+    {
+      "id": "lava-1-processo",
+      "nome": "LAVA — Ateliê Aberto",
+      "origem": "Programa Coletivo",
+      "modalidade": "Residência Coletiva",
+      "ano": "2022",
+      "resumo": "Processo de experimentação material e ateliês abertos com interlocução contínua.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-1-edicao/5f3f3d9f69-1788368740/img_9970-1400x1400-q82.webp",
+      "legenda": "Ativação no ateliê e troca de processos entre os residentes."
+    },
+    {
+      "id": "sandra-gamarra",
+      "nome": "Sandra Gamarra",
+      "origem": "Lima / Madri",
+      "modalidade": "Parceria Institucional",
+      "ano": "2021",
+      "resumo": "Pesquisa pictórica e reflexões museológicas sobre história colonial, acervos e restituição de narrativas.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/sandra-gamarra/53ec45527f-1788368479/img_8735-1400x1400-q82.webp",
+      "legenda": "Sandra Gamarra examinando estudos e pigmentos no espaço FONTE."
+    },
+    {
+      "id": "pilar-quinteros",
+      "nome": "Pilar Quinteros",
+      "origem": "Santiago, Chile",
+      "modalidade": "Investigação Individual",
+      "ano": "2021",
+      "resumo": "Esculturas efêmeras em papelão e gesso, expedições urbanas e reconstrução arqueológica poética em São Paulo.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/pilar-quinteros/d3b20c7e15-1788368342/img_8197-1400x1400-q82.webp",
+      "legenda": "Construção de estrutura escultórica efêmera no ateliê."
+    },
+    {
+      "id": "pilar-quinteros-acao",
+      "nome": "Pilar Quinteros — Ação Urbana",
+      "origem": "Santiago, Chile",
+      "modalidade": "Ocupação Live",
+      "ano": "2021",
+      "resumo": "Ativação pública e deslocamento de estruturas efêmeras pelas ruas do bairro de Pinheiros.",
+      "imagem": "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/pilar-quinteros/773488139e-1788397745/img_2492-1400x1400-q82.webp",
+      "legenda": "Intervenção urbana e ativação documental no espaço público."
+    }
+  ]
+}
