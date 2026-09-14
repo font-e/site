@@ -1,0 +1,545 @@
+/* =========================================
+   TIPOGRAFIA: STAG SANS
+   ========================================= */
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansThin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansLight.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansRegular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansMedium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansSemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stag Sans';
+  src: url('https://umpedrogallego.github.io/sis/fonts/StagSansBlack.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --fs-title: clamp(2.25rem, 5.5vw + 0.5rem, 4.5rem);
+  --fs-name: clamp(1.125rem, 2.75vw + 0.25rem, 2.25rem);
+  --fs-body: clamp(1rem, 0.4vw + 0.85rem, 1.125rem);
+  --fs-meta: clamp(0.75rem, 0.25vw + 0.7rem, 0.875rem);
+  --fs-nav: clamp(0.69rem, 0.2vw + 0.65rem, 0.775rem);
+
+  --bg-white: #ffffff;
+  --bg-page: var(--bg-white);
+  --bg-black: #000000;
+  --hover-bg: #eefffe;
+  --accent-cyan: #ccfffe;
+  --active-bg: #ffffff;
+  --border-color: #000000;
+  --border-width: 1.5px;
+
+  --h-menu: 32px;
+  --menu-gap: 8px;
+  --logo-top: 32px;
+  --header-height: 56px;
+  --section-spacing: 80px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+  width: 100%;
+}
+
+body {
+  font-family: 'Stag Sans', sans-serif;
+  background-color: var(--bg-white);
+  color: var(--bg-black);
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utilitário para Esconder Scrollbars */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Grid Mestre de 12 Colunas */
+.grid-12-master {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* =========================================
+   TÍTULOS DE SEÇÃO UNIVERSAIS
+   Inicia na Coluna 1 e ocupa até a Coluna 10 (Linha 11)
+   Alinhado à esquerda na Coluna 1
+   ========================================= */
+.section-title-wrap,
+.residencia-title-wrap,
+.programacao-title-wrap,
+.atelies-title-wrap,
+.archive-header-wrapper {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  padding-bottom: 8px;
+  box-sizing: border-box;
+}
+
+.section-title,
+.residencia-section-title,
+.programacao-section-title,
+.atelies-section-title,
+.archive-section-title {
+  grid-column: 1 / 10; /* Colunas 1 a 9 (termina na Linha 10, divisória 9/10) */
+  font-size: var(--fs-title);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.025em;
+  color: var(--bg-black);
+  text-transform: uppercase;
+  text-align: right;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  align-self: end;
+}
+
+/* =========================================
+   GRID GUIA & RÉGUA NUMÉRICA (12 COLUNAS)
+   Cor: #ff4200 | Estados: Fundo / Frente / Oculto
+   ========================================= */
+.grid-guide-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  pointer-events: none;
+  box-sizing: border-box;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.grid-guide-overlay.mode-background {
+  z-index: 0;
+  opacity: 1;
+  visibility: visible;
+}
+
+.grid-guide-overlay.mode-foreground {
+  z-index: 99999;
+  opacity: 1;
+  visibility: visible;
+}
+
+.grid-guide-overlay.mode-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.grid-guide-col {
+  position: relative;
+  height: 100%;
+  border-right: 1.5px solid #ff4200;
+  box-sizing: border-box;
+}
+
+.grid-guide-col:last-child {
+  border-right: none;
+}
+
+.grid-guide-numbers {
+  position: absolute;
+  right: 0;
+  top: 4px;
+  transform: translateX(50%);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Stag Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ff4200;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  user-select: none;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.grid-guide-numbers .num-left {
+  text-align: right;
+  min-width: 8px;
+}
+
+.grid-guide-numbers .num-right {
+  text-align: left;
+  min-width: 8px;
+}
+
+/* Indicador HUD Flutuante Temporário */
+.grid-guide-hud {
+  position: fixed;
+  top: 10px;
+  right: 18px;
+  background-color: #ff4200;
+  color: #ffffff;
+  font-family: 'Stag Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 8px;
+  border-radius: 3px;
+  z-index: 100000;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.grid-guide-hud.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================
+   STATUS DE PESSOAS (MEMBRO & EQUIPE)
+   ========================================= */
+.person-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.person-title-row .person-profile-title {
+  margin: 0;
+}
+
+.person-badges-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.person-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1.5px solid #000;
+  line-height: 1;
+  background-color: #fff;
+  color: #000;
+  white-space: nowrap;
+}
+
+.person-badge.badge-membro {
+  background-color: #e6f9e6;
+  border-color: #000;
+}
+
+.person-badge.badge-ex-membro {
+  background-color: #f0f0f0;
+  color: #555;
+  border-color: #777;
+}
+
+.person-badge.badge-equipe {
+  background-color: #e6f2ff;
+  border-color: #000;
+}
+
+.person-badge.badge-ex-equipe {
+  background-color: #f5f5f5;
+  color: #666;
+  border-color: #999;
+}
+
+.popover-status-badge,
+.table-vinculo-tag {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 2px 6px;
+  border: 1px solid #000;
+  background-color: #f4f4f4;
+  color: #111;
+  margin-left: 6px;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+
+.person-placeholder-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4f4f4;
+  border: 1.5px solid #000;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+}
+
+.person-placeholder-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+}
+
+.person-placeholder-initials {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #111;
+  line-height: 1;
+}
+
+.person-placeholder-tag {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #666;
+  border-top: 1px solid #ccc;
+  padding-top: 8px;
+}
+
+/* =========================================
+   PRÊMIOS (SOBRE - EVENTOS)
+   ========================================= */
+.premiacoes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.premio-item {
+  border: 1.5px solid #000;
+  padding: 10px 12px;
+  background-color: #fff;
+}
+
+.premio-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.premio-categoria-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.premio-link {
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 700;
+  color: #000;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.premio-link:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+}
+
+.premio-titulo {
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 700;
+  color: #000;
+}
+
+.premio-detalhes {
+  font-size: var(--fs-meta, 0.875rem);
+  line-height: 1.5;
+  color: #333;
+}
+
+.premio-detalhes p {
+  margin: 4px 0 0 0;
+}
+
+/* =========================================
+   VÍDEOS EMBEDADOS (TEXTOS / GAVETA)
+   ========================================= */
+.section-videos-wrap {
+  width: 100%;
+}
+
+.videos-embed-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .videos-embed-list {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.video-embed-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.video-item-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #000;
+}
+
+.video-iframe-responsive {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* Proporção 16:9 */
+  background-color: #000;
+  border: 2px solid #000;
+  box-sizing: border-box;
+}
+
+.video-iframe-responsive iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.video-item-caption {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: #555;
+  margin: 0;
+}
+
+.video-item-footer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.video-link-fallback {
+  padding: 10px 12px;
+  border: 2px solid #000;
+  background-color: #fafafa;
+}
+
+/* Galerias verticais nas gavetas */
+.drawer-gallery-track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.drawer-gallery-item {
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+  border-bottom: var(--border-width, 1.5px) solid var(--border-color, #000);
+  background-color: #f9f9f9;
+}
+
+.drawer-gallery-item:last-child {
+  border-bottom: none;
+}
+
+.drawer-gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: opacity 0.15s ease;
+}
+
+.drawer-gallery-item:hover img {
+  opacity: 0.9;
+}
+
+
