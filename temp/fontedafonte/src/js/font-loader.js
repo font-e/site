@@ -582,7 +582,6 @@ class FontLoaderMachine {
 
     // Eixos e URLs canônicas 100% verificadas contra a API do Google Fonts
     const presets = [
-      { name: 'Playwrite BE WAL Guides', input: 'Playwrite BE WAL Guides' },
       { name: 'Sofia Sans Semi Condensed', input: 'Sofia Sans Semi Condensed' },
       { name: 'Henny Penny', input: 'Henny Penny' },
       { name: 'Space Grotesk', input: 'Space Grotesk' },
