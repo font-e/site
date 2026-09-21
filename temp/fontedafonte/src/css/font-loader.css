@@ -1,0 +1,407 @@
+/* =========================================
+   PAINEL POPOVER: CARREGAR FONTE (GOOGLE FONTS)
+   Design System Estrito: Bordas 2px (#000), Tipografia Parametrizada,
+   Grid 12 colunas e Estados Determinísticos
+   ========================================= */
+
+.nav-item-font-loader {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.font-loader-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.font-loader-trigger-btn .font-btn-icon {
+  font-size: 1rem;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+/* Painel Popover */
+.font-loader-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  background-color: var(--bg-white, #ffffff);
+  border: 2px solid var(--border-color, #000000);
+  border-radius: 4px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  z-index: 100002;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(0, -6px, 0);
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+  white-space: normal;
+}
+
+.font-loader-popover.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Cabeçalho do Popover */
+.font-loader-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--border-color, #000000);
+  padding-bottom: 10px;
+}
+
+.font-loader-title {
+  font-size: var(--fs-nav, 0.8125rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bg-black, #000000);
+  margin: 0;
+  line-height: 1;
+}
+
+.font-loader-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--border-color, #000000);
+  background-color: var(--bg-white, #ffffff);
+  color: var(--bg-black, #000000);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background-color 0.15s ease;
+  font-family: inherit;
+}
+
+.font-loader-close-btn:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+}
+
+/* Formulário de Input */
+.font-loader-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.font-loader-label {
+  font-size: var(--fs-meta, 0.75rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #222222;
+  line-height: 1.2;
+}
+
+.font-loader-input-wrap {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+
+.font-loader-input {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0 10px;
+  border: 2px solid var(--border-color, #000000);
+  background-color: #ffffff;
+  color: #000000;
+  font-family: inherit;
+  font-size: var(--fs-meta, 0.75rem);
+  border-radius: 3px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.font-loader-input:focus {
+  background-color: #fafafa;
+  border-color: #000000;
+}
+
+.font-loader-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 12px;
+  border: 2px solid var(--border-color, #000000);
+  background-color: var(--bg-black, #000000);
+  color: var(--bg-white, #ffffff);
+  font-family: inherit;
+  font-size: var(--fs-meta, 0.75rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border-radius: 3px;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.font-loader-submit-btn:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+  color: var(--bg-black, #000000);
+}
+
+.font-loader-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Feedback de Status */
+.font-loader-status {
+  font-size: var(--fs-meta, 0.75rem);
+  font-weight: 600;
+  line-height: 1.3;
+  padding: 4px 8px;
+  border: 2px solid transparent;
+  display: none;
+  border-radius: 3px;
+}
+
+.font-loader-status.is-visible {
+  display: block;
+}
+
+.font-loader-status.is-success {
+  background-color: #e6f9e6;
+  border-color: #000000;
+  color: #000000;
+}
+
+.font-loader-status.is-error {
+  background-color: #ffebeb;
+  border-color: #000000;
+  color: #000000;
+}
+
+.font-loader-status.is-loading {
+  background-color: #f0f7ff;
+  border-color: #000000;
+  color: #000000;
+}
+
+/* Sugestões Rápidas */
+.font-loader-presets-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.font-loader-presets-label {
+  font-size: var(--fs-meta, 0.75rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #555555;
+}
+
+.font-loader-presets-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.font-loader-preset-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border: 2px solid var(--border-color, #000000);
+  background-color: #ffffff;
+  color: #000000;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 2px;
+  line-height: 1;
+  transition: background-color 0.15s ease;
+}
+
+.font-loader-preset-chip:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+}
+
+/* Lista de Fontes Carregadas */
+.font-loader-list-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 2px solid var(--border-color, #000000);
+  padding-top: 12px;
+}
+
+.font-loader-list-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--fs-meta, 0.75rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bg-black, #000000);
+}
+
+.font-loader-list-count {
+  font-size: 0.6875rem;
+  color: #666666;
+  font-weight: 600;
+}
+
+.font-loader-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 190px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+}
+
+.font-loader-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 2px solid var(--border-color, #000000);
+  background-color: #ffffff;
+  border-radius: 3px;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.font-loader-item:hover {
+  background-color: #fdfdfd;
+}
+
+.font-loader-item.is-current {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.font-loader-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.font-loader-item-name {
+  font-size: var(--fs-meta, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.font-loader-item-sample {
+  font-size: 0.6875rem;
+  line-height: 1.1;
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.font-loader-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.font-loader-apply-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 8px;
+  border: 2px solid var(--border-color, #000000);
+  background-color: #ffffff;
+  color: #000000;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border-radius: 2px;
+  line-height: 1;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.font-loader-item.is-current .font-loader-apply-btn {
+  background-color: var(--accent-cyan, #ccfffe);
+  border-color: #ffffff;
+  color: #000000;
+  cursor: default;
+}
+
+.font-loader-item:not(.is-current) .font-loader-apply-btn:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+}
+
+.font-loader-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border-color, #000000);
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background-color 0.15s ease;
+  font-family: inherit;
+}
+
+.font-loader-item.is-current .font-loader-delete-btn {
+  background-color: #333333;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.font-loader-delete-btn:hover {
+  background-color: #ffdddd !important;
+  color: #cc0000 !important;
+}
+
+/* Responsividade Mobile */
+@media (max-width: 768px) {
+  .font-loader-popover {
+    position: fixed;
+    top: 56px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-width: none;
+  }
+}

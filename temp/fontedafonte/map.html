@@ -1,0 +1,3614 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FONTE // Rede Relacional (Mapa de Conexões)</title>
+  <meta name="description" content="Explore a teia de conexões entre artistas, curadores, produtores e mostras da Residência Artística FONTE com visualização D3.js.">
+  <link rel="icon" type="image/png" href="https://www.font-e.org/content/logo_fonte_preto.png">
+
+  <!-- Carregamento do D3.js v7 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+
+  <style>
+    /* =========================================
+       TIPOGRAFIA: STAG SANS & DESIGN SYSTEM SUÍÇO
+       ========================================= */
+    @font-face {
+      font-family: 'Stag Sans';
+      src: url('https://umpedrogallego.github.io/sis/fonts/StagSansLight.ttf') format('truetype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Stag Sans';
+      src: url('https://umpedrogallego.github.io/sis/fonts/StagSansRegular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Stag Sans';
+      src: url('https://umpedrogallego.github.io/sis/fonts/StagSansMedium.ttf') format('truetype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Stag Sans';
+      src: url('https://umpedrogallego.github.io/sis/fonts/StagSansBold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Stag Sans';
+      src: url('https://umpedrogallego.github.io/sis/fonts/StagSansBlack.ttf') format('truetype');
+      font-weight: 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --bg-white: #000000;
+      --bg-offwhite: #0a0a0a;
+      --bg-surface: #121212;
+      --bg-surface-elevated: #181818;
+      --bg-surface-hover: #222222;
+      --bg-dark: #ffffff;
+      --text-main: #ffffff;
+      --text-muted: #888888;
+      --text-dim: #555555;
+      --border-color: #282828;
+      --border-active: #ccfffe;
+      --accent-cyan: #ccfffe;
+      --accent-cyan-hover: #a6fbf9;
+      --font-family: 'Stag Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --header-height: 56px;
+      --tabs-height: 38px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000000;
+      color: var(--text-main);
+      font-family: var(--font-family);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* =========================================
+       CABEÇALHO FIXO INSTITUCIONAL (MODO NOTURNO)
+       ========================================= */
+    #site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: #000000;
+      border-bottom: 1.5px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+    }
+
+    .header-left-col {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border: 1.5px solid var(--border-color);
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .btn-back:hover {
+      background-color: var(--accent-cyan);
+      color: #000000;
+      border-color: var(--accent-cyan);
+    }
+
+    .header-tagline {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border-left: 1.5px solid var(--border-color);
+      padding-left: 16px;
+      display: none;
+    }
+    @media (min-width: 768px) {
+      .header-tagline {
+        display: inline-block;
+      }
+    }
+
+    /* Trilha de Navegação (Breadcrumb) ativa no topo */
+    .header-breadcrumbs-col {
+      flex: 1;
+      display: none;
+      align-items: center;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 0 20px;
+      scrollbar-width: none;
+    }
+    .header-breadcrumbs-col::-webkit-scrollbar {
+      display: none;
+    }
+    body.is-tree-mode .header-breadcrumbs-col {
+      display: flex;
+    }
+
+    .breadcrumb-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .breadcrumb-item.is-clickable {
+      cursor: pointer;
+      color: var(--text-main);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .breadcrumb-item.is-clickable:hover {
+      background-color: var(--accent-cyan);
+      color: #000000;
+    }
+    .breadcrumb-item.is-active {
+      font-weight: 700;
+      color: #000000;
+      background-color: var(--accent-cyan);
+      padding: 3px 8px;
+      border: 1px solid var(--accent-cyan);
+    }
+    .breadcrumb-sep {
+      color: var(--text-dim);
+      font-size: 11px;
+      margin: 0 6px;
+    }
+
+    .header-right-col {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-reset-search {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border: 1.5px solid var(--border-color);
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      transition: all 0.15s ease;
+    }
+    body.is-tree-mode .btn-reset-search {
+      display: inline-flex;
+    }
+    .btn-reset-search:hover {
+      background-color: var(--accent-cyan);
+      color: #000000;
+      border-color: var(--accent-cyan);
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+    }
+    .header-logo-img {
+      height: 22px;
+      width: auto;
+      object-fit: contain;
+      filter: invert(1);
+    }
+
+    /* =========================================
+       CENTRAL DE ABAS (MAPAS CONCORRENTES)
+       ========================================= */
+    #tabs-bar {
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      width: 100%;
+      height: var(--tabs-height);
+      background-color: #080808;
+      border-bottom: 1.5px solid var(--border-color);
+      display: none;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+      z-index: 95;
+    }
+    body.has-tabs #tabs-bar {
+      display: flex;
+    }
+
+    .btn-new-map {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border: 1.5px solid var(--border-color);
+      background-color: #141414;
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+    .btn-new-map:hover {
+      background-color: var(--accent-cyan);
+      color: #000000;
+      border-color: var(--accent-cyan);
+    }
+    .new-map-icon {
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .tabs-scroll-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      scrollbar-width: none;
+      gap: 8px;
+    }
+    .tabs-scroll-area::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tabs-list {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .map-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border: 1.5px solid var(--border-color);
+      background-color: #101010;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      max-width: 250px;
+      white-space: nowrap;
+      user-select: none;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+    .map-tab:hover {
+      color: #ffffff;
+      border-color: #444444;
+      background-color: #161616;
+    }
+    .map-tab.is-active {
+      background-color: #181818;
+      color: #ffffff;
+      border-color: var(--accent-cyan);
+      font-weight: 700;
+    }
+    .map-tab .tab-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .map-tab .tab-close-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+      color: var(--text-dim);
+      font-size: 10px;
+      line-height: 1;
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: all 0.12s ease;
+    }
+    .map-tab .tab-close-btn:hover {
+      background-color: #2b2b2b;
+      color: #ffffff;
+    }
+    .map-tab.is-active .tab-close-btn:hover {
+      background-color: var(--accent-cyan);
+      color: #000000;
+    }
+
+    /* =========================================
+       MODAL: CONEXÃO ENTRE DOIS PONTOS
+       ========================================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 150;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background-color: #0f0f0f;
+      border: 1.5px solid var(--border-color);
+      width: 580px;
+      max-width: 95vw;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+      position: relative;
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1.5px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #141414;
+    }
+    .modal-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      display: block;
+      margin-bottom: 3px;
+    }
+    .modal-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+    }
+    .modal-close-btn {
+      width: 28px;
+      height: 28px;
+      border: 1.5px solid var(--border-color);
+      background-color: #1a1a1a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .modal-close-btn:hover {
+      background-color: var(--accent-cyan);
+      color: #000000;
+      border-color: var(--accent-cyan);
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+    .modal-desc {
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .path-fields-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .path-field-box {
+      position: relative;
+    }
+    .path-field-label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .path-input-row {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .path-input-row input {
+      width: 100%;
+      height: 42px;
+      background-color: #161616;
+      border: 1.5px solid var(--border-color);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 0 38px 0 14px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .path-input-row input:focus {
+      border-color: var(--accent-cyan);
+    }
+    .path-clear-btn {
+      position: absolute;
+      right: 10px;
+      width: 20px;
+      height: 20px;
+      color: #666;
+      font-size: 11px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .path-input-row input:not(:placeholder-shown) + .path-clear-btn {
+      display: flex;
+    }
+    .path-clear-btn:hover {
+      color: #ffffff;
+    }
+
+    .path-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      max-height: 180px;
+      overflow-y: auto;
+      background-color: #121212;
+      border: 1.5px solid var(--border-color);
+      border-top: none;
+      z-index: 200;
+      display: none;
+    }
+    .path-dropdown.is-open {
+      display: block;
+    }
+    .path-dropdown-item {
+      padding: 8px 14px;
+      border-bottom: 1px solid #1e1e1e;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.1s ease;
+    }
+    .path-dropdown-item:hover {
+      background-color: #1c1c1c;
+      color: var(--accent-cyan);
+    }
+    .path-dropdown-item-name {
+      font-weight: 600;
+    }
+    .path-dropdown-item-meta {
+      font-size: 10px;
+      color: #777;
+    }
+
+    .path-connector-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 0;
+      color: var(--accent-cyan);
+    }
+
+    .path-feedback {
+      margin-top: 16px;
+      padding: 10px 14px;
+      border: 1px solid #333;
+      background-color: #141414;
+      font-size: 12px;
+      line-height: 1.5;
+      display: none;
+    }
+    .path-feedback.is-error {
+      display: block;
+      border-color: #ff5555;
+      color: #ff8888;
+      background-color: #201010;
+    }
+    .path-feedback.is-info {
+      display: block;
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      background-color: #0b1a19;
+    }
+
+    .modal-footer {
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    .btn-modal-cancel {
+      padding: 8px 16px;
+      border: 1.5px solid var(--border-color);
+      background-color: #161616;
+      color: #aaa;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-modal-cancel:hover {
+      color: #fff;
+      border-color: #555;
+    }
+    .btn-modal-submit {
+      padding: 8px 18px;
+      border: 1.5px solid var(--border-color);
+      background-color: var(--accent-cyan);
+      color: #000000;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+    .btn-modal-submit:hover {
+      background-color: #ffffff;
+      border-color: #ffffff;
+    }
+
+    /* =========================================
+       CONTAINER PRINCIPAL
+       ========================================= */
+    #main-container {
+      position: relative;
+      width: 100%;
+      height: calc(100% - var(--header-height));
+      margin-top: var(--header-height);
+      overflow: hidden;
+      background-color: #000000;
+      transition: margin-top 0.15s ease, height 0.15s ease;
+    }
+    body.has-tabs #main-container {
+      height: calc(100% - var(--header-height) - var(--tabs-height));
+      margin-top: calc(var(--header-height) + var(--tabs-height));
+    }
+
+    /* =========================================
+       ESTADO 0: PORTAL DE ENTRADA (DESCOBERTA)
+       ========================================= */
+    #discovery-portal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000000;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 24px 80px 24px;
+      z-index: 10;
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+    }
+    body.is-tree-mode #discovery-portal {
+      opacity: 0;
+      transform: translateY(-24px);
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .portal-inner {
+      width: 100%;
+      max-width: 980px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .portal-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .portal-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background-color: var(--accent-cyan);
+      border: 1px solid var(--accent-cyan);
+    }
+
+    .portal-title {
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      text-transform: uppercase;
+      color: var(--text-main);
+      margin-bottom: 20px;
+    }
+
+    .portal-subtitle {
+      font-size: clamp(1rem, 1.8vw, 1.25rem);
+      font-weight: 400;
+      line-height: 1.5;
+      color: #aaaaaa;
+      max-width: 760px;
+      margin-bottom: 40px;
+    }
+
+    /* Campo de Busca & Autocomplete */
+    .search-section {
+      width: 100%;
+      position: relative;
+      margin-bottom: 48px;
+    }
+
+    .search-input-wrap {
+      width: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      font-size: 18px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 64px;
+      padding: 0 54px 0 54px;
+      font-family: inherit;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-main);
+      background-color: var(--bg-surface);
+      border: 1.5px solid var(--border-color);
+      border-radius: 0;
+      outline: none;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .search-input:focus {
+      background-color: var(--bg-surface-elevated);
+      border-color: var(--accent-cyan);
+    }
+    .search-input::placeholder {
+      color: #666666;
+      font-weight: 300;
+    }
+
+    .search-clear-btn {
+      position: absolute;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      background-color: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+    }
+    .search-clear-btn:hover {
+      background-color: var(--accent-cyan);
+      color: #000000;
+    }
+
+    /* Dropdown de sugestões */
+    .search-results-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 100%;
+      max-height: 360px;
+      overflow-y: auto;
+      background-color: #0f0f0f;
+      border: 1.5px solid var(--border-color);
+      z-index: 50;
+      display: none;
+    }
+    .search-results-dropdown.is-open {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1a1a1a;
+      cursor: pointer;
+      transition: background-color 0.12s ease;
+    }
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+    .dropdown-item:hover,
+    .dropdown-item.is-selected {
+      background-color: #1a1a1a;
+    }
+
+    .dropdown-item-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .agent-avatar-mini {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border-color);
+      background-color: #1c1c1c;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .agent-avatar-mini img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .dropdown-agent-name {
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--text-main);
+    }
+    .dropdown-agent-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .dropdown-actions-badge {
+      font-size: 11px;
+      font-weight: 700;
+      background-color: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 4px 10px;
+      white-space: nowrap;
+      letter-spacing: 0.05em;
+    }
+    .dropdown-item:hover .dropdown-actions-badge {
+      background-color: var(--accent-cyan);
+      color: #000000;
+    }
+
+    /* Grade de 12 Pontos de Partida */
+    .discovery-grid-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1.5px solid var(--border-color);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .discovery-grid-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-main);
+    }
+
+    .btn-reshuffle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: 1.5px solid var(--border-color);
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+      transition: all 0.15s ease;
+    }
+    .btn-reshuffle:hover {
+      background-color: var(--accent-cyan);
+      color: #000000;
+      border-color: var(--accent-cyan);
+    }
+
+    .starting-points-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 48px;
+    }
+    @media (min-width: 580px) {
+      .starting-points-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 880px) {
+      .starting-points-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .starter-card {
+      border: 1.5px solid var(--border-color);
+      background-color: var(--bg-surface);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 110px;
+      text-align: left;
+      cursor: pointer;
+      position: relative;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .starter-card:hover {
+      background-color: var(--bg-surface-elevated);
+      border-color: var(--accent-cyan);
+    }
+
+    .starter-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .starter-name {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.15;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+    }
+
+    .starter-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 6px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-surface-elevated);
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .starter-card:hover .starter-badge {
+      background-color: var(--accent-cyan);
+      color: #000000;
+      border-color: var(--accent-cyan);
+    }
+
+    .starter-roles-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .role-pill {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      background-color: #1a1a1a;
+      padding: 2px 6px;
+      color: #aaaaaa;
+      border: 1px solid #222222;
+    }
+    .starter-card:hover .role-pill {
+      border-color: #333333;
+      color: #cccccc;
+    }
+
+    /* Faixa de Estatísticas */
+    .portal-stats-bar {
+      border-top: 1.5px solid var(--border-color);
+      padding-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stat-item strong {
+      font-weight: 700;
+      color: var(--text-main);
+      font-size: 14px;
+    }
+
+    /* =========================================
+       ESTADO 1: ÁRVORE EXPANSÍVEL (D3 MIND MAP)
+       ========================================= */
+    #tree-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s;
+    }
+    body.is-tree-mode #tree-container {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #d3-svg-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background-color: #000000;
+      cursor: grab;
+    }
+    #d3-svg-canvas:active {
+      cursor: grabbing;
+    }
+
+    /* Elementos Gráficos D3 SVG */
+    .tree-link {
+      fill: none;
+      stroke: #333333;
+      stroke-width: 1.5px;
+      stroke-opacity: 0.9;
+      transition: stroke-opacity 0.2s, stroke-width 0.2s, stroke 0.2s;
+    }
+    .tree-link.is-highlighted {
+      stroke-opacity: 1;
+      stroke-width: 2px;
+      stroke: var(--accent-cyan);
+    }
+
+    .tree-node {
+      cursor: pointer;
+    }
+
+    .node-card {
+      stroke: var(--border-color);
+      stroke-width: 1.5px;
+      transition: fill 0.15s ease, stroke 0.15s ease;
+    }
+
+    /* Estilos por tipo de nó */
+    .node-root .node-card {
+      fill: #0c0c0c;
+      stroke: #444444;
+      stroke-width: 1.5px;
+    }
+    .node-root:hover .node-card {
+      stroke: var(--accent-cyan);
+    }
+    .node-root text.node-title {
+      fill: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+    }
+    .node-root text.node-sub {
+      fill: #888888;
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    .node-role .node-card {
+      fill: #141414;
+      stroke: var(--border-color);
+      stroke-width: 1.5px;
+    }
+    .node-role:hover .node-card {
+      fill: #1a1a1a;
+      stroke: var(--accent-cyan);
+    }
+    .node-role text.node-title {
+      fill: #ffffff;
+      font-weight: 700;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .node-event .node-card {
+      fill: #121212;
+      stroke: var(--border-color);
+      stroke-width: 1.5px;
+    }
+    .node-event:hover .node-card {
+      fill: #181818;
+      stroke: var(--accent-cyan);
+    }
+    .node-event text.node-title {
+      fill: #ffffff;
+      font-weight: 600;
+      font-size: 11.5px;
+      letter-spacing: 0.01em;
+    }
+    .node-event text.node-sub {
+      fill: #888888;
+      font-size: 9.5px;
+      font-weight: 500;
+    }
+
+    .node-collab .node-card {
+      fill: #0a0a0a;
+      stroke: #383838;
+      stroke-width: 1.5px;
+      stroke-dasharray: 4 2;
+    }
+    .node-collab:hover .node-card {
+      fill: #141414;
+      stroke-dasharray: none;
+      stroke-width: 1.5px;
+      stroke: var(--accent-cyan);
+    }
+    .node-collab text.node-title {
+      fill: #ffffff;
+      font-weight: 700;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .node-collab text.node-sub {
+      fill: #999999;
+      font-size: 9.5px;
+      font-weight: 500;
+    }
+
+    /* Modos específicos de conexão (Multi-Caminhos) */
+    .tree-node.is-connection-agent .node-card {
+      stroke-dasharray: none;
+      stroke: #444444;
+      fill: #111111;
+    }
+    .tree-node.is-connection-agent:hover .node-card {
+      stroke: var(--accent-cyan);
+      fill: #161616;
+    }
+    .tree-node.is-target-agent .node-card {
+      stroke-dasharray: none;
+      stroke: var(--accent-cyan);
+      stroke-width: 2px;
+      fill: #121212;
+    }
+    .tree-node.is-target-agent:hover .node-card {
+      fill: #1a1a1a;
+      stroke: #ffffff;
+    }
+    .tree-node.is-target-agent text.node-title {
+      fill: #ffffff;
+      font-weight: 800;
+    }
+
+    /* Botão de Adicionar Nova Conexão no Nó Raiz */
+    .node-conn-add-btn rect {
+      transition: fill 0.15s ease, stroke 0.15s ease;
+    }
+    .node-conn-add-btn text {
+      transition: fill 0.15s ease;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* Ícones e Botões de Ação nos Nós */
+    .node-toggle-indicator {
+      fill: #1c1c1c;
+      stroke: #3a3a3a;
+      stroke-width: 1px;
+    }
+    .node-toggle-text {
+      font-size: 11px;
+      font-weight: 700;
+      text-anchor: middle;
+      dominant-baseline: central;
+      fill: #ffffff;
+      user-select: none;
+    }
+
+    /* Botão de Info [i] dedicado */
+    .node-info-btn {
+      cursor: pointer;
+      fill: #1c1c1c;
+      stroke: #3a3a3a;
+      stroke-width: 1px;
+      transition: all 0.15s ease;
+    }
+    .node-info-btn:hover {
+      fill: var(--accent-cyan);
+      stroke: var(--accent-cyan);
+    }
+    .node-info-text {
+      font-size: 11px;
+      font-weight: 700;
+      font-style: italic;
+      font-family: 'Stag Sans', serif, sans-serif;
+      text-anchor: middle;
+      dominant-baseline: central;
+      fill: #ffffff;
+      user-select: none;
+      pointer-events: none;
+    }
+    .node-info-btn:hover + .node-info-text,
+    .node-info-btn:hover .node-info-text {
+      fill: #000000;
+    }
+
+    /* Controles Flutuantes de Visualização D3 */
+    .tree-controls-bar {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 40;
+    }
+
+    .ctrl-btn {
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--border-color);
+      background-color: #121212;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.12s ease;
+    }
+    .ctrl-btn:hover {
+      background-color: var(--accent-cyan);
+      color: #000000;
+      border-color: var(--accent-cyan);
+    }
+
+    /* Legenda de Níveis Flutuante */
+    .tree-legend-bar {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      background-color: #111111;
+      border: 1.5px solid var(--border-color);
+      padding: 10px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #cccccc;
+      z-index: 40;
+    }
+    @media (max-width: 680px) {
+      .tree-legend-bar {
+        display: none;
+      }
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legend-box {
+      width: 10px;
+      height: 10px;
+      border: 1px solid var(--border-color);
+    }
+    .legend-box.is-root { background-color: #0c0c0c; border-color: var(--accent-cyan); }
+    .legend-box.is-role { background-color: #141414; }
+    .legend-box.is-event { background-color: #121212; }
+    .legend-box.is-collab { background-color: #0a0a0a; border-style: dashed; border-color: #555555; }
+
+    /* =========================================
+       GAVETA LATERAL DE DETALHES (INSPECTOR)
+       ========================================= */
+    #detail-drawer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 380px;
+      max-width: 88vw;
+      height: 100%;
+      background-color: #0f0f0f;
+      border-left: 1.5px solid var(--border-color);
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #detail-drawer.is-open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 16px 20px;
+      border-bottom: 1.5px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #141414;
+    }
+
+    .drawer-header-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .btn-close-drawer {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border-color);
+      background-color: #1c1c1c;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .btn-close-drawer:hover {
+      background-color: var(--accent-cyan);
+      color: #000000;
+    }
+
+    .drawer-content {
+      padding: 24px 20px;
+      overflow-y: auto;
+      flex: 1;
+      background-color: #0f0f0f;
+      color: #dddddd;
+    }
+
+    .drawer-profile-photo {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 1.5px solid var(--border-color);
+      background-color: #1a1a1a;
+      margin-bottom: 18px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .drawer-profile-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .drawer-main-title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.1;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .drawer-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .drawer-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border: 1px solid var(--border-color);
+      background-color: #181818;
+      color: var(--accent-cyan);
+    }
+
+    .drawer-bio {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #cccccc;
+      margin-bottom: 24px;
+    }
+
+    .drawer-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid #222222;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      color: var(--text-muted);
+    }
+
+    .drawer-list-item {
+      padding: 8px 0;
+      border-bottom: 1px dashed #222222;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: #cccccc;
+    }
+    .drawer-list-item:last-child {
+      border-bottom: none;
+    }
+
+    .drawer-action-btn {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid var(--border-color);
+      background-color: #1a1a1a;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 20px;
+      transition: all 0.15s ease;
+    }
+    .drawer-action-btn:hover {
+      background-color: var(--accent-cyan);
+      color: #000000;
+      border-color: var(--accent-cyan);
+    }
+
+    /* Estado de Carregamento e Erro */
+    #loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      gap: 16px;
+    }
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #222222;
+      border-top-color: var(--accent-cyan);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-text {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    #error-state {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      max-width: 480px;
+    }
+    .error-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+    .error-msg {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABEÇALHO FIXO INSTITUCIONAL -->
+  <header id="site-header">
+    <div class="header-left-col">
+      <a href="index.html" class="btn-back" title="Retornar à página principal do acervo">
+        <span>←</span> Voltar ao Acervo
+      </a>
+      <span class="header-tagline">Rede Relacional // FONTE</span>
+    </div>
+
+    <!-- Trilha de Navegação Dinâmica (Breadcrumbs) -->
+    <div class="header-breadcrumbs-col" id="header-breadcrumbs">
+      <!-- Injetado dinamicamente via JS -->
+    </div>
+
+    <div class="header-right-col">
+      <button type="button" class="btn-reset-search" id="btn-reset-search" title="Voltar ao portal de busca e descoberta">
+        <span>✕</span> Reiniciar Busca
+      </button>
+
+      <a href="index.html" class="logo-link" title="FONTE - Início">
+        <img class="header-logo-img" src="https://www.font-e.org/content/logo_fonte_preto.png" alt="FONTE">
+      </a>
+    </div>
+  </header>
+
+  <!-- CENTRAL DE ABAS DE MAPAS ATIVOS -->
+  <nav id="tabs-bar" aria-label="Central de Mapas e Abas">
+    <button type="button" class="btn-new-map" id="btn-new-map" title="Iniciar um novo mapa em branco">
+      <span class="new-map-icon">+</span>
+      <span>Novo Mapa</span>
+    </button>
+    <div class="tabs-scroll-area">
+      <div class="tabs-list" id="tabs-list">
+        <!-- Injetado dinamicamente via TabsManager -->
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTAINER PRINCIPAL -->
+  <main id="main-container">
+
+    <!-- OVERLAY DE CARREGAMENTO -->
+    <div id="loading-overlay">
+      <div class="loading-spinner" id="loading-spinner"></div>
+      <div class="loading-text" id="loading-text">Processando Grafo Relacional...</div>
+      <div id="error-state">
+        <div class="error-title">Falha ao Carregar Acervo</div>
+        <div class="error-msg" id="error-msg">Não foi possível acessar os arquivos de dados (EVENTOS_CONSOLIDADO.json / PESSOAS_CONSOLIDADO.json).</div>
+        <button type="button" class="btn-back" onclick="location.reload()">Tentar Novamente</button>
+      </div>
+    </div>
+
+    <!-- =========================================
+         ESTADO 0: PORTAL DE ENTRADA (DESCOBERTA)
+         ========================================= -->
+    <section id="discovery-portal">
+      <div class="portal-inner">
+        <div class="portal-eyebrow">Arquivo Institucional de Arte Contemporânea</div>
+        <h1 class="portal-title">Rede Relacional da FONTE</h1>
+        <p class="portal-subtitle">
+          Explore a teia de conexões entre artistas, curadores, produtores e mostras ao longo de mais de uma década de ateliê. Selecione um ponto de partida ou pesquise diretamente pelo nome de qualquer agente cultural.
+        </p>
+
+        <!-- Campo de Busca em Tempo Real -->
+        <div class="search-section">
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input 
+              type="text" 
+              class="search-input" 
+              id="agent-search-input" 
+              placeholder="Digite o nome de um artista, curador, pesquisador..."
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <button type="button" class="search-clear-btn" id="search-clear-btn" title="Limpar busca">✕</button>
+          </div>
+
+          <!-- Dropdown Autocomplete -->
+          <div class="search-results-dropdown" id="search-results-dropdown">
+            <!-- Itens de sugestão injetados via JS -->
+          </div>
+        </div>
+
+        <!-- Grade de 12 Pontos de Partida Aleatórios -->
+        <div class="discovery-grid-header">
+          <div class="discovery-grid-title">12 Pontos de Partida Sugeridos (Histórico Ativo no Acervo)</div>
+          <button type="button" class="btn-reshuffle" id="btn-reshuffle">
+            <span>⟳</span> Sortear Outros 12
+          </button>
+        </div>
+
+        <div class="starting-points-grid" id="starting-points-grid">
+          <!-- Injetado dinamicamente via JS -->
+        </div>
+
+        <!-- Faixa Inferior de Estatísticas -->
+        <div class="portal-stats-bar">
+          <div class="stat-item">
+            <span id="stat-events-count"><strong>106</strong></span> Eventos Mapeados
+          </div>
+          <div class="stat-item">
+            <span id="stat-agents-count"><strong>370+</strong></span> Agentes Culturais Cadastrados
+          </div>
+          <div class="stat-item">
+            <span id="stat-period"><strong>2013 — 2026</strong></span> Década de Ateliê e Residência
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================
+         ESTADO 1: ÁRVORE EXPANSÍVEL (D3 MIND MAP)
+         ========================================= -->
+    <section id="tree-container">
+      <svg id="d3-svg-canvas">
+        <g id="d3-main-group">
+          <g id="d3-links-group"></g>
+          <g id="d3-nodes-group"></g>
+        </g>
+      </svg>
+
+      <!-- Legenda de Níveis -->
+      <div class="tree-legend-bar">
+        <div class="legend-item">
+          <span class="legend-box is-root"></span>
+          <span>Nó Raiz (Agente Ativo)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-box is-role"></span>
+          <span>Função</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-box is-event"></span>
+          <span>Evento & Ano</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-box is-collab"></span>
+          <span>Colaborador (Clique para Reancorar)</span>
+        </div>
+      </div>
+
+      <!-- Controles Flutuantes de Zoom e Centralização -->
+      <div class="tree-controls-bar">
+        <button type="button" class="ctrl-btn" id="btn-zoom-in" title="Aproximar (+)">+</button>
+        <button type="button" class="ctrl-btn" id="btn-zoom-out" title="Afastar (-)">−</button>
+        <button type="button" class="ctrl-btn" id="btn-path-finder" title="Ligar Dois Nomes (Buscar Caminho Relacional)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="6" cy="6" r="3"></circle>
+            <circle cx="18" cy="18" r="3"></circle>
+            <path d="M6 9v3a3 3 0 0 0 3 3h6a3 3 0 0 1 3 3"></path>
+          </svg>
+        </button>
+        <button type="button" class="ctrl-btn" id="btn-zoom-fit" title="Ajustar à Tela (Fit)">⊡</button>
+        <button type="button" class="ctrl-btn" id="btn-zoom-reset" title="Centralizar Raiz">⌂</button>
+      </div>
+
+      <!-- Gaveta Lateral de Detalhes (Inspector) -->
+      <aside id="detail-drawer">
+        <div class="drawer-header">
+          <span class="drawer-header-title" id="drawer-header-type">DETALHES DO REGISTRO</span>
+          <button type="button" class="btn-close-drawer" id="btn-close-drawer" title="Fechar painel">✕</button>
+        </div>
+        <div class="drawer-content" id="drawer-content-body">
+          <!-- Preenchido dinamicamente via JS -->
+        </div>
+      </aside>
+    </section>
+
+  </main>
+
+  <!-- MODAL: CONEXÃO ENTRE DOIS PONTOS (BUSCA PARALELA) -->
+  <div id="path-finder-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="modal-eyebrow">CAMINHOS RELACIONAIS NO ACERVO</span>
+          <h2 class="modal-title">Conectar Dois Pontos</h2>
+        </div>
+        <button type="button" class="modal-close-btn" id="btn-close-path-modal" title="Fechar janela">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-desc">
+          Descubra todos os elos, eventos compartilhados e parcerias que unem quaisquer dois agentes culturais da FONTE ao longo da década mapeada.
+        </p>
+
+        <div class="path-fields-wrap">
+          <!-- Ponto A -->
+          <div class="path-field-box">
+            <label class="path-field-label" for="path-agent-a">Ponto de Partida (Pessoa A)</label>
+            <div class="path-input-row">
+              <input type="text" id="path-agent-a" placeholder="Digite o nome de uma pessoa..." autocomplete="off">
+              <span class="path-clear-btn" id="path-clear-a">✕</span>
+            </div>
+            <div class="path-dropdown" id="path-dropdown-a"></div>
+          </div>
+
+          <!-- Ícone Conector Central -->
+          <div class="path-connector-divider">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 10l5 5 5-5"></path>
+            </svg>
+          </div>
+
+          <!-- Ponto B -->
+          <div class="path-field-box">
+            <label class="path-field-label" for="path-agent-b">Destino (Pessoa B)</label>
+            <div class="path-input-row">
+              <input type="text" id="path-agent-b" placeholder="Digite o nome de outra pessoa..." autocomplete="off">
+              <span class="path-clear-btn" id="path-clear-b">✕</span>
+            </div>
+            <div class="path-dropdown" id="path-dropdown-b"></div>
+          </div>
+        </div>
+
+        <div class="path-feedback" id="path-modal-feedback"></div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-modal-cancel" id="btn-cancel-path-modal">Cancelar</button>
+          <button type="button" class="btn-modal-submit" id="btn-submit-path">
+            <span>☍</span> Traçar Caminho
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================
+       JAVASCRIPT: PROCESSAMENTO DO GRAFO & D3.JS
+       ========================================= -->
+  <script>
+    /**
+     * MÁQUINA DE ESTADOS & DADOS DA REDE RELACIONAL FONTE
+     */
+    const AppState = {
+      VIEW_MODE: 'DISCOVERY', // 'DISCOVERY' ou 'TREE'
+      activeAgentName: null,
+      navigationTrail: [], // Array de strings com histórico de navegação
+      zoomBehavior: null,
+      svgSelection: null,
+      mainGroupSelection: null,
+      treeLayout: null,
+      currentRootHierarchy: null,
+      activeConnection: null, // Estado ativo do modo conexão (start, target, allPaths, visibleCount)
+      nodeIdCounter: 0
+    };
+
+    // Armazenamento unificado de Dados
+    const DataStore = {
+      eventos: [],
+      pessoas: [],
+      pessoasMap: new Map(), // chave minúscula -> objeto de pessoa
+      agentsMap: new Map(), // chave normalizada -> { name, roles: {}, eventsMap: Map(), totalActions, ... }
+      agentsList: [],
+      activeStartingPoints: []
+    };
+
+    /**
+     * GERENCIADOR DA CENTRAL DE ABAS (MAPAS CONCORRENTES & NAVEGAÇÃO PARALELA)
+     */
+    const TabsManager = {
+      tabs: [],
+      activeTabId: null,
+
+      saveCurrentStateToActiveTab() {
+        if (!this.activeTabId) return;
+        const tab = this.tabs.find(t => t.id === this.activeTabId);
+        if (!tab) return;
+        tab.rootHierarchy = AppState.currentRootHierarchy;
+        tab.activeAgentName = AppState.activeAgentName;
+        tab.navigationTrail = [...AppState.navigationTrail];
+        tab.viewMode = AppState.VIEW_MODE;
+        tab.activeConnection = AppState.activeConnection ? { ...AppState.activeConnection } : null;
+        if (AppState.svgSelection) {
+          try {
+            tab.transform = d3.zoomTransform(AppState.svgSelection.node());
+          } catch (e) {
+            tab.transform = null;
+          }
+        }
+      },
+
+      createTab(title, agentName, hierarchyRoot, trail, activeConnection = null) {
+        const tabId = 'tab-' + (++AppState.nodeIdCounter) + '-' + Date.now();
+        const newTab = {
+          id: tabId,
+          title: title || agentName || 'Novo Mapa',
+          rootHierarchy: hierarchyRoot,
+          activeAgentName: agentName,
+          navigationTrail: trail ? [...trail] : (agentName ? [agentName] : []),
+          viewMode: 'TREE',
+          activeConnection: activeConnection ? { ...activeConnection } : null,
+          transform: null
+        };
+
+        this.tabs.push(newTab);
+        this.activeTabId = tabId;
+        this.render();
+        return newTab;
+      },
+
+      updateActiveTabTitle(newTitle) {
+        if (!this.activeTabId) return;
+        const tab = this.tabs.find(t => t.id === this.activeTabId);
+        if (tab) {
+          tab.title = newTitle;
+          this.render();
+        }
+      },
+
+      switchToTab(tabId) {
+        if (this.activeTabId === tabId) return;
+
+        this.saveCurrentStateToActiveTab();
+
+        const targetTab = this.tabs.find(t => t.id === tabId);
+        if (!targetTab) return;
+
+        this.activeTabId = tabId;
+        this.render();
+
+        AppState.activeAgentName = targetTab.activeAgentName;
+        AppState.navigationTrail = [...targetTab.navigationTrail];
+        AppState.currentRootHierarchy = targetTab.rootHierarchy;
+        AppState.VIEW_MODE = targetTab.viewMode || 'TREE';
+        AppState.activeConnection = targetTab.activeConnection ? { ...targetTab.activeConnection } : null;
+
+        renderBreadcrumbs();
+        document.body.classList.add('is-tree-mode');
+        initD3Canvas();
+
+        if (AppState.currentRootHierarchy) {
+          updateD3Tree(AppState.currentRootHierarchy, false);
+          if (targetTab.transform && AppState.svgSelection && AppState.zoomBehavior) {
+            AppState.svgSelection.call(AppState.zoomBehavior.transform, targetTab.transform);
+          } else {
+            fitViewToScreen();
+          }
+        }
+        closeDrawer();
+      },
+
+      closeTab(tabId, event) {
+        if (event) event.stopPropagation();
+        const idx = this.tabs.findIndex(t => t.id === tabId);
+        if (idx === -1) return;
+
+        this.tabs.splice(idx, 1);
+
+        if (this.activeTabId === tabId) {
+          if (this.tabs.length > 0) {
+            const nextTab = this.tabs[Math.max(0, idx - 1)];
+            this.switchToTab(nextTab.id);
+          } else {
+            this.activeTabId = null;
+            document.body.classList.remove('has-tabs');
+            resetToDiscoveryPortal();
+          }
+        }
+
+        this.render();
+        if (this.tabs.length === 0) {
+          document.body.classList.remove('has-tabs');
+        }
+      },
+
+      createNewMap() {
+        this.saveCurrentStateToActiveTab();
+        this.activeTabId = null;
+        AppState.activeConnection = null;
+        this.render();
+        resetToDiscoveryPortal();
+      },
+
+      render() {
+        const container = document.getElementById('tabs-list');
+        if (!container) return;
+        container.innerHTML = '';
+
+        if (this.tabs.length > 0) {
+          document.body.classList.add('has-tabs');
+        } else {
+          document.body.classList.remove('has-tabs');
+          return;
+        }
+
+        this.tabs.forEach(tab => {
+          const tabEl = document.createElement('div');
+          tabEl.className = `map-tab ${tab.id === this.activeTabId ? 'is-active' : ''}`;
+          tabEl.setAttribute('data-tab-id', tab.id);
+
+          const titleSpan = document.createElement('span');
+          titleSpan.className = 'tab-title';
+          titleSpan.textContent = tab.title;
+          titleSpan.title = tab.title;
+
+          const closeBtn = document.createElement('button');
+          closeBtn.type = 'button';
+          closeBtn.className = 'tab-close-btn';
+          closeBtn.textContent = '✕';
+          closeBtn.title = 'Fechar mapa';
+          closeBtn.addEventListener('click', (e) => this.closeTab(tab.id, e));
+
+          tabEl.appendChild(titleSpan);
+          tabEl.appendChild(closeBtn);
+
+          tabEl.addEventListener('click', () => {
+            this.switchToTab(tab.id);
+          });
+
+          container.appendChild(tabEl);
+        });
+      }
+    };
+
+    /**
+     * Normalização de strings e exclusão de créditos institucionais
+     */
+    function isInstitutionalCredit(name, role) {
+      if (!name || typeof name !== 'string') return true;
+      const lowerRole = (role || '').toLowerCase();
+      if (lowerRole === 'parceria institucional' || lowerRole === 'realização') {
+        const n = name.trim().toLowerCase();
+        if (n === 'fonte' || n === 'residência fonte' || n === 'paço das artes' || n === 'prêmio edp' || n === 'hermes artes visuais' || n === 'associação cultural videobrasil') {
+          return true;
+        }
+      }
+      const lower = name.trim().toLowerCase();
+      const banned = ['fonte', 'residência fonte', 'paço das artes', 'prêmio edp', 'conversas em gondwana', 'associação cultural videobrasil', 'fapesp', 'goethe-institut'];
+      return banned.includes(lower);
+    }
+
+    /**
+     * Resiliência de Fetch (Local e Raiz)
+     */
+    async function fetchJsonResilient(primaryUrl, fallbackUrl) {
+      try {
+        const res = await fetch(primaryUrl);
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return await res.json();
+      } catch (errPrimary) {
+        console.warn(`Tentativa primária para ${primaryUrl} falhou, tentando fallback ${fallbackUrl}`, errPrimary);
+        const resFb = await fetch(fallbackUrl);
+        if (!resFb.ok) throw new Error(`Status fallback ${resFb.status}`);
+        return await resFb.json();
+      }
+    }
+
+    /**
+     * Inicialização e Cruzamento do Grafo Relacional
+     */
+    async function initializeData() {
+      try {
+        const [eventosData, pessoasData] = await Promise.all([
+          fetchJsonResilient('./EVENTOS_CONSOLIDADO.json', '/EVENTOS_CONSOLIDADO.json'),
+          fetchJsonResilient('./PESSOAS_CONSOLIDADO.json', '/PESSOAS_CONSOLIDADO.json')
+        ]);
+
+        DataStore.eventos = eventosData || [];
+        DataStore.pessoas = pessoasData || [];
+
+        // Mapear Pessoas cadastradas
+        DataStore.pessoas.forEach(p => {
+          if (p.title) {
+            DataStore.pessoasMap.set(p.title.trim().toLowerCase(), p);
+          }
+          if (p.id) {
+            DataStore.pessoasMap.set(p.id.trim().toLowerCase(), p);
+          }
+        });
+
+        // Construir Grafo de Agentes
+        buildRelationalGraph();
+
+        // Atualizar estatísticas na tela inicial
+        document.getElementById('stat-events-count').innerHTML = `<strong>${DataStore.eventos.length}</strong>`;
+        document.getElementById('stat-agents-count').innerHTML = `<strong>${DataStore.agentsList.length}</strong>`;
+
+        // Renderizar os 12 Pontos de Partida Iniciais
+        reshuffleStartingPoints();
+
+        // Configurar Listeners da Interface
+        setupInterfaceListeners();
+
+        // Esconder Loading Overlay
+        document.getElementById('loading-overlay').style.display = 'none';
+
+      } catch (error) {
+        console.error("Erro fatal ao carregar dados do acervo:", error);
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('loading-text').style.display = 'none';
+        const errBox = document.getElementById('error-state');
+        errBox.style.display = 'block';
+        document.getElementById('error-msg').textContent = error.message || "Verifique se os arquivos JSON estão no servidor.";
+      }
+    }
+
+    /**
+     * Extrai todas as participações de pessoas e papéis
+     */
+    function buildRelationalGraph() {
+      DataStore.agentsMap.clear();
+
+      function registerAction(rawName, role, ev) {
+        if (!rawName || typeof rawName !== 'string') return;
+        const name = rawName.trim();
+        if (!name || name === '-' || isInstitutionalCredit(name, role)) return;
+
+        if (!DataStore.agentsMap.has(name)) {
+          const meta = DataStore.pessoasMap.get(name.toLowerCase());
+          DataStore.agentsMap.set(name, {
+            name: name,
+            id: meta ? meta.id : name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+            foto: meta ? (meta.foto_perfil || (meta.galeria && meta.galeria[0] ? meta.galeria[0].thumb : null)) : null,
+            qualificacao: meta ? meta.qualificacao : '',
+            bio: meta ? (meta.bio_preview || meta.bio || '') : '',
+            membro: meta ? (meta.membro_atelie || meta.membro_equipe) : false,
+            roles: {},
+            eventsMap: new Map(),
+            totalActions: 0
+          });
+        }
+
+        const agent = DataStore.agentsMap.get(name);
+        if (!agent.roles[role]) {
+          agent.roles[role] = [];
+        }
+
+        if (!agent.roles[role].some(e => e.id === ev.id)) {
+          agent.roles[role].push(ev);
+        }
+
+        if (!agent.eventsMap.has(ev.id)) {
+          agent.eventsMap.set(ev.id, { event: ev, roles: [role] });
+          agent.totalActions++;
+        } else {
+          const existing = agent.eventsMap.get(ev.id);
+          if (!existing.roles.includes(role)) {
+            existing.roles.push(role);
+          }
+        }
+      }
+
+      DataStore.eventos.forEach(ev => {
+        // Artistas
+        if (ev.artistas_lista && Array.isArray(ev.artistas_lista)) {
+          ev.artistas_lista.forEach(a => registerAction(a, "Artista", ev));
+        } else if (ev.artistas) {
+          ev.artistas.split(',').forEach(a => registerAction(a, "Artista", ev));
+        }
+
+        // Curadoria
+        if (ev.curadoria) {
+          ev.curadoria.split(',').forEach(c => registerAction(c, "Curadoria", ev));
+        }
+
+        // Créditos (Coordenação, Produção, Idealização, etc.)
+        if (ev.creditos && Array.isArray(ev.creditos)) {
+          ev.creditos.forEach(c => {
+            const func = c.funcao || "Colaboração";
+            if (Array.isArray(c.nomes)) {
+              c.nomes.forEach(n => registerAction(n, func, ev));
+            }
+          });
+        }
+
+        // Ministrantes (Orientação, Condução)
+        if (ev.ministrantes && Array.isArray(ev.ministrantes)) {
+          ev.ministrantes.forEach(m => {
+            const func = m.funcao || "Orientação / Condução";
+            if (Array.isArray(m.nomes)) {
+              m.nomes.forEach(n => registerAction(n, func, ev));
+            }
+          });
+        }
+      });
+
+      DataStore.agentsList = Array.from(DataStore.agentsMap.values());
+      DataStore.agentsList.sort((a, b) => b.totalActions - a.totalActions);
+    }
+
+    /**
+     * Retorna a lista de co-participantes de um evento com seus papéis
+     */
+    function getEventCoParticipants(ev, excludeName = null) {
+      const parts = [];
+      const add = (name, role) => {
+        if (!name || typeof name !== 'string') return;
+        const n = name.trim();
+        if (!n || n === '-' || isInstitutionalCredit(n, role)) return;
+        if (excludeName && n.toLowerCase() === excludeName.toLowerCase()) return;
+        if (!parts.some(p => p.name.toLowerCase() === n.toLowerCase() && p.role === role)) {
+          parts.push({ name: n, role: role });
+        }
+      };
+
+      if (ev.artistas_lista && Array.isArray(ev.artistas_lista)) {
+        ev.artistas_lista.forEach(a => add(a, "Artista"));
+      } else if (ev.artistas) {
+        ev.artistas.split(',').forEach(a => add(a, "Artista"));
+      }
+
+      if (ev.curadoria) {
+        ev.curadoria.split(',').forEach(c => add(c, "Curadoria"));
+      }
+
+      if (ev.creditos && Array.isArray(ev.creditos)) {
+        ev.creditos.forEach(c => {
+          const func = c.funcao || "Colaboração";
+          if (Array.isArray(c.nomes)) c.nomes.forEach(n => add(n, func));
+        });
+      }
+
+      if (ev.ministrantes && Array.isArray(ev.ministrantes)) {
+        ev.ministrantes.forEach(m => {
+          const func = m.funcao || "Orientação / Condução";
+          if (Array.isArray(m.nomes)) m.nomes.forEach(n => add(n, func));
+        });
+      }
+
+      return parts;
+    }
+
+    /**
+     * Sorteia 12 agentes culturais com NO MÍNIMO 3 ações
+     */
+    function reshuffleStartingPoints() {
+      const eligible = DataStore.agentsList.filter(a => a.totalActions >= 3);
+      if (eligible.length === 0) return;
+
+      // Embaralhamento Fisher-Yates
+      const shuffled = [...eligible];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+
+      DataStore.activeStartingPoints = shuffled.slice(0, 12);
+      renderStartingPointsGrid();
+    }
+
+    /**
+     * Renderiza o Grid de 12 Pontos de Partida
+     */
+    function renderStartingPointsGrid() {
+      const container = document.getElementById('starting-points-grid');
+      container.innerHTML = '';
+
+      DataStore.activeStartingPoints.forEach(agent => {
+        const card = document.createElement('div');
+        card.className = 'starter-card';
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+
+        const roleNames = Object.keys(agent.roles);
+        const rolesHtml = roleNames.slice(0, 3).map(r => `<span class="role-pill">${escapeHtml(r)}</span>`).join('');
+
+        card.innerHTML = `
+          <div class="starter-top">
+            <h3 class="starter-name">${escapeHtml(agent.name)}</h3>
+            <span class="starter-badge">${agent.totalActions} ${agent.totalActions === 1 ? 'ação' : 'ações'}</span>
+          </div>
+          <div class="starter-roles-tags">
+            ${rolesHtml}
+          </div>
+        `;
+
+        card.addEventListener('click', () => {
+          navigateToAgent(agent.name, 'start');
+        });
+
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            navigateToAgent(agent.name, 'start');
+          }
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    /**
+     * Monta a estrutura de dados hierárquica D3 para o Agente selecionado
+     */
+    function generateHierarchyForAgent(agentName) {
+      const agent = DataStore.agentsMap.get(agentName);
+      if (!agent) return null;
+
+      const root = {
+        id: `node-${++AppState.nodeIdCounter}`,
+        type: 'root',
+        name: agent.name,
+        agentData: agent,
+        children: []
+      };
+
+      // Nível 1: Funções
+      Object.keys(agent.roles).forEach(role => {
+        const eventsList = agent.roles[role];
+        const roleNode = {
+          id: `node-${++AppState.nodeIdCounter}`,
+          type: 'role',
+          name: `${role} (${eventsList.length})`,
+          roleName: role,
+          count: eventsList.length,
+          children: []
+        };
+
+        // Nível 2: Eventos
+        eventsList.forEach(ev => {
+          const coParticipants = getEventCoParticipants(ev, agent.name);
+          const yearStr = ev.ano ? `${ev.ano}` : (ev.inicio ? ev.inicio.substring(0,4) : 's/d');
+          
+          const eventNode = {
+            id: `node-${++AppState.nodeIdCounter}`,
+            type: 'event',
+            name: `${ev.title} (${yearStr})`,
+            eventTitle: ev.title,
+            eventYear: yearStr,
+            eventData: ev,
+            coParticipantsCount: coParticipants.length,
+            children: []
+          };
+
+          // Nível 3: Colaboradores
+          coParticipants.forEach(c => {
+            eventNode.children.push({
+              id: `node-${++AppState.nodeIdCounter}`,
+              type: 'collab',
+              name: `${c.name} (${c.role})`,
+              collaboratorName: c.name,
+              collaboratorRole: c.role,
+              parentEvent: ev
+            });
+          });
+
+          roleNode.children.push(eventNode);
+        });
+
+        root.children.push(roleNode);
+      });
+
+      return root;
+    }
+
+    /**
+     * Medição precisa de largura de texto via Canvas 2D
+     */
+    const _textMeasureCanvas = document.createElement('canvas');
+    const _textMeasureCtx = _textMeasureCanvas.getContext('2d');
+    function measureTextWidth(text, font) {
+      if (!text) return 0;
+      _textMeasureCtx.font = font;
+      return _textMeasureCtx.measureText(text).width;
+    }
+
+    /**
+     * Calcula as dimensões exatas de cada nó para nunca truncar texto
+     */
+    function computeNodeDimensions(d) {
+      const type = d.data.type;
+      if (type === 'root') {
+        const titleW = measureTextWidth(d.data.name, '700 13px Stag Sans, sans-serif');
+        const actionsCount = (d.data.agentData && d.data.agentData.totalActions) || 0;
+        const subText = d.data.isConnectionRoot ? `PONTO DE PARTIDA • ${actionsCount} AÇÕES` : `AGENTE CULTURAL • ${actionsCount} AÇÕES`;
+        const subW = measureTextWidth(subText, '500 9.5px Stag Sans, sans-serif');
+        const btnMinW = d.data.isConnectionRoot ? 210 : 0;
+        const contentW = Math.max(titleW, subW, btnMinW);
+        const width = Math.max(180, Math.ceil(contentW + 24 + 36));
+        return { width, height: 46 };
+      } else if (type === 'role') {
+        const titleW = measureTextWidth(d.data.name, '700 11.5px Stag Sans, sans-serif');
+        const width = Math.max(120, Math.ceil(titleW + 28));
+        return { width, height: 34 };
+      } else if (type === 'event') {
+        const yearStr = d.data.eventYear || '';
+        const titleW = measureTextWidth(`${d.data.eventTitle} (${yearStr})`, '600 11.5px Stag Sans, sans-serif');
+        const subText = d.data.isConnectionNode
+          ? (d.data.subText || 'COLABORAÇÃO')
+          : `👥 ${d.data.coParticipantsCount} ${d.data.coParticipantsCount === 1 ? 'colaborador' : 'colaboradores'}`;
+        const subW = measureTextWidth(subText, d.data.isConnectionNode ? '700 10px Stag Sans, sans-serif' : '500 9.5px Stag Sans, sans-serif');
+        const contentW = Math.max(titleW, subW);
+        const width = Math.max(170, Math.ceil(contentW + 20 + 36));
+        return { width, height: 42 };
+      } else if (type === 'collab') {
+        const titleW = measureTextWidth(d.data.collaboratorName, '700 11.5px Stag Sans, sans-serif');
+        const subText = d.data.isConnectionNode
+          ? (d.data.collaboratorRole || 'Colaboração')
+          : `↗ ${d.data.collaboratorRole} (Continuar)`;
+        const subW = measureTextWidth(subText, '500 9.5px Stag Sans, sans-serif');
+        const contentW = Math.max(titleW, subW);
+        const hasAgent = DataStore.agentsMap.has(d.data.collaboratorName);
+        const rightSpace = d.data.isConnectionNode ? (hasAgent ? 36 : 20) : (hasAgent ? 52 : 30);
+        const width = Math.max(160, Math.ceil(contentW + 20 + rightSpace));
+        return { width, height: 38 };
+      }
+      return { width: 170, height: 36 };
+    }
+
+    /**
+     * Configuração do SVG e Zoom D3.js com suporte a pinça (pinch-to-zoom) e rolagem com 2 dedos
+     */
+    function initD3Canvas() {
+      if (AppState.svgSelection) return;
+
+      const svg = d3.select('#d3-svg-canvas');
+      const mainGroup = d3.select('#d3-main-group');
+
+      AppState.svgSelection = svg;
+      AppState.mainGroupSelection = mainGroup;
+
+      AppState.zoomBehavior = d3.zoom()
+        .scaleExtent([0.15, 3.0])
+        .filter((event) => {
+          // Desativa o wheel padrão do D3 para tratarmos pinça vs dois dedos separadamente
+          if (event.type === 'wheel') return false;
+          return !event.ctrlKey && !event.button;
+        })
+        .on('zoom', (event) => {
+          mainGroup.attr('transform', event.transform);
+        });
+
+      svg.call(AppState.zoomBehavior);
+
+      // Tratamento refinado de Trackpad e Gestos:
+      // - Pinça (pinch-to-zoom com ctrlKey disparado pelo navegador): aumenta / diminui zoom
+      // - Rolagem de 2 dedos (sem ctrlKey): arrasta / translada a tela livremente
+      const svgDomNode = svg.node();
+      svgDomNode.addEventListener('wheel', (event) => {
+        event.preventDefault();
+        if (event.ctrlKey || event.metaKey) {
+          // Gesto de Pinça (Trackpad pinch-to-zoom)
+          const zoomFactor = Math.exp(-event.deltaY * 0.01);
+          const pointer = d3.pointer(event, svgDomNode);
+          svg.call(AppState.zoomBehavior.scaleBy, zoomFactor, pointer);
+        } else {
+          // Dois dedos rolando fazem papel de arrastar a mãozinha
+          const dx = -event.deltaX;
+          const dy = -event.deltaY;
+          svg.call(AppState.zoomBehavior.translateBy, dx, dy);
+        }
+      }, { passive: false });
+
+      // Botões de zoom flutuantes
+      document.getElementById('btn-zoom-in').addEventListener('click', () => {
+        svg.transition().duration(250).call(AppState.zoomBehavior.scaleBy, 1.3);
+      });
+
+      document.getElementById('btn-zoom-out').addEventListener('click', () => {
+        svg.transition().duration(250).call(AppState.zoomBehavior.scaleBy, 0.77);
+      });
+
+      document.getElementById('btn-zoom-fit').addEventListener('click', () => {
+        fitViewToScreen();
+      });
+
+      document.getElementById('btn-zoom-reset').addEventListener('click', () => {
+        centerRootNode();
+      });
+
+      window.addEventListener('resize', () => {
+        if (AppState.VIEW_MODE === 'TREE' && AppState.currentRootHierarchy) {
+          updateD3Tree(AppState.currentRootHierarchy, false);
+        }
+      });
+    }
+
+    /**
+     * Ajusta o zoom para enquadrar a árvore visível
+     */
+    function fitViewToScreen() {
+      if (!AppState.mainGroupSelection || !AppState.svgSelection) return;
+
+      const svgNode = AppState.svgSelection.node();
+      const bounds = AppState.mainGroupSelection.node().getBBox();
+      const width = svgNode.clientWidth;
+      const height = svgNode.clientHeight;
+
+      if (bounds.width === 0 || bounds.height === 0) return;
+
+      const padding = 60;
+      const fullWidth = bounds.width + padding * 2;
+      const fullHeight = bounds.height + padding * 2;
+      const scale = Math.max(0.2, Math.min(1.2, Math.min(width / fullWidth, height / fullHeight)));
+
+      const midX = bounds.x + bounds.width / 2;
+      const midY = bounds.y + bounds.height / 2;
+
+      const transform = d3.zoomIdentity
+        .translate(width / 2 - scale * midX, height / 2 - scale * midY)
+        .scale(scale);
+
+      AppState.svgSelection.transition().duration(500).call(AppState.zoomBehavior.transform, transform);
+    }
+
+    /**
+     * Centraliza a visão diretamente no nó raiz
+     */
+    function centerRootNode() {
+      if (!AppState.svgSelection) return;
+      const svgNode = AppState.svgSelection.node();
+      const width = svgNode.clientWidth;
+      const height = svgNode.clientHeight;
+
+      const transform = d3.zoomIdentity
+        .translate(width * 0.15, height / 2)
+        .scale(0.9);
+
+      AppState.svgSelection.transition().duration(500).call(AppState.zoomBehavior.transform, transform);
+    }
+
+    /**
+     * Navegação entre Agentes (Transição suave e atualização do Mind Map)
+     */
+    function navigateToAgent(agentName, reason = 'jump', hopInfo = null) {
+      const cleanName = (agentName || '').trim();
+      const agent = DataStore.agentsMap.get(cleanName);
+      if (!agent) {
+        console.warn(`Agente ${cleanName} não encontrado no grafo.`);
+        return;
+      }
+
+      AppState.activeAgentName = cleanName;
+
+      // Gestão da trilha de navegação (Breadcrumbs)
+      if (reason === 'start') {
+        AppState.navigationTrail = [cleanName];
+      } else if (reason === 'hop' && hopInfo) {
+        if (hopInfo.roleName) AppState.navigationTrail.push(hopInfo.roleName);
+        if (hopInfo.eventTitle) AppState.navigationTrail.push(hopInfo.eventTitle);
+        AppState.navigationTrail.push(cleanName);
+      } else if (reason === 'breadcrumb') {
+        // Já tratado no handler do breadcrumb
+      } else {
+        if (!AppState.navigationTrail.includes(cleanName)) {
+          AppState.navigationTrail.push(cleanName);
+        }
+      }
+
+      // Atualizar interface de Breadcrumbs no topo
+      renderBreadcrumbs();
+
+      // Alternar para o Estado 1 (TREE)
+      AppState.VIEW_MODE = 'TREE';
+      document.body.classList.add('is-tree-mode');
+
+      // Inicializar Canvas se necessário
+      initD3Canvas();
+
+      // Gerar hierarquia e renderizar Árvore D3
+      const treeData = generateHierarchyForAgent(cleanName);
+      if (!treeData) return;
+
+      const hierarchyRoot = d3.hierarchy(treeData);
+      AppState.currentRootHierarchy = hierarchyRoot;
+
+      // Sincronizar Abas
+      if (reason === 'start') {
+        TabsManager.createTab(cleanName, cleanName, hierarchyRoot, [cleanName]);
+      } else {
+        const startAgent = AppState.navigationTrail[0] || cleanName;
+        const tabTitle = (startAgent === cleanName) ? cleanName : `${startAgent} → ${cleanName}`;
+        TabsManager.updateActiveTabTitle(tabTitle);
+      }
+
+      // Regra de colapso inicial:
+      // Mantém Funções abertas; colapsa Eventos para visualização limpa
+      if (hierarchyRoot.children) {
+        hierarchyRoot.children.forEach(roleNode => {
+          if (roleNode.children) {
+            roleNode.children.forEach(eventNode => {
+              if (eventNode.children) {
+                eventNode._children = eventNode.children;
+                eventNode.children = null;
+              }
+            });
+          }
+        });
+      }
+
+      // Renderizar visualização
+      updateD3Tree(hierarchyRoot, true);
+
+      // A barra lateral de detalhes agora é OPCIONAL por padrão:
+      // Só será aberta se o usuário clicar no ícone [i] de informações
+      closeDrawer();
+    }
+
+    /**
+     * Renderiza a barra de trilha de navegação (Breadcrumb)
+     */
+    function renderBreadcrumbs() {
+      const container = document.getElementById('header-breadcrumbs');
+      container.innerHTML = '';
+
+      // Botão Início
+      const homeItem = document.createElement('span');
+      homeItem.className = 'breadcrumb-item is-clickable';
+      homeItem.textContent = 'Início';
+      homeItem.addEventListener('click', resetToDiscoveryPortal);
+      container.appendChild(homeItem);
+
+      // Itens da trilha
+      AppState.navigationTrail.forEach((step, idx) => {
+        const sep = document.createElement('span');
+        sep.className = 'breadcrumb-sep';
+        sep.textContent = '>';
+        container.appendChild(sep);
+
+        const item = document.createElement('span');
+        item.className = 'breadcrumb-item';
+        item.textContent = step;
+
+        const isLast = idx === AppState.navigationTrail.length - 1;
+        if (isLast) {
+          item.classList.add('is-active');
+        } else {
+          if (DataStore.agentsMap.has(step)) {
+            item.classList.add('is-clickable');
+            item.addEventListener('click', () => {
+              AppState.navigationTrail = AppState.navigationTrail.slice(0, idx + 1);
+              navigateToAgent(step, 'breadcrumb');
+            });
+          }
+        }
+
+        container.appendChild(item);
+      });
+    }
+
+    /**
+     * Retorna ao Estado 0 (Portal de Descoberta)
+     */
+    function resetToDiscoveryPortal() {
+      AppState.VIEW_MODE = 'DISCOVERY';
+      document.body.classList.remove('is-tree-mode');
+      AppState.navigationTrail = [];
+      closeDrawer();
+      document.getElementById('agent-search-input').value = '';
+      closeSearchDropdown();
+      TabsManager.render();
+    }
+
+    /**
+     * RENDERIZAÇÃO E ATUALIZAÇÃO DA ÁRVORE D3 COM LARGURAS DINÂMICAS E ZERO SOBREPOSIÇÃO
+     */
+    function updateD3Tree(sourceHierarchy, isInitial = false) {
+      // 1. Calcular dimensões dinâmicas de cada nó para suportar textos completos
+      const allHierarchyNodes = AppState.currentRootHierarchy.descendants();
+      allHierarchyNodes.forEach(d => {
+        const dims = computeNodeDimensions(d);
+        d.nodeWidth = dims.width;
+        d.nodeHeight = dims.height;
+      });
+
+      // 2. Determinar a largura máxima por profundidade para espaçamento dinâmico
+      const maxWidthPerDepth = {};
+      allHierarchyNodes.forEach(d => {
+        maxWidthPerDepth[d.depth] = Math.max(maxWidthPerDepth[d.depth] || 0, d.nodeWidth);
+      });
+
+      // 3. Layout vertical flexível com espaçamento seguro entre linhas
+      const nodeVerticalGap = AppState.activeConnection ? 64 : 52;
+      const treeLayout = d3.tree()
+        .nodeSize([nodeVerticalGap, 100])
+        .separation((a, b) => (a.parent === b.parent ? 1.25 : 1.45));
+
+      const treeData = treeLayout(AppState.currentRootHierarchy);
+      const nodes = treeData.descendants();
+      const links = treeData.links();
+
+      // 4. Atribuir coordenadas horizontais (Y) com base na largura máxima acumulada
+      const depthOffsets = { 0: 0 };
+      let accumulatedY = 0;
+      for (let lvl = 0; lvl <= 10; lvl++) {
+        depthOffsets[lvl] = accumulatedY;
+        const currentLevelWidth = maxWidthPerDepth[lvl] || 180;
+        accumulatedY += currentLevelWidth + 72; // 72px de folga generosa entre níveis
+      }
+
+      nodes.forEach(d => {
+        d.y = depthOffsets[d.depth] !== undefined ? depthOffsets[d.depth] : (d.depth * 300);
+      });
+
+      // Grupos SVG
+      const linksGroup = d3.select('#d3-links-group');
+      const nodesGroup = d3.select('#d3-nodes-group');
+
+      const transitionDuration = isInitial ? 0 : 360;
+      const t = d3.transition().duration(transitionDuration).ease(d3.easeCubicOut);
+
+      // =========================================
+      // GERADOR DE LINKS ENTRE AS BORDAS DOS CARDS
+      // =========================================
+      function generateSmoothLink(d) {
+        const startX = d.source.y + (d.source.nodeWidth || 0);
+        const startY = d.source.x;
+        const endX = d.target.y;
+        const endY = d.target.x;
+        const midX = (startX + endX) / 2;
+        return `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
+      }
+
+      const linkSelection = linksGroup.selectAll('path.tree-link')
+        .data(links, d => `${d.source.data.id}-${d.target.data.id}`);
+
+      // Enter links
+      const linkEnter = linkSelection.enter()
+        .append('path')
+        .attr('class', 'tree-link')
+        .attr('d', () => {
+          const o = {
+            source: { x: sourceHierarchy.x || 0, y: sourceHierarchy.y || 0, nodeWidth: sourceHierarchy.nodeWidth || 0 },
+            target: { x: sourceHierarchy.x || 0, y: sourceHierarchy.y || 0 }
+          };
+          return generateSmoothLink(o);
+        });
+
+      // Update + Enter links
+      linkSelection.merge(linkEnter)
+        .transition(t)
+        .attr('d', d => generateSmoothLink(d));
+
+      // Exit links
+      linkSelection.exit()
+        .transition(t)
+        .attr('d', () => {
+          const o = {
+            source: { x: sourceHierarchy.x || 0, y: sourceHierarchy.y || 0, nodeWidth: sourceHierarchy.nodeWidth || 0 },
+            target: { x: sourceHierarchy.x || 0, y: sourceHierarchy.y || 0 }
+          };
+          return generateSmoothLink(o);
+        })
+        .remove();
+
+      // =========================================
+      // NÓS DA ÁRVORE (CARD DINÂMICO & ÍCONES)
+      // =========================================
+      const nodeSelection = nodesGroup.selectAll('g.tree-node')
+        .data(nodes, d => d.data.id);
+
+      // Enter nodes
+      const nodeEnter = nodeSelection.enter()
+        .append('g')
+        .attr('transform', () => `translate(${sourceHierarchy.y || 0}, ${sourceHierarchy.x || 0})`)
+        .attr('opacity', 0);
+
+      // Update + Enter nodes
+      const nodeUpdate = nodeSelection.merge(nodeEnter);
+
+      // Renderizar ou atualizar o cartão gráfico de cada nó
+      nodeUpdate.each(function(d) {
+        const g = d3.select(this);
+        let cls = `tree-node node-${d.data.type}`;
+        if (d.data.isTargetNode) cls += ' is-target-agent';
+        else if (d.data.isConnectionNode && d.data.type === 'collab') cls += ' is-connection-agent';
+        g.attr('class', cls);
+        renderNodeGraphic(g, d);
+      });
+
+      nodeUpdate.transition(t)
+        .attr('transform', d => `translate(${d.y}, ${d.x})`)
+        .attr('opacity', 1);
+
+      // Exit nodes
+      nodeSelection.exit()
+        .transition(t)
+        .attr('transform', () => `translate(${sourceHierarchy.y || 0}, ${sourceHierarchy.x || 0})`)
+        .attr('opacity', 0)
+        .remove();
+
+      if (isInitial) {
+        centerRootNode();
+      }
+    }
+
+    /**
+     * Renderiza a anatomia gráfica dos nós com texto 100% legível (sem cortes),
+     * sem ícones de '+' artificiais e com botão [i] de info lateral sob demanda
+     */
+    function renderNodeGraphic(g, d) {
+      const type = d.data.type;
+      const boxWidth = d.nodeWidth;
+      const boxHeight = d.nodeHeight;
+
+      if (type === 'root') {
+        // NÓ RAIZ (Agente Ativo)
+        g.append('rect')
+          .attr('class', 'node-card')
+          .attr('x', 0)
+          .attr('y', -boxHeight / 2)
+          .attr('width', boxWidth)
+          .attr('height', boxHeight);
+
+        // Faixa de destaque ciano na borda esquerda
+        g.append('rect')
+          .attr('x', 0)
+          .attr('y', -boxHeight / 2)
+          .attr('width', 4)
+          .attr('height', boxHeight)
+          .attr('fill', 'var(--accent-cyan)');
+
+        // Título completo do Agente (sem abreviação)
+        g.append('text')
+          .attr('class', 'node-title')
+          .attr('x', 14)
+          .attr('y', -4)
+          .attr('dominant-baseline', 'central')
+          .text(d.data.name);
+
+        // Subtítulo descritivo
+        const totalActions = (d.data.agentData && d.data.agentData.totalActions) || 0;
+        g.append('text')
+          .attr('class', 'node-sub')
+          .attr('x', 14)
+          .attr('y', 11)
+          .attr('dominant-baseline', 'central')
+          .text(`AGENTE CULTURAL • ${totalActions} AÇÕES`);
+
+        // Botão dedicado de Info [i]
+        const infoBtnG = g.append('g')
+          .attr('class', 'node-info-btn-wrap')
+          .attr('transform', `translate(${boxWidth - 22}, 0)`);
+
+        infoBtnG.append('circle')
+          .attr('class', 'node-info-btn')
+          .attr('cx', 0)
+          .attr('cy', 0)
+          .attr('r', 9);
+
+        infoBtnG.append('text')
+          .attr('class', 'node-info-text')
+          .attr('x', 0)
+          .attr('y', 0)
+          .text('i');
+
+        // Clicar no [i] abre a barra lateral
+        infoBtnG.on('click', (event) => {
+          event.stopPropagation();
+          if (d.data.agentData) {
+            openAgentDrawer(d.data.agentData);
+          }
+        });
+
+        // Clicar no corpo do nó centraliza a visão
+        g.on('click', (event) => {
+          event.stopPropagation();
+          centerRootNode();
+        });
+
+      } else if (type === 'role') {
+        // NÓ DE FUNÇÃO (Nível 1 - ex: DIREÇÃO TÉCNICA E STREAMING)
+        // Sem botões de '+', o clique no próprio cartão expande/recolhe a árvore
+        g.append('rect')
+          .attr('class', 'node-card')
+          .attr('x', 0)
+          .attr('y', -boxHeight / 2)
+          .attr('width', boxWidth)
+          .attr('height', boxHeight);
+
+        g.append('text')
+          .attr('class', 'node-title')
+          .attr('x', 14)
+          .attr('y', 1)
+          .attr('dominant-baseline', 'central')
+          .text(d.data.name);
+
+        // Clicar no nó de função abre/fecha as conexões seguintes
+        g.on('click', (event) => {
+          event.stopPropagation();
+          toggleNodeChildren(d);
+        });
+
+      } else if (type === 'event') {
+        // NÓ DE EVENTO (Nível 2 - ex: VOLANTE: A ILUSÃO DO BRILHO)
+        g.append('rect')
+          .attr('class', 'node-card')
+          .attr('x', 0)
+          .attr('y', -boxHeight / 2)
+          .attr('width', boxWidth)
+          .attr('height', boxHeight);
+
+        // Título completo do Evento
+        const yearStr = d.data.eventYear || '';
+        g.append('text')
+          .attr('class', 'node-title')
+          .attr('x', 14)
+          .attr('y', -5)
+          .attr('dominant-baseline', 'central')
+          .text(`${d.data.eventTitle} (${yearStr})`);
+
+        const subText = `👥 ${d.data.coParticipantsCount} ${d.data.coParticipantsCount === 1 ? 'colaborador' : 'colaboradores'}`;
+        g.append('text')
+          .attr('class', 'node-sub')
+          .attr('x', 14)
+          .attr('y', 10)
+          .attr('dominant-baseline', 'central')
+          .text(subText);
+
+        // Botão dedicado de Informações [i] que abre a barra lateral
+        const infoBtnG = g.append('g')
+          .attr('class', 'node-info-btn-wrap')
+          .attr('transform', `translate(${boxWidth - 18}, 0)`);
+
+        infoBtnG.append('circle')
+          .attr('class', 'node-info-btn')
+          .attr('cx', 0)
+          .attr('cy', 0)
+          .attr('r', 8.5);
+
+        infoBtnG.append('text')
+          .attr('class', 'node-info-text')
+          .attr('x', 0)
+          .attr('y', 0)
+          .text('i');
+
+        infoBtnG.on('click', (event) => {
+          event.stopPropagation();
+          openEventDrawer(d.data.eventData);
+        });
+
+        // Clicar no corpo do evento expande/recolhe a árvore (não há ícones de +)
+        g.on('click', (event) => {
+          event.stopPropagation();
+          if (d.data.coParticipantsCount > 0) {
+            toggleNodeChildren(d);
+          }
+        });
+
+      } else if (type === 'collab') {
+        // NÓ DE COLABORADOR (Nível 3)
+        g.append('rect')
+          .attr('class', 'node-card')
+          .attr('x', 0)
+          .attr('y', -boxHeight / 2)
+          .attr('width', boxWidth)
+          .attr('height', boxHeight);
+
+        g.append('text')
+          .attr('class', 'node-title')
+          .attr('x', 14)
+          .attr('y', -4)
+          .attr('dominant-baseline', 'central')
+          .text(d.data.collaboratorName);
+
+        g.append('text')
+          .attr('class', 'node-sub')
+          .attr('x', 14)
+          .attr('y', 10)
+          .attr('dominant-baseline', 'central')
+          .text(`↗ ${d.data.collaboratorRole} (Continuar)`);
+
+        const collabAgent = DataStore.agentsMap.get(d.data.collaboratorName);
+
+        // Se o colaborador existir na base, adiciona o botão de info [i]
+        if (collabAgent) {
+          const infoBtnG = g.append('g')
+            .attr('class', 'node-info-btn-wrap')
+            .attr('transform', `translate(${boxWidth - 34}, 0)`);
+
+          infoBtnG.append('circle')
+            .attr('class', 'node-info-btn')
+            .attr('cx', 0)
+            .attr('cy', 0)
+            .attr('r', 8.5);
+
+          infoBtnG.append('text')
+            .attr('class', 'node-info-text')
+            .attr('x', 0)
+            .attr('y', 0)
+            .text('i');
+
+          infoBtnG.on('click', (event) => {
+            event.stopPropagation();
+            openAgentDrawer(collabAgent);
+          });
+        }
+
+        // Ícone indicador de continuação de caminho relacional
+        g.append('text')
+          .attr('x', boxWidth - 14)
+          .attr('y', 0)
+          .attr('font-size', '12px')
+          .attr('font-weight', '700')
+          .attr('text-anchor', 'middle')
+          .attr('dominant-baseline', 'central')
+          .attr('fill', 'var(--accent-cyan)')
+          .text('↗');
+
+        // Clicar no cartão ativa a navegação contínua preservando o rastro
+        g.on('click', (event) => {
+          event.stopPropagation();
+          handleCollabContinuousClick(d);
+        });
+      }
+    }
+
+    /**
+     * NAVEGAÇÃO CONTÍNUA COM RASTRO:
+     * Se a partir de Adriano Franchini chegamos em Pedro Gallego, a árvore de Pedro
+     * abre normalmente e a de Adriano segue atrás de Pedro, reduzindo-se ao
+     * caminho percorrido para deixar visíveis as conexões e rastros da navegação.
+     */
+    function handleCollabContinuousClick(d) {
+      const collabName = d.data.collaboratorName;
+      const agent = DataStore.agentsMap.get(collabName);
+      if (!agent) {
+        console.warn(`Agente ${collabName} não possui registros próprios.`);
+        return;
+      }
+
+      // Se já estiver expandido continuamente neste nó, apenas alterna seus filhos
+      if (d.data.isContinuouslyExpanded) {
+        toggleNodeChildren(d);
+        return;
+      }
+
+      // 1. Redução da árvore anterior ao caminho percorrido:
+      // Para cada nó ancestral até a raiz, mantém apenas o ramo filho que está no caminho de 'd'
+      const ancestors = d.ancestors(); // [d, parent (event), parent.parent (role), ..., root]
+      for (let i = 1; i < ancestors.length; i++) {
+        const parentNode = ancestors[i];
+        const childOnPath = ancestors[i - 1];
+        if (parentNode.children && parentNode.children.length > 1) {
+          parentNode._collapsedSiblings = parentNode.children.filter(c => c !== childOnPath);
+          parentNode.children = [childOnPath];
+        }
+      }
+
+      // 2. Transforma o nó em agente expandido continuamente
+      d.data.isContinuouslyExpanded = true;
+      d.data.agentData = agent;
+      AppState.activeAgentName = agent.name;
+
+      // Atualiza trilha de navegação (Breadcrumbs)
+      if (!AppState.navigationTrail.includes(agent.name)) {
+        AppState.navigationTrail.push(agent.name);
+      }
+      renderBreadcrumbs();
+
+      // 3. Gera hierarquia de funções e eventos do novo agente
+      const agentTreeData = generateHierarchyForAgent(agent.name);
+      if (agentTreeData && agentTreeData.children && agentTreeData.children.length > 0) {
+        const subHierarchy = d3.hierarchy(agentTreeData);
+
+        // Funções abertas, eventos colapsados em _children
+        subHierarchy.children.forEach(roleNode => {
+          if (roleNode.children) {
+            roleNode.children.forEach(eventNode => {
+              if (eventNode.children) {
+                eventNode._children = eventNode.children;
+                eventNode.children = null;
+              }
+            });
+          }
+          roleNode.parent = d;
+          roleNode.depth = d.depth + 1;
+          roleNode.each(desc => {
+            if (desc.parent) desc.depth = desc.parent.depth + 1;
+          });
+        });
+
+        d.children = subHierarchy.children;
+        d._children = null;
+      }
+
+      // 4. Atualiza o título da aba ativa com o rastro
+      const startAgent = AppState.navigationTrail[0] || agent.name;
+      const tabTitle = (startAgent === agent.name) ? agent.name : `${startAgent} → ${agent.name}`;
+      TabsManager.updateActiveTabTitle(tabTitle);
+
+      // 5. Atualiza a árvore D3
+      updateD3Tree(d);
+
+      // 6. Transição suave de enquadramento
+      if (AppState.svgSelection && AppState.zoomBehavior) {
+        const svgNode = AppState.svgSelection.node();
+        const width = svgNode.clientWidth;
+        const height = svgNode.clientHeight;
+        const targetX = width * 0.28 - d.y * 0.8;
+        const targetY = height / 2 - d.x * 0.8;
+        const transform = d3.zoomIdentity.translate(targetX, targetY).scale(0.8);
+        AppState.svgSelection.transition().duration(600).ease(d3.easeCubicOut).call(AppState.zoomBehavior.transform, transform);
+      }
+
+      closeDrawer();
+    }
+
+    /**
+     * Alterna estado de expansão/colapso dos filhos do nó
+     */
+    function toggleNodeChildren(d) {
+      if (d.children) {
+        d._children = d.children;
+        d.children = null;
+      } else {
+        d.children = d._children;
+        d._children = null;
+      }
+      updateD3Tree(d);
+    }
+
+    /**
+     * Trunca texto com reticências para caber no nó SVG
+     */
+    function truncateText(str, maxLen = 24) {
+      if (!str) return '';
+      return str.length > maxLen ? str.substring(0, maxLen - 1) + '…' : str;
+    }
+
+    /**
+     * GAVETA LATERAL DE DETALHES (INSPECTOR DE AGENTE OU EVENTO)
+     */
+    function openAgentDrawer(agent) {
+      const drawer = document.getElementById('detail-drawer');
+      const headerType = document.getElementById('drawer-header-type');
+      const content = document.getElementById('drawer-content-body');
+
+      headerType.textContent = 'PERFIL DO AGENTE CULTURAL';
+
+      const photoHtml = agent.foto 
+        ? `<div class="drawer-profile-photo"><img src="${escapeHtml(agent.foto)}" alt="${escapeHtml(agent.name)}"></div>`
+        : '';
+
+      const rolesHtml = Object.keys(agent.roles)
+        .map(r => `<span class="drawer-badge">${escapeHtml(r)} (${agent.roles[r].length})</span>`)
+        .join('');
+
+      let eventsListHtml = '';
+      agent.eventsMap.forEach((entry) => {
+        const ev = entry.event;
+        const year = ev.ano || (ev.inicio ? ev.inicio.substring(0,4) : 's/d');
+        eventsListHtml += `
+          <div class="drawer-list-item">
+            <span><strong>${escapeHtml(ev.title)}</strong> (${year})</span>
+            <span>${escapeHtml(entry.roles.join(', '))}</span>
+          </div>
+        `;
+      });
+
+      content.innerHTML = `
+        ${photoHtml}
+        <h2 class="drawer-main-title">${escapeHtml(agent.name)}</h2>
+        ${agent.qualificacao ? `<p style="font-size:12px; color:#555; margin-bottom:12px;">${escapeHtml(agent.qualificacao)}</p>` : ''}
+        
+        <div class="drawer-badge-row">
+          ${rolesHtml}
+        </div>
+
+        ${agent.bio ? `<div class="drawer-bio">${agent.bio}</div>` : ''}
+
+        <div class="drawer-section-title">Ações e Participações Registradas (${agent.totalActions})</div>
+        <div style="margin-bottom: 24px;">
+          ${eventsListHtml}
+        </div>
+
+        <button type="button" class="drawer-action-btn" id="drawer-btn-center">
+          Centralizar Nó no Mapa
+        </button>
+      `;
+
+      document.getElementById('drawer-btn-center').addEventListener('click', () => {
+        centerRootNode();
+      });
+
+      drawer.classList.add('is-open');
+    }
+
+    function openEventDrawer(ev) {
+      const drawer = document.getElementById('detail-drawer');
+      const headerType = document.getElementById('drawer-header-type');
+      const content = document.getElementById('drawer-content-body');
+
+      headerType.textContent = 'DETALHES DO EVENTO';
+
+      const year = ev.ano || (ev.inicio ? ev.inicio.substring(0,4) : 's/d');
+      const coParticipants = getEventCoParticipants(ev);
+
+      const partsHtml = coParticipants.map(p => `
+        <div class="drawer-list-item" style="cursor:pointer;" onclick="navigateToAgent('${escapeHtml(p.name)}', 'jump')">
+          <span><strong>${escapeHtml(p.name)}</strong></span>
+          <span style="color:var(--accent-cyan); text-decoration:underline;">${escapeHtml(p.role)} ↗</span>
+        </div>
+      `).join('');
+
+      content.innerHTML = `
+        <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:6px;">
+          ${escapeHtml(ev.categoria || 'Evento')} • ${year}
+        </div>
+        <h2 class="drawer-main-title">${escapeHtml(ev.title)}</h2>
+
+        ${ev.curadoria ? `<p style="font-size:12.5px; margin-bottom:16px;"><strong>Curadoria:</strong> ${escapeHtml(ev.curadoria)}</p>` : ''}
+
+        ${ev.resumo ? `<div class="drawer-bio">${ev.resumo}</div>` : ''}
+
+        <div class="drawer-section-title">Participantes e Colaboradores (${coParticipants.length})</div>
+        <div style="margin-bottom: 24px;">
+          ${partsHtml || '<p style="font-size:12px; color:#777;">Nenhum outro participante registrado.</p>'}
+        </div>
+
+        <a href="index.html#sec-programacao" class="btn-back" style="display:block; text-align:center; padding:10px;">
+          Ver no Acervo Geral →
+        </a>
+      `;
+
+      drawer.classList.add('is-open');
+    }
+
+    function closeDrawer() {
+      document.getElementById('detail-drawer').classList.remove('is-open');
+    }
+
+    /**
+     * BUSCA EM TEMPO REAL & DROPDOWN DE AUTOCOMPLETAR
+     */
+    function setupSearch() {
+      const input = document.getElementById('agent-search-input');
+      const clearBtn = document.getElementById('search-clear-btn');
+      const dropdown = document.getElementById('search-results-dropdown');
+
+      input.addEventListener('input', () => {
+        const query = input.value.trim().toLowerCase();
+        if (query.length === 0) {
+          clearBtn.style.display = 'none';
+          closeSearchDropdown();
+          return;
+        }
+
+        clearBtn.style.display = 'flex';
+
+        // Filtrar agentes no catálogo
+        const matches = DataStore.agentsList.filter(agent => {
+          return agent.name.toLowerCase().includes(query) ||
+                 (agent.qualificacao && agent.qualificacao.toLowerCase().includes(query)) ||
+                 Object.keys(agent.roles).some(r => r.toLowerCase().includes(query));
+        });
+
+        renderSearchResults(matches.slice(0, 10));
+      });
+
+      clearBtn.addEventListener('click', () => {
+        input.value = '';
+        clearBtn.style.display = 'none';
+        closeSearchDropdown();
+        input.focus();
+      });
+
+      // Fechar dropdown se clicar fora
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-section')) {
+          closeSearchDropdown();
+        }
+      });
+    }
+
+    function renderSearchResults(results) {
+      const dropdown = document.getElementById('search-results-dropdown');
+      dropdown.innerHTML = '';
+
+      if (results.length === 0) {
+        dropdown.innerHTML = `
+          <div style="padding: 16px 20px; font-size: 13px; color: #777;">
+            Nenhum agente cultural encontrado com este nome.
+          </div>
+        `;
+        dropdown.classList.add('is-open');
+        return;
+      }
+
+      results.forEach(agent => {
+        const item = document.createElement('div');
+        item.className = 'dropdown-item';
+
+        const initials = agent.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+        const avatarHtml = agent.foto
+          ? `<img src="${escapeHtml(agent.foto)}" alt="${escapeHtml(agent.name)}">`
+          : initials;
+
+        const rolesText = Object.keys(agent.roles).join(' • ');
+
+        item.innerHTML = `
+          <div class="dropdown-item-left">
+            <div class="agent-avatar-mini">${avatarHtml}</div>
+            <div>
+              <div class="dropdown-agent-name">${escapeHtml(agent.name)}</div>
+              <div class="dropdown-agent-sub">${escapeHtml(rolesText || 'Agente Cultural')}</div>
+            </div>
+          </div>
+          <span class="dropdown-actions-badge">${agent.totalActions} ${agent.totalActions === 1 ? 'ação' : 'ações'}</span>
+        `;
+
+        item.addEventListener('click', () => {
+          closeSearchDropdown();
+          navigateToAgent(agent.name, 'start');
+        });
+
+        dropdown.appendChild(item);
+      });
+
+      dropdown.classList.add('is-open');
+    }
+
+    function closeSearchDropdown() {
+      document.getElementById('search-results-dropdown').classList.remove('is-open');
+    }
+
+    /**
+     * ALGORITMO DE MENOR CAMINHO (BFS) ENTRE DOIS AGENTES NO GRAFO DA FONTE
+     * Conecta duas pessoas mapeando os eventos compartilhados e intermediários
+     */
+    function findShortestPathBetweenAgents(startName, targetName) {
+      const start = (startName || '').trim();
+      const target = (targetName || '').trim();
+
+      if (!start || !target) {
+        return { success: false, message: 'Informe o nome de dois agentes para calcular a rota.' };
+      }
+
+      if (start.toLowerCase() === target.toLowerCase()) {
+        return { success: false, message: 'Selecione duas pessoas diferentes para testar a conexão.' };
+      }
+
+      const startAgent = DataStore.agentsMap.get(start);
+      const targetAgent = DataStore.agentsMap.get(target);
+
+      if (!startAgent) {
+        return { success: false, message: `O agente "${start}" não foi encontrado no acervo.` };
+      }
+      if (!targetAgent) {
+        return { success: false, message: `O agente "${target}" não foi encontrado no acervo.` };
+      }
+
+      // BFS Queue: { agentName, path: [steps] }
+      // step: { fromAgent, fromRole, event, toAgent, toRole }
+      const queue = [{ agentName: startAgent.name, path: [] }];
+      const visitedAgents = new Set([startAgent.name.toLowerCase()]);
+      const visitedEvents = new Set();
+      const maxDegrees = 4; // Até 4 graus de separação
+
+      while (queue.length > 0) {
+        const { agentName, path } = queue.shift();
+
+        if (path.length >= maxDegrees) continue;
+
+        const currentAgent = DataStore.agentsMap.get(agentName);
+        if (!currentAgent) continue;
+
+        for (const [eventId, entry] of currentAgent.eventsMap.entries()) {
+          const ev = entry.event;
+          const fromRole = entry.roles[0] || 'Participação';
+
+          const evKey = `${agentName}-${eventId}`;
+          if (visitedEvents.has(evKey)) continue;
+          visitedEvents.add(evKey);
+
+          const coParticipants = getEventCoParticipants(ev, agentName);
+
+          for (const coPart of coParticipants) {
+            const nextAgentName = coPart.name;
+            const nextAgentLower = nextAgentName.toLowerCase();
+
+            const newStep = {
+              fromAgent: agentName,
+              fromRole: fromRole,
+              event: ev,
+              toAgent: nextAgentName,
+              toRole: coPart.role
+            };
+
+            const newPath = [...path, newStep];
+
+            if (nextAgentLower === targetAgent.name.toLowerCase()) {
+              return { success: true, steps: newPath };
+            }
+
+            if (DataStore.agentsMap.has(nextAgentName) && !visitedAgents.has(nextAgentLower)) {
+              visitedAgents.add(nextAgentLower);
+              queue.push({ agentName: nextAgentName, path: newPath });
+            }
+          }
+        }
+      }
+
+      return {
+        success: false,
+        message: `Não foi encontrado nenhum caminho relacional de até ${maxDegrees} graus entre ${startAgent.name} e ${targetAgent.name}.`
+      };
+    }
+
+    /**
+     * Constrói a estrutura de hierarquia relacional sequencial que liga o Ponto A ao Ponto B
+     */
+    function buildConnectionHierarchy(startName, targetName, steps) {
+      const startAgent = DataStore.agentsMap.get(startName);
+      const targetAgent = DataStore.agentsMap.get(targetName);
+
+      const rootNode = {
+        id: `node-${++AppState.nodeIdCounter}`,
+        type: 'root',
+        name: startAgent.name,
+        agentData: startAgent,
+        children: []
+      };
+
+      let currentCursor = rootNode;
+
+      steps.forEach((step, idx) => {
+        const isFinalStep = (idx === steps.length - 1);
+
+        // 1. Função do emissor
+        const roleNode = {
+          id: `node-${++AppState.nodeIdCounter}`,
+          type: 'role',
+          name: step.fromRole,
+          roleName: step.fromRole,
+          count: 1,
+          children: []
+        };
+
+        // 2. Evento compartilhado
+        const yearStr = step.event.ano ? `${step.event.ano}` : (step.event.inicio ? step.event.inicio.substring(0, 4) : 's/d');
+        const coParts = getEventCoParticipants(step.event, step.fromAgent);
+        const eventNode = {
+          id: `node-${++AppState.nodeIdCounter}`,
+          type: 'event',
+          name: `${step.event.title} (${yearStr})`,
+          eventTitle: step.event.title,
+          eventYear: yearStr,
+          eventData: step.event,
+          coParticipantsCount: coParts.length,
+          children: []
+        };
+
+        // 3. Próximo agente
+        const toAgentObj = DataStore.agentsMap.get(step.toAgent);
+        const toAgentNode = {
+          id: `node-${++AppState.nodeIdCounter}`,
+          type: isFinalStep ? 'root' : 'collab',
+          name: step.toAgent,
+          collaboratorName: step.toAgent,
+          collaboratorRole: step.toRole,
+          agentData: toAgentObj,
+          parentEvent: step.event,
+          isContinuouslyExpanded: isFinalStep,
+          children: []
+        };
+
+        eventNode.children.push(toAgentNode);
+        roleNode.children.push(eventNode);
+        currentCursor.children.push(roleNode);
+
+        // Se for o agente final, expande sua árvore de conexões para exploração imediata!
+        if (isFinalStep && toAgentObj) {
+          const targetSubTree = generateHierarchyForAgent(toAgentObj.name);
+          if (targetSubTree && targetSubTree.children) {
+            toAgentNode.children = targetSubTree.children;
+            toAgentNode.children.forEach(r => {
+              if (r.children) {
+                r.children.forEach(ev => {
+                  if (ev.children) {
+                    ev._children = ev.children;
+                    ev.children = null;
+                  }
+                });
+              }
+            });
+          }
+        } else {
+          currentCursor = toAgentNode;
+        }
+      });
+
+      return rootNode;
+    }
+
+    /**
+     * Executa a busca de caminhos entre A e B e abre um novo mapa com o traçado
+     */
+    function executePathFinderConnection(agentAName, agentBName) {
+      const feedbackEl = document.getElementById('path-modal-feedback');
+      feedbackEl.className = 'path-feedback';
+      feedbackEl.textContent = 'Calculando rota relacional mais curta...';
+
+      const result = findShortestPathBetweenAgents(agentAName, agentBName);
+
+      if (!result.success) {
+        feedbackEl.className = 'path-feedback is-error';
+        feedbackEl.textContent = result.message;
+        return;
+      }
+
+      const degrees = result.steps.length;
+      feedbackEl.className = 'path-feedback is-info';
+      feedbackEl.textContent = `Conexão confirmada (${degrees} ${degrees === 1 ? 'grau' : 'graus'} de separação). Abrindo mapa...`;
+
+      setTimeout(() => {
+        // Salva mapa anterior se houver
+        TabsManager.saveCurrentStateToActiveTab();
+
+        const startAgent = DataStore.agentsMap.get(agentAName.trim());
+        const targetAgent = DataStore.agentsMap.get(agentBName.trim());
+
+        const rootData = buildConnectionHierarchy(startAgent.name, targetAgent.name, result.steps);
+        const hierarchyRoot = d3.hierarchy(rootData);
+
+        AppState.currentRootHierarchy = hierarchyRoot;
+        AppState.activeAgentName = targetAgent.name;
+        AppState.navigationTrail = [startAgent.name, targetAgent.name];
+        AppState.VIEW_MODE = 'TREE';
+
+        renderBreadcrumbs();
+        document.body.classList.add('is-tree-mode');
+        initD3Canvas();
+
+        const tabTitle = `${startAgent.name} ↔ ${targetAgent.name}`;
+        TabsManager.createTab(tabTitle, targetAgent.name, hierarchyRoot, [startAgent.name, targetAgent.name]);
+
+        updateD3Tree(hierarchyRoot, false);
+        fitViewToScreen();
+
+        const modal = document.getElementById('path-finder-modal');
+        modal.classList.remove('is-visible');
+        feedbackEl.textContent = '';
+      }, 400);
+    }
+
+    /**
+     * CONFIGURAÇÃO DO MODAL DE CONEXÃO ENTRE DOIS PONTOS
+     */
+    function setupPathModal() {
+      const modal = document.getElementById('path-finder-modal');
+      const btnOpen = document.getElementById('btn-path-finder');
+      const btnClose = document.getElementById('btn-close-path-modal');
+      const btnCancel = document.getElementById('btn-cancel-path-modal');
+      const btnSubmit = document.getElementById('btn-submit-path');
+
+      const inputA = document.getElementById('path-agent-a');
+      const inputB = document.getElementById('path-agent-b');
+      const dropdownA = document.getElementById('path-dropdown-a');
+      const dropdownB = document.getElementById('path-dropdown-b');
+      const clearA = document.getElementById('path-clear-a');
+      const clearB = document.getElementById('path-clear-b');
+      const feedbackEl = document.getElementById('path-modal-feedback');
+
+      function openModal() {
+        feedbackEl.className = 'path-feedback';
+        feedbackEl.textContent = '';
+        modal.classList.add('is-visible');
+
+        // Se houver um mapa ativo, pré-popula o Ponto A com o agente atual
+        if (AppState.activeAgentName && !inputA.value) {
+          inputA.value = AppState.activeAgentName;
+        }
+        inputB.focus();
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-visible');
+        dropdownA.classList.remove('is-open');
+        dropdownB.classList.remove('is-open');
+        feedbackEl.className = 'path-feedback';
+        feedbackEl.textContent = '';
+      }
+
+      if (btnOpen) btnOpen.addEventListener('click', openModal);
+      if (btnClose) btnClose.addEventListener('click', closeModal);
+      if (btnCancel) btnCancel.addEventListener('click', closeModal);
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('is-visible')) {
+          closeModal();
+        }
+      });
+
+      function attachAutocomplete(input, dropdown, clearBtn) {
+        input.addEventListener('input', () => {
+          const query = input.value.trim().toLowerCase();
+          if (query.length < 1) {
+            dropdown.classList.remove('is-open');
+            return;
+          }
+
+          const matches = DataStore.agentsList
+            .filter(a => a.name.toLowerCase().includes(query))
+            .slice(0, 6);
+
+          if (matches.length === 0) {
+            dropdown.innerHTML = '<div class="path-dropdown-item" style="color:#777; cursor:default;">Nenhum agente encontrado</div>';
+            dropdown.classList.add('is-open');
+            return;
+          }
+
+          dropdown.innerHTML = '';
+          matches.forEach(agent => {
+            const item = document.createElement('div');
+            item.className = 'path-dropdown-item';
+            item.innerHTML = `
+              <span class="path-dropdown-item-name">${escapeHtml(agent.name)}</span>
+              <span class="path-dropdown-item-meta">${agent.totalActions} ${agent.totalActions === 1 ? 'ação' : 'ações'}</span>
+            `;
+            item.addEventListener('click', () => {
+              input.value = agent.name;
+              dropdown.classList.remove('is-open');
+            });
+            dropdown.appendChild(item);
+          });
+
+          dropdown.classList.add('is-open');
+        });
+
+        clearBtn.addEventListener('click', () => {
+          input.value = '';
+          input.focus();
+          dropdown.classList.remove('is-open');
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('is-open');
+          }
+        });
+      }
+
+      attachAutocomplete(inputA, dropdownA, clearA);
+      attachAutocomplete(inputB, dropdownB, clearB);
+
+      btnSubmit.addEventListener('click', () => {
+        const valA = inputA.value.trim();
+        const valB = inputB.value.trim();
+
+        if (!valA || !valB) {
+          feedbackEl.className = 'path-feedback is-error';
+          feedbackEl.textContent = 'Por favor, selecione as duas pessoas para traçar o caminho.';
+          return;
+        }
+
+        executePathFinderConnection(valA, valB);
+      });
+    }
+
+    /**
+     * CONFIGURAÇÃO GERAL DE LISTENERS
+     */
+    function setupInterfaceListeners() {
+      // Botão de Sortear 12
+      document.getElementById('btn-reshuffle').addEventListener('click', () => {
+        reshuffleStartingPoints();
+      });
+
+      // Botão de Reiniciar Busca no Topo
+      document.getElementById('btn-reset-search').addEventListener('click', () => {
+        TabsManager.createNewMap();
+      });
+
+      // Botão "+ Novo Mapa" na Barra de Abas
+      const btnNewMap = document.getElementById('btn-new-map');
+      if (btnNewMap) {
+        btnNewMap.addEventListener('click', () => {
+          TabsManager.createNewMap();
+        });
+      }
+
+      // Botão de Fechar Gaveta
+      document.getElementById('btn-close-drawer').addEventListener('click', () => {
+        closeDrawer();
+      });
+
+      // Configurar Busca e Modal de Conexão entre Dois Pontos
+      setupSearch();
+      setupPathModal();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Inicialização ao carregar a página
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeData();
+    });
+  </script>
+</body>
+</html>

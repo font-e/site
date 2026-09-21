@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Remix Remix FONTE / programação + residência + ateliês + arquivo</title>
+  <meta name="description" content="Navegação completa e fluida entre Programação, Residência, Ateliês e Arquivo com grid suíço de 12 colunas.">
+  <meta property="og:title" content="Remix Remix FONTE / programação + residência + ateliês + arquivo">
+  <meta property="og:description" content="Navegação completa e fluida entre Programação, Residência, Ateliês e Arquivo com grid suíço de 12 colunas.">
+
+  <!-- CSS Modular Unificado -->
+  <link rel="stylesheet" href="./src/css/base.css">
+  <link rel="stylesheet" href="./src/css/nav-hero.css">
+  <link rel="stylesheet" href="./src/css/program.css">
+  <link rel="stylesheet" href="./src/css/residencia.css">
+  <link rel="stylesheet" href="./src/css/atelies.css">
+  <link rel="stylesheet" href="./src/css/arq.css">
+  <link rel="stylesheet" href="./src/css/font-loader.css">
+</head>
+<body>
+  <!-- Filtro SVG Duótono Padrão -->
+  <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true">
+    <filter id="duotone-cyan" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="
+        0.2126 0.7152 0.0722 0 0
+        0.2126 0.7152 0.0722 0 0
+        0.2126 0.7152 0.0722 0 0
+        0      0      0      1 0" result="gray" />
+      <feComponentTransfer in="gray">
+        <feFuncR type="table" tableValues="0.0 0.8" />
+        <feFuncG type="table" tableValues="0.0 1.0" />
+        <feFuncB type="table" tableValues="0.0 0.996" />
+      </feComponentTransfer>
+    </filter>
+    <filter id="duotone-transparent" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="
+        0 0 0 0 0
+        0 0 0 0 0
+        0 0 0 0 0
+        -0.2126 -0.7152 -0.0722 0 1" />
+    </filter>
+  </svg>
+
+  <!-- CABEÇALHO: NAVEGAÇÃO À ESQUERDA + LOGO À DIREITA (Padrão github.html) -->
+  <header id="logo-controller">
+    <nav class="header-nav-left header-nav-collapsible" aria-label="Navegação Principal" id="header-nav-left">
+      <button type="button" class="header-nav-btn menu-toggle-btn" id="menu-toggle-btn" aria-expanded="false" aria-label="Menu de Navegação">
+        <span class="menu-toggle-icon" id="menu-toggle-icon">≡</span>
+      </button>
+      <div class="header-nav-items" id="header-nav-items">
+        <div class="nav-item-dropdown" id="nav-dropdown-programacao">
+          <a href="#sec-programacao" class="header-nav-btn is-active" id="nav-btn-programacao">PROGRAMAÇÃO</a>
+          <div class="header-subnav-menu" id="subnav-programacao" aria-label="Subseções de Programação">
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-prog-presente" data-target-sec="sec-programacao" data-prog-filter="PRESENTE">PRESENTE</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-prog-inscricoes" data-target-sec="sec-programacao" data-prog-filter="INSCRIÇÕES ABERTAS">INSCRIÇÕES ABERTAS</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-prog-proxima" data-target-sec="sec-programacao" data-prog-filter="PRÓXIMA">PRÓXIMA</button>
+          </div>
+        </div>
+
+        <div class="nav-item-dropdown" id="nav-dropdown-residencia">
+          <a href="#sec-residencia" class="header-nav-btn" id="nav-btn-residencia">RESIDÊNCIA</a>
+          <div class="header-subnav-menu" id="subnav-residencia" aria-label="Subseções de Residência">
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-res-inscricoes" data-target-sec="sec-residencia" data-residencia-mod="inscricoes">INSCRIÇÕES</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-res-individual" data-target-sec="sec-residencia" data-residencia-mod="individual">INVESTIGAÇÃO INDIVIDUAL</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-res-coletiva" data-target-sec="sec-residencia" data-residencia-mod="coletiva">RESIDÊNCIA COLETIVA</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-res-institucional" data-target-sec="sec-residencia" data-residencia-mod="institucional">PARCERIA INSTITUCIONAL</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-res-ocupacao" data-target-sec="sec-residencia" data-residencia-mod="ocupacao">OCUPAÇÃO</button>
+          </div>
+        </div>
+
+        <div class="nav-item-dropdown" id="nav-dropdown-atelies">
+          <a href="#sec-atelies" class="header-nav-btn" id="nav-btn-atelies">ATELIÊS</a>
+          <div class="header-subnav-menu" id="subnav-atelies" aria-label="Artistas Residentes dos Ateliês">
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-art-marcelo" data-target-sec="sec-atelies" data-artist-id="marcelo-amorim">MARCELO AMORIM</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-art-osi" data-target-sec="sec-atelies" data-artist-id="osi">ÓSI</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-art-luah" data-target-sec="sec-atelies" data-artist-id="luah-souza">LUAH SOUZA</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-art-caio" data-target-sec="sec-atelies" data-artist-id="caio-borges">CAIO BORGES</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-art-gustavo" data-target-sec="sec-atelies" data-artist-id="gustavo-prata">GUSTAVO PRATA</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-art-hudson" data-target-sec="sec-atelies" data-artist-id="hudson-senna">HUDSON SENNA</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-art-simone" data-target-sec="sec-atelies" data-artist-id="simone-fontana-reis">SIMONE FONTANA REIS</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-art-jorge" data-target-sec="sec-atelies" data-artist-id="jorge-feitosa">JORGE FEITOSA</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" id="subnav-btn-art-pedro" data-target-sec="sec-atelies" data-artist-id="pedro-gallego">PEDRO GALLEGO</button>
+          </div>
+        </div>
+
+        <a href="#sec-arquivo" class="header-nav-btn" id="nav-btn-arquivo">ARQUIVO</a>
+
+        <!-- BOTÃO FINAL DO MENU RETRÁTIL: CARREGAR FONTE -->
+        <div class="nav-item-dropdown nav-item-font-loader" id="nav-item-font-loader">
+          <button type="button" class="header-nav-btn font-loader-trigger-btn" id="font-loader-trigger-btn" aria-expanded="false" aria-haspopup="dialog" aria-label="Carregar Fonte">
+            <span class="font-btn-icon">Aa</span>
+            <span>CARREGAR FONTE</span>
+          </button>
+          <div class="font-loader-popover" id="font-loader-popover" role="dialog" aria-labelledby="font-loader-title" aria-hidden="true">
+            <div class="font-loader-header">
+              <span class="font-loader-title" id="font-loader-title">CARREGAR FONTE</span>
+              <button type="button" class="font-loader-close-btn" id="font-loader-close-btn" aria-label="Fechar painel de fontes">&times;</button>
+            </div>
+
+            <form class="font-loader-form" id="font-loader-form">
+              <label class="font-loader-label" for="font-loader-url-input">URL DO GOOGLE FONTS OU NOME</label>
+              <div class="font-loader-input-wrap">
+                <input type="text" id="font-loader-url-input" class="font-loader-input" placeholder="Ex: Space Grotesk ou URL..." autocomplete="off" spellcheck="false" required>
+                <button type="submit" class="font-loader-submit-btn" id="font-loader-submit-btn">CARREGAR</button>
+              </div>
+            </form>
+
+            <div class="font-loader-status" id="font-loader-status" role="status" aria-live="polite"></div>
+
+            <div class="font-loader-presets-wrap">
+              <span class="font-loader-presets-label">TESTE RÁPIDO:</span>
+              <div class="font-loader-presets-list" id="font-loader-presets-list">
+                <!-- Injetado dinamicamente via JS -->
+              </div>
+            </div>
+
+            <div class="font-loader-list-section">
+              <div class="font-loader-list-title">
+                <span>FONTES DISPONÍVEIS</span>
+                <span class="font-loader-list-count" id="font-loader-list-count">(1)</span>
+              </div>
+              <div class="font-loader-list" id="font-loader-list" role="list">
+                <!-- Injetado dinamicamente via JS: Stag Sans (Original) + fontes carregadas -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="logo-hero-wrap">
+      <a href="#top" title="FONTE - Início">
+        <img id="site-logo" src="https://www.font-e.org/content/logo_fonte_preto.png" alt="FONTE">
+      </a>
+    </div>
+  </header>
+
+  <div id="top"></div>
+
+  <!-- CONTEÚDO PRINCIPAL: PROGRAMAÇÃO, RESIDÊNCIA, ATELIÊS & ARQUIVO -->
+  <main id="main-content">
+    <section class="section-block programacao-section" id="sec-programacao">
+      <div class="programacao-hero-bg">
+        <div class="programacao-header-bar">
+          <div class="programacao-title-box">
+            <h1 class="programacao-section-title">PROGRAMAÇÃO</h1>
+          </div>
+          <div id="programacao-facets-container" class="programacao-facets-bar">
+            <!-- Injetado via JS -->
+          </div>
+        </div>
+      </div>
+      <div id="programacao-grid-container">
+        <!-- Injetado via JS -->
+      </div>
+    </section>
+
+    <!-- SEÇÃO RESIDÊNCIA -->
+    <section class="section-block residencia-section" id="sec-residencia">
+      <div class="residencia-hero-bg">
+        <div class="residencia-header-bar">
+          <div class="residencia-title-box">
+            <h2 class="residencia-section-title">RESIDÊNCIA</h2>
+          </div>
+          <div class="residencia-facets-bar">
+            <div class="residencia-facets-buttons" id="residencia-modality-btns">
+              <!-- Injetado via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="residencia-top-grid grid-12-master">
+        <div class="residencia-intro-text" id="residencia-subtitulo">
+          <!-- Injetado via JS -->
+        </div>
+        <div class="residencia-content-column" id="residencia-main-content-col">
+          <!-- Injetado via JS -->
+        </div>
+      </div>
+
+      <div class="residencia-gallery-horizontal hide-scrollbar" id="residencia-gallery">
+        <!-- Injetado via JS -->
+      </div>
+    </section>
+
+    <!-- SEÇÃO ATELIÊS -->
+    <section class="section-block atelies-section" id="sec-atelies">
+      <div class="atelies-hero-bg">
+        <div class="atelies-header-bar">
+          <div class="atelies-title-box">
+            <h2 class="atelies-section-title">ATELIÊS</h2>
+          </div>
+          <div class="atelies-facets-bar"></div>
+        </div>
+      </div>
+      <div id="atelies-grid-container">
+        <!-- Injetado via JS -->
+      </div>
+    </section>
+
+    <!-- SEÇÃO ARQUIVO -->
+    <section class="section-block archive-section" id="sec-arquivo">
+      <div class="archive-hero-bg">
+        <div class="archive-header-bar">
+          <div class="archive-title-box">
+            <h2 class="archive-section-title">ARQUIVO</h2>
+          </div>
+          <div id="archive-facets-container" class="archive-facets-bar">
+            <!-- Injetado via JS -->
+          </div>
+        </div>
+      </div>
+
+      <div id="search-tags-container" class="search-tags-container"></div>
+
+      <div class="table-container">
+        <!-- Cabeçalho da tabela de 12 colunas -->
+        <div id="table-header-container"></div>
+        <!-- Corpo da tabela (linhas do acervo com gavetas universais) -->
+        <div id="table-body-container"></div>
+        <!-- Rodapé da tabela (paginação) -->
+        <div id="table-footer-container"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <!-- JS Modular -->
+  <script type="module" src="./src/js/app.js"></script>
+</body>
+</html>
