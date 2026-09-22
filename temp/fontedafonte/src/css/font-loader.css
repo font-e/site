@@ -1,7 +1,7 @@
 /* =========================================
-   PAINEL POPOVER: CARREGAR FONTE (GOOGLE FONTS)
-   Design System Estrito: Bordas 2px (#000), Tipografia Parametrizada,
-   Grid 12 colunas e Estados Determinísticos
+   PAINEL POPOVER: CARREGAR FONTE (GOOGLE FONTS & UPLOAD)
+   Design System Estrito: Bordas 1.5px (#000), Tipografia Fixa 'Stag Sans',
+   Fundos Translúcidos Hierárquicos (Painel: 0.5, Itens: 0.2, Botões: 0.1)
    ========================================= */
 
 .nav-item-font-loader {
@@ -41,178 +41,30 @@
   letter-spacing: 0.05em;
   background-color: var(--accent-cyan, #ccfffe);
   color: #000000;
-  border: 1px solid #000000;
+  border: 1.5px solid #000000;
   padding: 2px 5px;
   border-radius: 2px;
   line-height: 1;
 }
 
-/* Abas de Navegação / Subseções */
-.font-loader-tabs {
-  display: flex;
-  gap: 4px;
-  border-bottom: 2px solid var(--border-color, #000000);
-  padding-bottom: 8px;
-}
-
-.font-loader-tab {
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 28px;
-  padding: 0 4px;
-  border: 2px solid var(--border-color, #000000);
-  background-color: #ffffff;
-  color: #000000;
-  font-family: inherit;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-  border-radius: 2px;
-  white-space: nowrap;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.font-loader-tab:hover {
-  background-color: var(--accent-cyan, #ccfffe);
-}
-
-.font-loader-tab.is-active {
-  background-color: #000000;
-  color: #ffffff;
-  cursor: default;
-}
-
-.font-loader-tab-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.font-loader-tab-panel[hidden] {
-  display: none !important;
-}
-
-/* Autocomplete e Catálogo (Caminho 2) */
-.font-loader-catalog-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.font-loader-autocomplete-wrap {
-  position: relative;
-  width: 100%;
-}
-
-.font-loader-autocomplete-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  max-height: 240px;
-  overflow-y: auto;
-  background-color: #ffffff;
-  border: 2px solid var(--border-color, #000000);
-  border-radius: 3px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
-  z-index: 100010;
-  display: none;
-  flex-direction: column;
-  scrollbar-width: thin;
-}
-
-.font-loader-autocomplete-dropdown.is-open {
-  display: flex;
-}
-
-.font-loader-autocomplete-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-bottom: 1px solid #eeeeee;
-  transition: background-color 0.12s ease;
-}
-
-.font-loader-autocomplete-item:last-child {
-  border-bottom: none;
-}
-
-.font-loader-autocomplete-item:hover,
-.font-loader-autocomplete-item.is-selected {
-  background-color: #f0fdf4;
-}
-
-.font-loader-autocomplete-name {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: #000000;
-  line-height: 1.25;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: opacity 0.2s ease;
-}
-
-.font-loader-autocomplete-cat {
-  font-size: 0.625rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 2px 6px;
-  border: 1px solid #000000;
-  border-radius: 2px;
-  background-color: #f5f5f5;
-  color: #333333;
-}
-
-.font-loader-catalog-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.font-loader-filter-chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 22px;
-  padding: 0 6px;
-  border: 1px solid var(--border-color, #000000);
-  background-color: #ffffff;
-  color: #000000;
-  font-family: inherit;
-  font-size: 0.625rem;
-  font-weight: 700;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: background-color 0.15s ease;
-}
-
-.font-loader-filter-chip:hover {
-  background-color: var(--accent-cyan, #ccfffe);
-}
-
-.font-loader-filter-chip.is-active {
-  background-color: #000000;
-  color: #ffffff;
-}
-
-/* Caminho 3: Webfonts Arbitrárias (@font-face) */
-.font-loader-custom-hint {
-  font-size: 0.6875rem;
-  line-height: 1.35;
-  color: #666666;
-  background-color: #f7f7f7;
-  border: 1px dashed #999999;
-  padding: 6px 8px;
-  border-radius: 2px;
+/* =========================================
+   TIPOGRAFIA RESTRITA DO PAINEL: SEMPRE STAG SANS
+   O painel nunca tem suas fontes alteradas pelas escolhas do usuário
+   ========================================= */
+#font-loader-popover,
+#font-loader-popover button,
+#font-loader-popover input,
+#font-loader-popover select,
+#font-loader-popover textarea,
+#font-loader-popover label,
+#font-loader-popover p,
+#font-loader-popover h1,
+#font-loader-popover h2,
+#font-loader-popover h3,
+#font-loader-popover h4,
+#font-loader-popover code,
+#font-loader-popover span:not(.font-loader-autocomplete-name):not(.font-loader-item-sample) {
+  font-family: 'Stag Sans', sans-serif !important;
 }
 
 .font-loader-trigger-btn .font-btn-icon {
@@ -231,10 +83,12 @@
   max-width: calc(100vw - 24px);
   max-height: calc(100vh - 64px);
   overflow-y: auto;
-  background-color: var(--bg-white, #ffffff);
-  border: 2px solid var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid var(--border-color, #000000);
   border-radius: 4px;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.15);
   z-index: 100002;
   padding: 14px;
   display: flex;
@@ -262,7 +116,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 2px solid var(--border-color, #000000);
+  border-bottom: 1.5px solid var(--border-color, #000000);
   padding-bottom: 10px;
 }
 
@@ -271,27 +125,27 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--bg-black, #000000);
+  color: #000000;
   margin: 0;
   line-height: 1;
 }
 
+/* Botões do Painel: 0.1 de opacidade com bordas 1.5px */
 .font-loader-close-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 26px;
   height: 26px;
-  border: 2px solid var(--border-color, #000000);
-  background-color: var(--bg-white, #ffffff);
-  color: var(--bg-black, #000000);
+  border: 1.5px solid var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #000000;
   font-size: 1.15rem;
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
   border-radius: 3px;
   transition: background-color 0.15s ease;
-  font-family: inherit;
 }
 
 .font-loader-close-btn:hover {
@@ -300,6 +154,7 @@
 
 /* =========================================
    GRID EXPANDIDO: 4 BLOCOS LADO A LADO EM UMA ÚNICA LINHA
+   Itens do painel: 0.2 de opacidade sobre o painel (0.5)
    ========================================= */
 .font-loader-columns-wrap {
   display: grid;
@@ -315,8 +170,8 @@
 .font-loader-block {
   display: flex;
   flex-direction: column;
-  border: 2px solid var(--border-color, #000000);
-  background-color: #ffffff;
+  border: 1.5px solid var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -326,8 +181,8 @@
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
-  background-color: #f7f7f7;
-  border-bottom: 2px solid var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-bottom: 1.5px solid var(--border-color, #000000);
 }
 
 .font-loader-block-num {
@@ -378,7 +233,7 @@
   gap: 6px;
 }
 
-/* Lista embutida sem sobreposição */
+/* Lista embutida sem sobreposição: Item do painel (0.2 de opacidade) */
 .font-loader-autocomplete-dropdown.is-inline {
   position: static;
   display: flex;
@@ -386,8 +241,8 @@
   height: 200px;
   max-height: 200px;
   overflow-y: auto;
-  background-color: #ffffff;
-  border: 2px solid var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1.5px solid var(--border-color, #000000);
   border-radius: 3px;
   box-shadow: none;
   scrollbar-width: thin;
@@ -400,7 +255,7 @@
   gap: 8px;
   padding: 6px 8px;
   cursor: pointer;
-  border-bottom: 1px solid #eeeeee;
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.1);
   transition: background-color 0.12s ease;
 }
 
@@ -410,7 +265,7 @@
 
 .font-loader-autocomplete-item:hover,
 .font-loader-autocomplete-item.is-selected {
-  background-color: #eefffe;
+  background-color: rgba(204, 255, 254, 0.5);
 }
 
 .font-loader-autocomplete-name {
@@ -430,10 +285,10 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding: 1px 4px;
-  border: 1px solid #000000;
+  border: 1.5px solid #000000;
   border-radius: 2px;
-  background-color: #f5f5f5;
-  color: #333333;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #000000;
 }
 
 .font-loader-catalog-filters {
@@ -442,16 +297,16 @@
   gap: 3px;
 }
 
+/* Botões filtros: 0.1 de opacidade */
 .font-loader-filter-chip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   height: 20px;
   padding: 0 5px;
-  border: 1px solid var(--border-color, #000000);
-  background-color: #ffffff;
+  border: 1.5px solid var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.1);
   color: #000000;
-  font-family: inherit;
   font-size: 0.5625rem;
   font-weight: 700;
   cursor: pointer;
@@ -468,11 +323,11 @@
   color: #ffffff;
 }
 
-/* BLOCO 3: Upload de Arquivos / Drag & Drop */
+/* BLOCO 3: Upload de Arquivos / Drag & Drop: Item do painel (0.2 de opacidade) */
 .font-loader-dropzone {
   position: relative;
-  border: 2px dashed var(--border-color, #000000);
-  background-color: #fafafa;
+  border: 1.5px dashed var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
   padding: 24px 12px;
   display: flex;
@@ -487,7 +342,7 @@
 
 .font-loader-dropzone:hover,
 .font-loader-dropzone:focus {
-  background-color: var(--hover-bg, #eefffe);
+  background-color: rgba(204, 255, 254, 0.3);
   border-color: #000000;
 }
 
@@ -529,7 +384,7 @@
 
 .font-loader-dropzone-subtitle {
   font-size: 0.625rem;
-  color: #666666;
+  color: #333333;
   font-weight: 600;
 }
 
@@ -547,9 +402,9 @@
 .font-loader-block-info {
   font-size: 0.65rem;
   line-height: 1.35;
-  color: #555555;
-  background-color: #f7f7f7;
-  border: 1px solid #e0e0e0;
+  color: #000000;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(0, 0, 0, 0.15);
   padding: 6px 8px;
   border-radius: 2px;
 }
@@ -557,7 +412,7 @@
 .font-loader-code {
   font-family: monospace;
   font-size: 0.65rem;
-  background-color: #e5e5e5;
+  background-color: rgba(0, 0, 0, 0.06);
   padding: 1px 3px;
   border-radius: 2px;
 }
@@ -566,9 +421,9 @@
 .font-loader-custom-hint {
   font-size: 0.65rem;
   line-height: 1.35;
-  color: #666666;
-  background-color: #f7f7f7;
-  border: 1px dashed #999999;
+  color: #000000;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1.5px dashed rgba(0, 0, 0, 0.25);
   padding: 6px 8px;
   border-radius: 2px;
 }
@@ -585,7 +440,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #222222;
+  color: #000000;
   line-height: 1.2;
 }
 
@@ -595,15 +450,15 @@
   width: 100%;
 }
 
+/* Inputs: Item do painel (0.2 de opacidade) com borda 1.5px */
 .font-loader-input {
   flex: 1;
   min-width: 0;
   height: 32px;
   padding: 0 10px;
-  border: 2px solid var(--border-color, #000000);
-  background-color: #ffffff;
+  border: 1.5px solid var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.2);
   color: #000000;
-  font-family: inherit;
   font-size: var(--fs-meta, 0.75rem);
   border-radius: 3px;
   outline: none;
@@ -611,20 +466,20 @@
 }
 
 .font-loader-input:focus {
-  background-color: #fafafa;
+  background-color: rgba(255, 255, 255, 0.4);
   border-color: #000000;
 }
 
+/* Botões submit: 0.1 de opacidade com borda 1.5px */
 .font-loader-submit-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   height: 32px;
   padding: 0 12px;
-  border: 2px solid var(--border-color, #000000);
-  background-color: var(--bg-black, #000000);
-  color: var(--bg-white, #ffffff);
-  font-family: inherit;
+  border: 1.5px solid var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #000000;
   font-size: var(--fs-meta, 0.75rem);
   font-weight: 700;
   text-transform: uppercase;
@@ -637,11 +492,11 @@
 
 .font-loader-submit-btn:hover {
   background-color: var(--accent-cyan, #ccfffe);
-  color: var(--bg-black, #000000);
+  color: #000000;
 }
 
 .font-loader-submit-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -651,7 +506,7 @@
   font-weight: 600;
   line-height: 1.3;
   padding: 4px 8px;
-  border: 2px solid transparent;
+  border: 1.5px solid transparent;
   display: none;
   border-radius: 3px;
 }
@@ -661,19 +516,19 @@
 }
 
 .font-loader-status.is-success {
-  background-color: #e6f9e6;
+  background-color: rgba(230, 249, 230, 0.75);
   border-color: #000000;
   color: #000000;
 }
 
 .font-loader-status.is-error {
-  background-color: #ffebeb;
+  background-color: rgba(255, 235, 235, 0.75);
   border-color: #000000;
   color: #000000;
 }
 
 .font-loader-status.is-loading {
-  background-color: #f0f7ff;
+  background-color: rgba(240, 247, 255, 0.75);
   border-color: #000000;
   color: #000000;
 }
@@ -690,7 +545,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #555555;
+  color: #000000;
 }
 
 .font-loader-presets-list {
@@ -699,15 +554,15 @@
   gap: 4px;
 }
 
+/* Botões presets: 0.1 de opacidade com borda 1.5px */
 .font-loader-preset-chip {
   display: inline-flex;
   align-items: center;
   height: 24px;
   padding: 0 8px;
-  border: 2px solid var(--border-color, #000000);
-  background-color: #ffffff;
+  border: 1.5px solid var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.1);
   color: #000000;
-  font-family: inherit;
   font-size: 0.6875rem;
   font-weight: 600;
   cursor: pointer;
@@ -725,7 +580,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  border-top: 2px solid var(--border-color, #000000);
+  border-top: 1.5px solid var(--border-color, #000000);
   padding-top: 12px;
 }
 
@@ -737,12 +592,12 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--bg-black, #000000);
+  color: #000000;
 }
 
 .font-loader-list-count {
   font-size: 0.6875rem;
-  color: #666666;
+  color: #333333;
   font-weight: 600;
 }
 
@@ -756,21 +611,22 @@
   scrollbar-width: thin;
 }
 
+/* Item da lista: 0.2 de opacidade com borda 1.5px */
 .font-loader-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   padding: 6px 10px;
-  border: 2px solid var(--border-color, #000000);
-  background-color: #ffffff;
+  border: 1.5px solid var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
   box-sizing: border-box;
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .font-loader-item:hover {
-  background-color: #fdfdfd;
+  background-color: rgba(255, 255, 255, 0.35);
 }
 
 .font-loader-item.is-current {
@@ -799,10 +655,31 @@
 .font-loader-item-sample {
   font-size: 0.6875rem;
   line-height: 1.1;
-  opacity: 0.8;
+  opacity: 0.85;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.font-loader-item-variants-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 1px 5px;
+  border: 1.5px solid #000000;
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #000000;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.font-loader-item.is-current .font-loader-item-variants-badge {
+  border-color: #ffffff;
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .font-loader-item-actions {
@@ -811,16 +688,16 @@
   gap: 4px;
 }
 
+/* Botões da lista: 0.1 de opacidade com borda 1.5px */
 .font-loader-apply-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   height: 24px;
   padding: 0 8px;
-  border: 2px solid var(--border-color, #000000);
-  background-color: #ffffff;
+  border: 1.5px solid var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.1);
   color: #000000;
-  font-family: inherit;
   font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -848,8 +725,8 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  border: 2px solid var(--border-color, #000000);
-  background-color: #ffffff;
+  border: 1.5px solid var(--border-color, #000000);
+  background-color: rgba(255, 255, 255, 0.1);
   color: #000000;
   font-size: 0.875rem;
   font-weight: 700;
@@ -857,11 +734,10 @@
   cursor: pointer;
   border-radius: 2px;
   transition: background-color 0.15s ease;
-  font-family: inherit;
 }
 
 .font-loader-item.is-current .font-loader-delete-btn {
-  background-color: #333333;
+  background-color: rgba(255, 255, 255, 0.2);
   border-color: #ffffff;
   color: #ffffff;
 }
