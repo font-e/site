@@ -90,92 +90,144 @@
             <span>CARREGAR FONTE</span>
             <span class="font-loader-key-hint" title="Atalho de teclado">[F]</span>
           </button>
-          <div class="font-loader-popover" id="font-loader-popover" role="dialog" aria-labelledby="font-loader-title" aria-hidden="true">
+          <div class="font-loader-popover font-loader-grid-expanded" id="font-loader-popover" role="dialog" aria-labelledby="font-loader-title" aria-hidden="true">
             <div class="font-loader-header">
               <div class="font-loader-header-title-wrap">
-                <span class="font-loader-title" id="font-loader-title">CARREGAR FONTE</span>
+                <span class="font-loader-title" id="font-loader-title">PAINEL TIPOGRÁFICO &bull; CARREGAR FONTE</span>
                 <span class="font-loader-badge-shortcut">TECLA [F]</span>
               </div>
               <button type="button" class="font-loader-close-btn" id="font-loader-close-btn" aria-label="Fechar painel de fontes">&times;</button>
             </div>
 
-            <!-- Subseções em abas: Caminho 1, Caminho 2 e Caminho 3 -->
-            <div class="font-loader-tabs" role="tablist" aria-label="Modos de carregamento de fonte">
-              <button type="button" class="font-loader-tab is-active" id="font-tab-btn-google" role="tab" aria-selected="true" aria-controls="font-tab-panel-google">
-                GOOGLE FONTS
-              </button>
-              <button type="button" class="font-loader-tab" id="font-tab-btn-catalog" role="tab" aria-selected="false" aria-controls="font-tab-panel-catalog">
-                CATÁLOGO
-              </button>
-              <button type="button" class="font-loader-tab" id="font-tab-btn-custom" role="tab" aria-selected="false" aria-controls="font-tab-panel-custom">
-                WEBFONTS / @FONT-FACE
-              </button>
-            </div>
-
-            <!-- PAINEL 1: URL / NOME GOOGLE FONTS (Caminho 1) -->
-            <div class="font-loader-tab-panel is-active" id="font-tab-panel-google" role="tabpanel" aria-labelledby="font-tab-btn-google">
-              <form class="font-loader-form" id="font-loader-form">
-                <label class="font-loader-label" for="font-loader-url-input">URL DO GOOGLE FONTS OU NOME</label>
-                <div class="font-loader-input-wrap">
-                  <input type="text" id="font-loader-url-input" class="font-loader-input" placeholder="Ex: Space Grotesk ou URL css2..." autocomplete="off" spellcheck="false" required>
-                  <button type="submit" class="font-loader-submit-btn" id="font-loader-submit-btn">CARREGAR</button>
-                </div>
-              </form>
-
-              <div class="font-loader-presets-wrap">
-                <span class="font-loader-presets-label">TESTE RÁPIDO:</span>
-                <div class="font-loader-presets-list" id="font-loader-presets-list">
-                  <!-- Injetado dinamicamente via JS -->
-                </div>
-              </div>
-            </div>
-
-            <!-- PAINEL 2: AUTOCOMPLETE DO CATÁLOGO GOOGLE FONTS (Caminho 2) -->
-            <div class="font-loader-tab-panel" id="font-tab-panel-catalog" role="tabpanel" aria-labelledby="font-tab-btn-catalog" hidden>
-              <div class="font-loader-catalog-section">
-                <label class="font-loader-label" for="font-loader-catalog-input">BUSCA NO CATÁLOGO DO GOOGLE FONTS</label>
-                <div class="font-loader-autocomplete-wrap">
-                  <input type="text" id="font-loader-catalog-input" class="font-loader-input" placeholder="Buscar por nome (ex: Inter, Syne, Lora, Oswald...)" autocomplete="off" spellcheck="false">
-                  <div class="font-loader-autocomplete-dropdown" id="font-loader-autocomplete-dropdown" role="listbox" aria-label="Sugestões do catálogo"></div>
-                </div>
-                <div class="font-loader-catalog-filters" id="font-loader-catalog-filters">
-                  <button type="button" class="font-loader-filter-chip is-active" data-cat="all">TODAS</button>
-                  <button type="button" class="font-loader-filter-chip" data-cat="sans-serif">SANS</button>
-                  <button type="button" class="font-loader-filter-chip" data-cat="serif">SERIF</button>
-                  <button type="button" class="font-loader-filter-chip" data-cat="display">DISPLAY</button>
-                  <button type="button" class="font-loader-filter-chip" data-cat="monospace">MONO</button>
-                  <button type="button" class="font-loader-filter-chip" data-cat="handwriting">HAND</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- PAINEL 3: INGESTÃO DE WEBFONTS ARBITRÁRIAS (@FONT-FACE) (Caminho 3) -->
-            <div class="font-loader-tab-panel" id="font-tab-panel-custom" role="tabpanel" aria-labelledby="font-tab-btn-custom" hidden>
-              <form class="font-loader-form" id="font-loader-custom-form">
-                <label class="font-loader-label" for="font-loader-custom-name">NOME DA FAMÍLIA</label>
-                <input type="text" id="font-loader-custom-name" class="font-loader-input" placeholder="Ex: Minha Custom Font" autocomplete="off" spellcheck="false" required>
-
-                <label class="font-loader-label" for="font-loader-custom-url">URL (.WOFF2, .WOFF, .TTF OU FONTSHARE / CDN FONTS)</label>
-                <div class="font-loader-input-wrap">
-                  <input type="url" id="font-loader-custom-url" class="font-loader-input" placeholder="https://.../fonte.woff2 ou link css" autocomplete="off" spellcheck="false" required>
-                  <button type="submit" class="font-loader-submit-btn" id="font-loader-custom-submit-btn">IMPORTAR</button>
-                </div>
-              </form>
-              <div class="font-loader-custom-hint">
-                Aceita arquivos binários (.woff2, .woff, .ttf) ou CSS direto de Fontshare / CDN Fonts / repositórios abertos.
-              </div>
-            </div>
-
+            <!-- Feedback de Status Global -->
             <div class="font-loader-status" id="font-loader-status" role="status" aria-live="polite"></div>
 
-            <div class="font-loader-list-section">
-              <div class="font-loader-list-title">
-                <span>FONTES DISPONÍVEIS</span>
-                <span class="font-loader-list-count" id="font-loader-list-count">(1)</span>
+            <!-- GRID PRINCIPAL EXPANDIDO: 4 BLOCOS LADO A LADO -->
+            <div class="font-loader-columns-wrap">
+              
+              <!-- BLOCO 1: FONTE ATUAL, TESTE RÁPIDO E FONTES DISPONÍVEIS -->
+              <div class="font-loader-block" id="font-block-library">
+                <div class="font-loader-block-header">
+                  <span class="font-loader-block-num">01</span>
+                  <span class="font-loader-block-title">BIBLIOTECA & TESTE RÁPIDO</span>
+                </div>
+
+                <div class="font-loader-block-body">
+                  <!-- Teste Rápido Presets -->
+                  <div class="font-loader-presets-wrap">
+                    <span class="font-loader-presets-label">TESTE RÁPIDO</span>
+                    <div class="font-loader-presets-list" id="font-loader-presets-list">
+                      <!-- Injetado dinamicamente via JS -->
+                    </div>
+                  </div>
+
+                  <!-- Fontes Disponíveis / Ativas -->
+                  <div class="font-loader-list-section">
+                    <div class="font-loader-list-title">
+                      <span>FONTES DISPONÍVEIS</span>
+                      <span class="font-loader-list-count" id="font-loader-list-count">(1)</span>
+                    </div>
+                    <div class="font-loader-list" id="font-loader-list" role="list">
+                      <!-- Injetado dinamicamente via JS: Stag Sans (Original) + fontes salvas -->
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="font-loader-list" id="font-loader-list" role="list">
-                <!-- Injetado dinamicamente via JS: Stag Sans (Original) + fontes carregadas -->
+
+              <!-- BLOCO 2: CATÁLOGO GOOGLE FONTS (BUSCA + URL + FILTROS + PREVIEW) -->
+              <div class="font-loader-block" id="font-block-catalog">
+                <div class="font-loader-block-header">
+                  <span class="font-loader-block-num">02</span>
+                  <span class="font-loader-block-title">GOOGLE FONTS</span>
+                </div>
+
+                <div class="font-loader-block-body">
+                  <!-- Formulário URL / Nome Direto -->
+                  <form class="font-loader-form" id="font-loader-form">
+                    <label class="font-loader-label" for="font-loader-url-input">DIGITAR NOME OU URL CSS2</label>
+                    <div class="font-loader-input-wrap">
+                      <input type="text" id="font-loader-url-input" class="font-loader-input" placeholder="Ex: Space Grotesk ou URL..." autocomplete="off" spellcheck="false">
+                      <button type="submit" class="font-loader-submit-btn" id="font-loader-submit-btn">APLICAR</button>
+                    </div>
+                  </form>
+
+                  <!-- Filtros de Categoria -->
+                  <div class="font-loader-catalog-section">
+                    <div class="font-loader-catalog-filters-head">
+                      <label class="font-loader-label" for="font-loader-catalog-input">BUSCA NO CATÁLOGO COM PREVIEW</label>
+                    </div>
+                    <div class="font-loader-catalog-filters" id="font-loader-catalog-filters">
+                      <button type="button" class="font-loader-filter-chip is-active" data-cat="all">TODAS</button>
+                      <button type="button" class="font-loader-filter-chip" data-cat="sans-serif">SANS</button>
+                      <button type="button" class="font-loader-filter-chip" data-cat="serif">SERIF</button>
+                      <button type="button" class="font-loader-filter-chip" data-cat="display">DISPLAY</button>
+                      <button type="button" class="font-loader-filter-chip" data-cat="monospace">MONO</button>
+                      <button type="button" class="font-loader-filter-chip" data-cat="handwriting">HAND</button>
+                    </div>
+
+                    <!-- Input de Busca e Lista Embutida de Resultados (Sem sobrepor) -->
+                    <div class="font-loader-catalog-search-box">
+                      <input type="text" id="font-loader-catalog-input" class="font-loader-input" placeholder="Filtrar catálogo (ex: Inter, Syne, Lora, Oswald...)" autocomplete="off" spellcheck="false">
+                      <div class="font-loader-autocomplete-dropdown is-inline" id="font-loader-autocomplete-dropdown" role="listbox" aria-label="Sugestões do catálogo"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              <!-- BLOCO 3: UPLOAD DE ARQUIVOS (DRAG & DROP) -->
+              <div class="font-loader-block" id="font-block-upload">
+                <div class="font-loader-block-header">
+                  <span class="font-loader-block-num">03</span>
+                  <span class="font-loader-block-title">UPLOAD DE ARQUIVOS</span>
+                </div>
+
+                <div class="font-loader-block-body">
+                  <div class="font-loader-dropzone" id="font-loader-dropzone" tabindex="0" role="button" aria-label="Arraste ou clique para selecionar arquivo de fonte">
+                    <input type="file" id="font-loader-file-input" class="font-loader-file-input" accept=".woff2,.woff,.ttf,.otf" multiple tabindex="-1">
+                    <div class="font-loader-dropzone-content">
+                      <div class="font-loader-dropzone-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="17 8 12 3 7 8"></polyline>
+                          <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                      </div>
+                      <span class="font-loader-dropzone-title">ARRASTE ARQUIVOS AQUI</span>
+                      <span class="font-loader-dropzone-subtitle">OU CLIQUE PARA NAVEGAR</span>
+                      <span class="font-loader-dropzone-badge">.WOFF2 &bull; .WOFF &bull; .TTF &bull; .OTF</span>
+                    </div>
+                  </div>
+
+                  <div class="font-loader-block-info">
+                    Os arquivos são carregados nativamente via <code class="font-loader-code">FontFace API</code> do navegador com persistência de sessão.
+                  </div>
+                </div>
+              </div>
+
+              <!-- BLOCO 4: WEBFONTS / @FONT-FACE (URL ARBITRÁRIA) -->
+              <div class="font-loader-block" id="font-block-custom">
+                <div class="font-loader-block-header">
+                  <span class="font-loader-block-num">04</span>
+                  <span class="font-loader-block-title">WEBFONTS / @FONT-FACE</span>
+                </div>
+
+                <div class="font-loader-block-body">
+                  <form class="font-loader-form" id="font-loader-custom-form">
+                    <label class="font-loader-label" for="font-loader-custom-name">NOME DA FAMÍLIA</label>
+                    <input type="text" id="font-loader-custom-name" class="font-loader-input" placeholder="Ex: General Sans, Satoshi..." autocomplete="off" spellcheck="false" required>
+
+                    <label class="font-loader-label" for="font-loader-custom-url">URL (.WOFF2, .TTF OU FONTSHARE / CDN)</label>
+                    <div class="font-loader-input-wrap">
+                      <input type="url" id="font-loader-custom-url" class="font-loader-input" placeholder="https://.../fonte.woff2 ou css..." autocomplete="off" spellcheck="false" required>
+                      <button type="submit" class="font-loader-submit-btn" id="font-loader-custom-submit-btn">IMPORTAR</button>
+                    </div>
+                  </form>
+                  <div class="font-loader-custom-hint">
+                    Compatível com Fontshare, CDN Fonts, arquivos brutos do GitHub ou servidores HTTPS com CORS habilitado.
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
