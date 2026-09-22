@@ -121,12 +121,14 @@ class FontLoaderMachine {
                   name: f.name,
                   family: f.family,
                   url: f.url,
+                  cssRules: f.cssRules || null,
+                  variantsText: f.variantsText || null,
                   isOriginal: false,
                   type: f.type
                 };
                 this.fonts.push(entry);
-                if (f.url) {
-                  this.injectCustomFont(entry.id, entry.name, entry.url).catch(() => {});
+                if (f.url || f.cssRules) {
+                  this.injectCustomFont(entry.id, entry.name, entry.url, entry.cssRules).catch(() => {});
                 }
               } else {
                 // Google Fonts canônico
@@ -349,6 +351,7 @@ class FontLoaderMachine {
 
   /**
    * Processa arquivos de fonte carregados (.woff2, .woff, .ttf, .otf)
+   * Identifica famílias e realiza as correspondências de peso e estilo conforme os parâmetros do site
    */
   async handleUploadedFiles(files) {
     const validExtensions = ['.woff2', '.woff', '.ttf', '.otf'];
@@ -358,77 +361,269 @@ class FontLoaderMachine {
     });
 
     if (validFiles.length === 0) {
-      this.showStatus('Selecione arquivos válidos (.woff2, .woff, .ttf, .otf)', 'error');
+      this.showStatus('Selecione arquivos de fonte válidos (.woff2, .woff, .ttf, .otf)', 'error');
       return;
     }
 
+    this.showStatus(`Processando ${validFiles.length} arquivo(s) de fonte...`, 'loading');
+
+    // 1. Extrai metadados e agrupa por família tipográfica
+    const familyGroups = new Map();
+
     for (const file of validFiles) {
-      await this.loadFontFromFile(file);
+      const info = this.parseFontFileInfo(file.name);
+      if (!familyGroups.has(info.familyName)) {
+        familyGroups.set(info.familyName, []);
+      }
+      familyGroups.get(info.familyName).push({ file, info });
+    }
+
+    // 2. Processa cada família identificada
+    let lastActivatedId = null;
+
+    for (const [familyName, items] of familyGroups.entries()) {
+      try {
+        const familyResult = await this.processFontFamilyGroup(familyName, items);
+        if (familyResult) {
+          lastActivatedId = familyResult.id;
+        }
+      } catch (err) {
+        console.warn(`FontLoader: Falha ao processar família "${familyName}":`, err);
+        this.showStatus(`Erro ao processar a família "${familyName}".`, 'error');
+      }
+    }
+
+    if (lastActivatedId) {
+      this.activateFont(lastActivatedId);
+      this.saveStorage();
+      this.renderList();
     }
   }
 
   /**
-   * Lê o arquivo de fonte como DataURL e ArrayBuffer, injeta com FontFace API e salva na sessão
+   * Analisa o nome do arquivo para deduzir família, peso (100 a 900) e estilo (normal / italic)
    */
-  async loadFontFromFile(file) {
-    const rawName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
-    const fontName = toCapitalizedWords(rawName);
-    this.showStatus(`Processando arquivo "${fontName}"...`, 'loading');
+  parseFontFileInfo(filename) {
+    const lower = filename.toLowerCase();
+    const extMatch = filename.match(/\.(woff2|woff|ttf|otf)$/i);
+    const ext = extMatch ? extMatch[1].toLowerCase() : 'woff2';
 
-    try {
-      // 1. Converte para DataURL para injeção e persistência
-      const dataUrl = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
+    // Mapeamento de formatos CSS
+    let format = 'woff2';
+    if (ext === 'woff') format = 'woff';
+    else if (ext === 'ttf') format = 'truetype';
+    else if (ext === 'otf') format = 'opentype';
 
-      const fontId = `file-${fontName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-      const familyString = `"${fontName}", sans-serif`;
+    // Detecta estilo (itálico vs normal)
+    const isItalic = /(italic|oblique)/i.test(lower);
+    const fontStyle = isItalic ? 'italic' : 'normal';
 
-      // 2. Injeta regra @font-face no DOM via injectCustomFont
-      await this.injectCustomFont(fontId, fontName, dataUrl);
+    // Detecta peso tipográfico (font-weight)
+    let fontWeight = 400;
+    let weightName = 'Regular';
 
-      // 3. Força carregamento via Document Fonts se disponível
-      if (document.fonts && document.fonts.load) {
-        try {
-          await Promise.race([
-            document.fonts.load(`1em "${fontName}"`),
-            new Promise(res => setTimeout(res, 2000))
-          ]);
-        } catch (fErr) {
-          console.warn('FontLoader: aviso document.fonts.load:', fErr);
-        }
-      }
-
-      // 4. Salva ou atualiza no registro
-      let existing = this.fonts.find(f => f.id === fontId || f.name.toLowerCase() === fontName.toLowerCase());
-      if (!existing) {
-        existing = {
-          id: fontId,
-          name: fontName,
-          family: familyString,
-          url: dataUrl,
-          isOriginal: false,
-          type: 'file'
-        };
-        this.fonts.push(existing);
-      } else {
-        existing.url = dataUrl;
-        existing.family = familyString;
-        existing.name = fontName;
-        existing.type = 'file';
-      }
-
-      this.activateFont(existing.id);
-      this.saveStorage();
-      this.renderList();
-      this.showStatus(`Fonte "${fontName}" carregada do arquivo e aplicada!`, 'success');
-    } catch (err) {
-      console.warn('FontLoader: Erro ao carregar arquivo de fonte:', err);
-      this.showStatus(`Erro ao carregar o arquivo "${fontName}".`, 'error');
+    if (/(thin|hairline)/i.test(lower)) {
+      fontWeight = 100;
+      weightName = 'Thin';
+    } else if (/(extralight|ultralight)/i.test(lower)) {
+      fontWeight = 200;
+      weightName = 'ExtraLight';
+    } else if (/(light)/i.test(lower)) {
+      fontWeight = 300;
+      weightName = 'Light';
+    } else if (/(medium)/i.test(lower)) {
+      fontWeight = 500;
+      weightName = 'Medium';
+    } else if (/(semibold|demibold)/i.test(lower)) {
+      fontWeight = 600;
+      weightName = 'SemiBold';
+    } else if (/(extrabold|ultrabold)/i.test(lower)) {
+      fontWeight = 800;
+      weightName = 'ExtraBold';
+    } else if (/(black|heavy)/i.test(lower)) {
+      fontWeight = 900;
+      weightName = 'Black';
+    } else if (/(bold)/i.test(lower)) {
+      fontWeight = 700;
+      weightName = 'Bold';
+    } else if (/(variablefont|variable|wght)/i.test(lower)) {
+      fontWeight = '100 900';
+      weightName = 'Variable';
+    } else {
+      fontWeight = 400;
+      weightName = 'Regular';
     }
+
+    // Extrai o nome da família limpando sufixos e extensões
+    let baseName = filename.replace(/\.(woff2|woff|ttf|otf)$/i, '');
+    
+    // Remove sufixos de peso e estilo comuns
+    baseName = baseName.replace(/[-_]?(thin|hairline|extralight|ultralight|light|regular|normal|book|medium|semibold|demibold|extrabold|ultrabold|bold|black|heavy|italic|oblique|variablefont[^\s]*|variable|slnt[^\s]*|wght[^\s]*|\d+pt)/gi, '');
+    
+    // Limpa separadores residuais
+    baseName = baseName.replace(/[-_]+/g, ' ').trim();
+    if (!baseName) {
+      baseName = filename.replace(/\.(woff2|woff|ttf|otf)$/i, '').replace(/[-_]+/g, ' ').trim();
+    }
+
+    const familyName = toCapitalizedWords(baseName);
+
+    return {
+      filename,
+      ext,
+      format,
+      fontStyle,
+      fontWeight,
+      weightName,
+      familyName
+    };
+  }
+
+  /**
+   * Processa conjunto de arquivos pertencentes à mesma família tipográfica,
+   * gerando regras @font-face coordenadas para cobrir os parâmetros do site (100 a 900)
+   */
+  async processFontFamilyGroup(familyName, items) {
+    const fontId = `file-${familyName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+    const familyString = `"${familyName}", sans-serif`;
+
+    const generatedRules = [];
+    const variantSummaries = [];
+    let primaryDataUrl = '';
+
+    // Lê os arquivos como DataURL e ArrayBuffer
+    const loadedVariants = [];
+
+    for (const item of items) {
+      const { file, info } = item;
+      try {
+        const [dataUrl, arrayBuffer] = await Promise.all([
+          new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          }),
+          file.arrayBuffer().catch(() => null)
+        ]);
+
+        if (!primaryDataUrl) primaryDataUrl = dataUrl;
+
+        loadedVariants.push({
+          info,
+          dataUrl,
+          arrayBuffer
+        });
+
+        variantSummaries.push(`${info.weightName} (${info.fontWeight}${info.fontStyle === 'italic' ? ' Italic' : ''})`);
+
+        // Tenta registrar na API nativa FontFace do navegador
+        if (arrayBuffer && typeof FontFace !== 'undefined') {
+          try {
+            const fontFace = new FontFace(familyName, arrayBuffer, {
+              style: info.fontStyle,
+              weight: String(info.fontWeight),
+              display: 'swap'
+            });
+            await fontFace.load();
+            document.fonts.add(fontFace);
+          } catch (ffErr) {
+            console.warn('FontLoader: FontFace API aviso:', ffErr);
+          }
+        }
+      } catch (fErr) {
+        console.warn(`FontLoader: Falha ao ler arquivo ${file.name}:`, fErr);
+      }
+    }
+
+    if (loadedVariants.length === 0) {
+      throw new Error('Nenhum arquivo pôde ser lido');
+    }
+
+    // Se houver apenas 1 arquivo e não for variável, cria regra com range amplo (100 900)
+    // para cobrir todos os parâmetros do site (títulos bold, textos normais, etc)
+    if (loadedVariants.length === 1 && loadedVariants[0].info.fontWeight !== '100 900') {
+      const v = loadedVariants[0];
+      const singleRule = `
+@font-face {
+  font-family: '${familyName}';
+  src: url('${v.dataUrl}') format('${v.info.format}');
+  font-weight: 100 900;
+  font-style: ${v.info.fontStyle};
+  font-display: swap;
+}
+`;
+      generatedRules.push(singleRule);
+    } else {
+      // Múltiplos arquivos: gera correspondências específicas para cada variante
+      for (const v of loadedVariants) {
+        const rule = `
+@font-face {
+  font-family: '${familyName}';
+  src: url('${v.dataUrl}') format('${v.info.format}');
+  font-weight: ${v.info.fontWeight};
+  font-style: ${v.info.fontStyle};
+  font-display: swap;
+}
+`;
+        generatedRules.push(rule);
+      }
+    }
+
+    // Injeta as regras completas no elemento <style id="dynamic-font-loader">
+    let styleTag = document.getElementById('dynamic-font-loader');
+    if (!styleTag) {
+      styleTag = document.createElement('style');
+      styleTag.id = 'dynamic-font-loader';
+      document.head.appendChild(styleTag);
+    }
+
+    // Remove regras anteriores desta família
+    const existingRules = styleTag.textContent;
+    const regex = new RegExp(`@font-face\\s*\\{[^}]*font-family:\\s*['"]${familyName}['"][^}]*\\}`, 'g');
+    styleTag.textContent = existingRules.replace(regex, '') + '\n' + generatedRules.join('\n');
+
+    // Força checagem via document.fonts
+    if (document.fonts && document.fonts.load) {
+      try {
+        await Promise.race([
+          document.fonts.load(`1em "${familyName}"`),
+          new Promise(res => setTimeout(res, 2000))
+        ]);
+      } catch (fErr) {
+        console.warn('FontLoader: aviso document.fonts.load:', fErr);
+      }
+    }
+
+    // Salva ou atualiza no registro
+    const summaryText = loadedVariants.length > 1 
+      ? `${loadedVariants.length} arquivos correspondidos` 
+      : `${loadedVariants[0].info.weightName} (.${loadedVariants[0].info.ext})`;
+
+    let existing = this.fonts.find(f => f.id === fontId || f.name.toLowerCase() === familyName.toLowerCase());
+    if (!existing) {
+      existing = {
+        id: fontId,
+        name: familyName,
+        family: familyString,
+        url: primaryDataUrl,
+        cssRules: generatedRules.join('\n'),
+        variantsText: summaryText,
+        isOriginal: false,
+        type: 'file'
+      };
+      this.fonts.push(existing);
+    } else {
+      existing.url = primaryDataUrl;
+      existing.family = familyString;
+      existing.name = familyName;
+      existing.cssRules = generatedRules.join('\n');
+      existing.variantsText = summaryText;
+      existing.type = 'file';
+    }
+
+    this.showStatus(`Família "${familyName}" identificada (${summaryText}) e pronta!`, 'success');
+    return existing;
   }
 
   /**
@@ -701,11 +896,13 @@ class FontLoaderMachine {
   /**
    * Injeta regras @font-face ou folha de estilo de repositórios arbitrários (Fontshare, CDN Fonts, etc)
    */
-  async injectCustomFont(id, fontName, fontUrl) {
-    const isBinaryFile = /\.(woff2|woff|ttf|otf|eot)(\?.*)?$/i.test(fontUrl);
+  async injectCustomFont(id, fontName, fontUrl, customCssRules = null) {
+    const isDataUrl = typeof fontUrl === 'string' && fontUrl.startsWith('data:');
+    const isBinaryUrl = typeof fontUrl === 'string' && /\.(woff2|woff|ttf|otf|eot)(\?.*)?$/i.test(fontUrl);
+    const isBinaryFile = isDataUrl || isBinaryUrl;
     const sanitizedId = `custom-font-${id}`;
 
-    if (isBinaryFile) {
+    if (isBinaryFile || customCssRules) {
       // Injeta regra @font-face no elemento <style id="dynamic-font-loader">
       let styleTag = document.getElementById('dynamic-font-loader');
       if (!styleTag) {
@@ -714,11 +911,25 @@ class FontLoaderMachine {
         document.head.appendChild(styleTag);
       }
 
+      if (customCssRules) {
+        const existingRules = styleTag.textContent;
+        const regex = new RegExp(`@font-face\\s*\\{[^}]*font-family:\\s*['"]${fontName}['"][^}]*\\}`, 'g');
+        styleTag.textContent = existingRules.replace(regex, '') + '\n' + customCssRules;
+        return true;
+      }
+
       // Determina o formato apropriado
       let format = 'woff2';
-      if (/\.woff(\?.*)?$/i.test(fontUrl)) format = 'woff';
-      else if (/\.ttf(\?.*)?$/i.test(fontUrl)) format = 'truetype';
-      else if (/\.otf(\?.*)?$/i.test(fontUrl)) format = 'opentype';
+      if (isDataUrl) {
+        if (fontUrl.includes('font/woff2')) format = 'woff2';
+        else if (fontUrl.includes('font/woff')) format = 'woff';
+        else if (fontUrl.includes('font/ttf') || fontUrl.includes('application/x-font-ttf')) format = 'truetype';
+        else if (fontUrl.includes('font/otf') || fontUrl.includes('application/x-font-opentype')) format = 'opentype';
+      } else {
+        if (/\.woff(\?.*)?$/i.test(fontUrl)) format = 'woff';
+        else if (/\.ttf(\?.*)?$/i.test(fontUrl)) format = 'truetype';
+        else if (/\.otf(\?.*)?$/i.test(fontUrl)) format = 'opentype';
+      }
 
       const rule = `
 @font-face {
@@ -1136,6 +1347,13 @@ class FontLoaderMachine {
 
       info.appendChild(nameEl);
       info.appendChild(sampleEl);
+
+      if (font.variantsText) {
+        const variantsEl = document.createElement('span');
+        variantsEl.className = 'font-loader-item-variants-badge';
+        variantsEl.textContent = font.variantsText;
+        info.appendChild(variantsEl);
+      }
 
       // Ações
       const actions = document.createElement('div');
