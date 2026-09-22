@@ -785,16 +785,25 @@ class FontLoaderMachine {
         this.updateCatalogHighlight(items);
       } else if (e.key === 'Enter') {
         e.preventDefault();
+        const rawVal = this.dom.catalogInput.value.trim();
+        if (rawVal.includes('fonts.google') || rawVal.includes('fonts.googleapis') || rawVal.includes('http')) {
+          await this.loadFromInput(rawVal);
+          return;
+        }
         if (this.catalogHighlightedIndex >= 0 && items[this.catalogHighlightedIndex]) {
           const fontName = items[this.catalogHighlightedIndex].dataset.fontName;
           if (fontName) {
             await this.selectCatalogFont(fontName);
+            return;
           }
         } else if (items.length > 0) {
           const fontName = items[0].dataset.fontName;
           if (fontName) {
             await this.selectCatalogFont(fontName);
+            return;
           }
+        } else if (rawVal) {
+          await this.loadFromInput(rawVal);
         }
       }
     });
@@ -1099,6 +1108,11 @@ class FontLoaderMachine {
 
   showStatus(msg, type = 'loading') {
     if (!this.dom.status) return;
+    // O aviso de sucesso foi eliminado conforme solicitação
+    if (type === 'success') {
+      this.clearStatus();
+      return;
+    }
     this.dom.status.className = `font-loader-status is-visible is-${type}`;
     this.dom.status.textContent = msg;
   }
@@ -1370,13 +1384,7 @@ class FontLoaderMachine {
       nameEl.style.fontFamily = font.family;
       nameEl.textContent = font.isOriginal ? `${font.name} (Original)` : font.name;
 
-      const sampleEl = document.createElement('span');
-      sampleEl.className = 'font-loader-item-sample';
-      sampleEl.style.fontFamily = font.family;
-      sampleEl.textContent = 'Aa Bb Cc 1 2 3 / FONTE';
-
       info.appendChild(nameEl);
-      info.appendChild(sampleEl);
 
       if (font.variantsText) {
         const variantsEl = document.createElement('span');
