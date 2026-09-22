@@ -102,38 +102,29 @@
     </div>
   </header>
 
-  <!-- PAINEL TIPOGRÁFICO: CARREGAR FONTE (CENTRALIZADO NA TELA, LARGURA TOTAL EM UMA LINHA) -->
-  <div class="font-loader-popover font-loader-grid-expanded" id="font-loader-popover" role="dialog" aria-labelledby="font-loader-title" aria-hidden="true">
-    <div class="font-loader-header">
-      <div class="font-loader-header-title-wrap">
-        <span class="font-loader-title" id="font-loader-title">PAINEL TIPOGRÁFICO &bull; CARREGAR FONTE</span>
-        <span class="font-loader-badge-shortcut">TECLA [F]</span>
-      </div>
-      <button type="button" class="font-loader-close-btn" id="font-loader-close-btn" aria-label="Fechar painel de fontes">&times;</button>
+  <!-- PAINEL TIPOGRÁFICO LATERAL DIREITO COM GAVETAS (3 COLUNAS MÁXIMO, SCROLL INDEPENDENTE) -->
+  <aside class="font-loader-popover font-loader-drawer-sidebar" id="font-loader-popover" role="dialog" aria-label="Painel Tipográfico" aria-hidden="true">
+    
+    <!-- Botão Fechar Discreto do Painel Lateral -->
+    <div class="font-loader-sidebar-topbar">
+      <span class="font-loader-sidebar-label">PAINEL TIPOGRÁFICO</span>
+      <button type="button" class="font-loader-close-btn" id="font-loader-close-btn" aria-label="Fechar painel tipográfico">&times;</button>
     </div>
 
     <!-- Feedback de Status Global -->
     <div class="font-loader-status" id="font-loader-status" role="status" aria-live="polite"></div>
 
-    <!-- GRID PRINCIPAL EXPANDIDO: 4 BLOCOS LADO A LADO EM UMA ÚNICA LINHA -->
-    <div class="font-loader-columns-wrap">
+    <!-- RECIPIENTE DE GAVETAS INDEPENDENTES -->
+    <div class="font-loader-drawers-container">
       
-      <!-- BLOCO 1: FONTE ATUAL, TESTE RÁPIDO E FONTES DISPONÍVEIS -->
-      <div class="font-loader-block" id="font-block-library">
-        <div class="font-loader-block-header">
-          <span class="font-loader-block-num">01</span>
-          <span class="font-loader-block-title">BIBLIOTECA & TESTE RÁPIDO</span>
-        </div>
+      <!-- GAVETA 01: BIBLIOTECA (INICIA ABERTA) -->
+      <div class="font-loader-block font-loader-drawer is-open" id="font-block-library">
+        <button type="button" class="font-loader-block-header font-loader-drawer-btn" data-drawer-target="drawer-body-library" aria-expanded="true">
+          <span class="font-loader-block-title">01 / BIBLIOTECA</span>
+          <span class="font-loader-drawer-indicator" aria-hidden="true">&#9662;</span>
+        </button>
 
-        <div class="font-loader-block-body">
-          <!-- Teste Rápido Presets -->
-          <div class="font-loader-presets-wrap">
-            <span class="font-loader-presets-label">TESTE RÁPIDO</span>
-            <div class="font-loader-presets-list" id="font-loader-presets-list">
-              <!-- Injetado dinamicamente via JS -->
-            </div>
-          </div>
-
+        <div class="font-loader-block-body" id="drawer-body-library">
           <!-- Fontes Disponíveis / Ativas -->
           <div class="font-loader-list-section">
             <div class="font-loader-list-title">
@@ -147,14 +138,14 @@
         </div>
       </div>
 
-      <!-- BLOCO 2: CATÁLOGO GOOGLE FONTS (BUSCA + URL + FILTROS + PREVIEW) -->
-      <div class="font-loader-block" id="font-block-catalog">
-        <div class="font-loader-block-header">
-          <span class="font-loader-block-num">02</span>
-          <span class="font-loader-block-title">GOOGLE FONTS</span>
-        </div>
+      <!-- GAVETA 02: GOOGLE FONTS (INICIA FECHADA) -->
+      <div class="font-loader-block font-loader-drawer" id="font-block-catalog">
+        <button type="button" class="font-loader-block-header font-loader-drawer-btn" data-drawer-target="drawer-body-catalog" aria-expanded="false">
+          <span class="font-loader-block-title">02 / GOOGLE FONTS</span>
+          <span class="font-loader-drawer-indicator" aria-hidden="true">&#9662;</span>
+        </button>
 
-        <div class="font-loader-block-body">
+        <div class="font-loader-block-body is-collapsed" id="drawer-body-catalog">
           <!-- Formulário URL / Nome Direto -->
           <form class="font-loader-form" id="font-loader-form">
             <label class="font-loader-label" for="font-loader-url-input">DIGITAR NOME OU URL CSS2</label>
@@ -178,71 +169,54 @@
               <button type="button" class="font-loader-filter-chip" data-cat="handwriting">HAND</button>
             </div>
 
-            <!-- Input de Busca e Lista Embutida de Resultados (Sem sobrepor) -->
+            <!-- Input de Busca e Lista Vertical de Resultados com Preview -->
             <div class="font-loader-catalog-search-box">
               <input type="text" id="font-loader-catalog-input" class="font-loader-input" placeholder="Filtrar catálogo (ex: Inter, Syne, Lora, Oswald...)" autocomplete="off" spellcheck="false">
-              <div class="font-loader-autocomplete-dropdown is-inline" id="font-loader-autocomplete-dropdown" role="listbox" aria-label="Sugestões do catálogo"></div>
+              <div class="font-loader-autocomplete-dropdown is-inline" id="font-loader-autocomplete-dropdown" role="listbox" aria-label="Resultados verticais do catálogo de fontes"></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- BLOCO 3: UPLOAD DE ARQUIVOS (DRAG & DROP) -->
-      <div class="font-loader-block" id="font-block-upload">
-        <div class="font-loader-block-header">
-          <span class="font-loader-block-num">03</span>
-          <span class="font-loader-block-title">UPLOAD DE ARQUIVOS</span>
-        </div>
+      <!-- GAVETA 03: WEBFONTS / @FONT-FACE (INICIA FECHADA) -->
+      <div class="font-loader-block font-loader-drawer" id="font-block-custom">
+        <button type="button" class="font-loader-block-header font-loader-drawer-btn" data-drawer-target="drawer-body-custom" aria-expanded="false">
+          <span class="font-loader-block-title">03 / WEBFONTS</span>
+          <span class="font-loader-drawer-indicator" aria-hidden="true">&#9662;</span>
+        </button>
 
-        <div class="font-loader-block-body">
-          <div class="font-loader-dropzone" id="font-loader-dropzone" tabindex="0" role="button" aria-label="Arraste ou clique para selecionar arquivo de fonte">
-            <input type="file" id="font-loader-file-input" class="font-loader-file-input" accept=".woff2,.woff,.ttf,.otf" multiple tabindex="-1">
-            <div class="font-loader-dropzone-content">
-              <div class="font-loader-dropzone-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="17 8 12 3 7 8"></polyline>
-                  <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
-              </div>
-              <span class="font-loader-dropzone-title">ARRASTE ARQUIVOS AQUI</span>
-              <span class="font-loader-dropzone-subtitle">OU CLIQUE PARA NAVEGAR</span>
-              <span class="font-loader-dropzone-badge">.WOFF2 &bull; .WOFF &bull; .TTF &bull; .OTF</span>
+        <div class="font-loader-block-body is-collapsed" id="drawer-body-custom">
+          <!-- Atalhos para Repositórios Compatíveis -->
+          <div class="font-loader-webfont-links-section">
+            <span class="font-loader-webfont-links-title">REPOSITÓRIOS COMPATÍVEIS:</span>
+            <div class="font-loader-webfont-links-grid">
+              <a href="https://www.fontshare.com" target="_blank" rel="noopener noreferrer" class="font-loader-external-link" title="Abrir Fontshare em nova aba">Fontshare &#8599;</a>
+              <a href="https://fonts.google.com" target="_blank" rel="noopener noreferrer" class="font-loader-external-link" title="Abrir Google Fonts em nova aba">Google Fonts &#8599;</a>
+              <a href="https://fonts.bunny.net" target="_blank" rel="noopener noreferrer" class="font-loader-external-link" title="Abrir Bunny Fonts em nova aba">Bunny Fonts &#8599;</a>
+              <a href="https://www.cdnfonts.com" target="_blank" rel="noopener noreferrer" class="font-loader-external-link" title="Abrir CDNfonts em nova aba">CDNfonts &#8599;</a>
+              <a href="https://www.jsdelivr.com" target="_blank" rel="noopener noreferrer" class="font-loader-external-link" title="Abrir jsDelivr em nova aba">jsDelivr &#8599;</a>
             </div>
           </div>
 
-          <div class="font-loader-block-info">
-            Os arquivos são carregados nativamente via <code class="font-loader-code">FontFace API</code> do navegador com persistência de sessão.
-          </div>
-        </div>
-      </div>
-
-      <!-- BLOCO 4: WEBFONTS / @FONT-FACE (URL ARBITRÁRIA) -->
-      <div class="font-loader-block" id="font-block-custom">
-        <div class="font-loader-block-header">
-          <span class="font-loader-block-num">04</span>
-          <span class="font-loader-block-title">WEBFONTS / @FONT-FACE</span>
-        </div>
-
-        <div class="font-loader-block-body">
           <form class="font-loader-form" id="font-loader-custom-form">
             <label class="font-loader-label" for="font-loader-custom-name">NOME DA FAMÍLIA</label>
             <input type="text" id="font-loader-custom-name" class="font-loader-input" placeholder="Ex: General Sans, Satoshi..." autocomplete="off" spellcheck="false" required>
 
-            <label class="font-loader-label" for="font-loader-custom-url">URL (.WOFF2, .TTF OU FONTSHARE / CDN)</label>
+            <label class="font-loader-label" for="font-loader-custom-url">URL (.WOFF2, .TTF OU CSS @IMPORT/LINK)</label>
             <div class="font-loader-input-wrap">
               <input type="url" id="font-loader-custom-url" class="font-loader-input" placeholder="https://.../fonte.woff2 ou css..." autocomplete="off" spellcheck="false" required>
               <button type="submit" class="font-loader-submit-btn" id="font-loader-custom-submit-btn">IMPORTAR</button>
             </div>
           </form>
+
           <div class="font-loader-custom-hint">
-            Compatível com Fontshare, CDN Fonts, arquivos brutos do GitHub ou servidores HTTPS com CORS habilitado.
+            Copie a URL direta (.woff2, .ttf) ou link CSS fornecido pelos repositórios acima.
           </div>
         </div>
       </div>
 
     </div>
-  </div>
+  </aside>
 
   <div id="top"></div>
 
