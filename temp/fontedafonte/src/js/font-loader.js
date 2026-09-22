@@ -78,19 +78,19 @@ class FontLoaderMachine {
       status: null,
       listContainer: null,
       listCount: null,
-      // Abas
-      tabBtns: {},
-      tabPanels: {},
-      // Caminho 1
+      // Bloco 1 (Biblioteca / Presets)
+      presetsWrap: null,
+      // Bloco 2 (Google Fonts URL / Catálogo)
       form: null,
       input: null,
       submitBtn: null,
-      presetsWrap: null,
-      // Caminho 2 (Autocomplete / Catálogo)
       catalogInput: null,
       catalogDropdown: null,
       catalogFilters: null,
-      // Caminho 3 (Custom Webfonts / @font-face)
+      // Bloco 3 (Upload Drag & Drop)
+      dropzone: null,
+      fileInput: null,
+      // Bloco 4 (Custom Webfonts / @font-face)
       customForm: null,
       customNameInput: null,
       customUrlInput: null,
@@ -114,8 +114,8 @@ class FontLoaderMachine {
               const lowerName = f.name.toLowerCase().trim();
               if (lowerName === 'yuyu') return;
 
-              if (f.type === 'custom' || f.type === 'font-face') {
-                // Fonte arbitrária (@font-face ou stylesheet customizado)
+              if (f.type === 'custom' || f.type === 'font-face' || f.type === 'file') {
+                // Fonte arbitrária (@font-face, stylesheet customizado ou arquivo local)
                 const entry = {
                   id: f.id,
                   name: f.name,
@@ -182,31 +182,22 @@ class FontLoaderMachine {
     this.dom.listContainer = document.getElementById('font-loader-list');
     this.dom.listCount = document.getElementById('font-loader-list-count');
 
-    // Abas
-    this.dom.tabBtns = {
-      google: document.getElementById('font-tab-btn-google'),
-      catalog: document.getElementById('font-tab-btn-catalog'),
-      custom: document.getElementById('font-tab-btn-custom')
-    };
+    // Bloco 1: Presets
+    this.dom.presetsWrap = document.getElementById('font-loader-presets-list');
 
-    this.dom.tabPanels = {
-      google: document.getElementById('font-tab-panel-google'),
-      catalog: document.getElementById('font-tab-panel-catalog'),
-      custom: document.getElementById('font-tab-panel-custom')
-    };
-
-    // Caminho 1: URL / Nome Google Fonts
+    // Bloco 2: Google Fonts (URL direta + Catálogo com autocomplete e preview)
     this.dom.form = document.getElementById('font-loader-form');
     this.dom.input = document.getElementById('font-loader-url-input');
     this.dom.submitBtn = document.getElementById('font-loader-submit-btn');
-    this.dom.presetsWrap = document.getElementById('font-loader-presets-list');
-
-    // Caminho 2: Autocomplete / Catálogo
     this.dom.catalogInput = document.getElementById('font-loader-catalog-input');
     this.dom.catalogDropdown = document.getElementById('font-loader-autocomplete-dropdown');
     this.dom.catalogFilters = document.getElementById('font-loader-catalog-filters');
 
-    // Caminho 3: Webfonts Arbitrárias / @font-face
+    // Bloco 3: Upload de Arquivos (Drag & Drop)
+    this.dom.dropzone = document.getElementById('font-loader-dropzone');
+    this.dom.fileInput = document.getElementById('font-loader-file-input');
+
+    // Bloco 4: Webfonts Arbitrárias / @font-face
     this.dom.customForm = document.getElementById('font-loader-custom-form');
     this.dom.customNameInput = document.getElementById('font-loader-custom-name');
     this.dom.customUrlInput = document.getElementById('font-loader-custom-url');
@@ -216,8 +207,8 @@ class FontLoaderMachine {
 
     this.setupPreconnect();
     this.bindEvents();
-    this.bindTabs();
     this.bindCatalog();
+    this.bindUpload();
     this.bindCustomWebfonts();
     this.renderList();
     this.renderPresets();
@@ -298,56 +289,146 @@ class FontLoaderMachine {
     });
   }
 
-  bindTabs() {
-    Object.keys(this.dom.tabBtns).forEach(tabKey => {
-      const btn = this.dom.tabBtns[tabKey];
-      if (!btn) return;
+  /**
+   * Bloco 3: Upload de Fontes (Drag & Drop + File Picker)
+   */
+  bindUpload() {
+    if (!this.dom.dropzone || !this.dom.fileInput) return;
 
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.switchTab(tabKey);
-      });
+    // Clique na dropzone dispara o file input
+    this.dom.dropzone.addEventListener('click', () => {
+      this.dom.fileInput.click();
     });
+
+    // Tecla Enter ou Espaço com foco na dropzone
+    this.dom.dropzone.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.dom.fileInput.click();
+      }
+    });
+
+    // Seleção via janela de arquivos nativa
+    this.dom.fileInput.addEventListener('change', (e) => {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        this.handleUploadedFiles(Array.from(files));
+        this.dom.fileInput.value = ''; // Limpa para permitir re-upload do mesmo arquivo
+      }
+    });
+
+    // Eventos Drag & Drop
+    const preventDefaults = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      this.dom.dropzone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      this.dom.dropzone.addEventListener(eventName, () => {
+        this.dom.dropzone.classList.add('is-dragover');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      this.dom.dropzone.addEventListener(eventName, () => {
+        this.dom.dropzone.classList.remove('is-dragover');
+      }, false);
+    });
+
+    this.dom.dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      if (dt && dt.files && dt.files.length > 0) {
+        this.handleUploadedFiles(Array.from(dt.files));
+      }
+    }, false);
   }
 
-  switchTab(tabKey) {
-    this.activeTab = tabKey;
-
-    Object.keys(this.dom.tabBtns).forEach(k => {
-      const btn = this.dom.tabBtns[k];
-      const panel = this.dom.tabPanels[k];
-      const isActive = k === tabKey;
-
-      if (btn) {
-        btn.classList.toggle('is-active', isActive);
-        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-      }
-
-      if (panel) {
-        panel.classList.toggle('is-active', isActive);
-        if (isActive) {
-          panel.removeAttribute('hidden');
-        } else {
-          panel.setAttribute('hidden', '');
-        }
-      }
+  /**
+   * Processa arquivos de fonte carregados (.woff2, .woff, .ttf, .otf)
+   */
+  async handleUploadedFiles(files) {
+    const validExtensions = ['.woff2', '.woff', '.ttf', '.otf'];
+    const validFiles = files.filter(file => {
+      const lower = file.name.toLowerCase();
+      return validExtensions.some(ext => lower.endsWith(ext));
     });
 
-    this.clearStatus();
+    if (validFiles.length === 0) {
+      this.showStatus('Selecione arquivos válidos (.woff2, .woff, .ttf, .otf)', 'error');
+      return;
+    }
 
-    // Foco contextual por aba
-    setTimeout(() => {
-      if (tabKey === 'google' && this.dom.input) {
-        this.dom.input.focus();
-        this.dom.input.select();
-      } else if (tabKey === 'catalog' && this.dom.catalogInput) {
-        this.dom.catalogInput.focus();
-        this.dom.catalogInput.select();
-      } else if (tabKey === 'custom' && this.dom.customNameInput) {
-        this.dom.customNameInput.focus();
-        this.dom.customNameInput.select();
+    for (const file of validFiles) {
+      await this.loadFontFromFile(file);
+    }
+  }
+
+  /**
+   * Lê o arquivo de fonte como DataURL e ArrayBuffer, injeta com FontFace API e salva na sessão
+   */
+  async loadFontFromFile(file) {
+    const rawName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+    const fontName = toCapitalizedWords(rawName);
+    this.showStatus(`Processando arquivo "${fontName}"...`, 'loading');
+
+    try {
+      // 1. Converte para DataURL para injeção e persistência
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const fontId = `file-${fontName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+      const familyString = `"${fontName}", sans-serif`;
+
+      // 2. Injeta regra @font-face no DOM via injectCustomFont
+      await this.injectCustomFont(fontId, fontName, dataUrl);
+
+      // 3. Força carregamento via Document Fonts se disponível
+      if (document.fonts && document.fonts.load) {
+        try {
+          await Promise.race([
+            document.fonts.load(`1em "${fontName}"`),
+            new Promise(res => setTimeout(res, 2000))
+          ]);
+        } catch (fErr) {
+          console.warn('FontLoader: aviso document.fonts.load:', fErr);
+        }
       }
-    }, 40);
+
+      // 4. Salva ou atualiza no registro
+      let existing = this.fonts.find(f => f.id === fontId || f.name.toLowerCase() === fontName.toLowerCase());
+      if (!existing) {
+        existing = {
+          id: fontId,
+          name: fontName,
+          family: familyString,
+          url: dataUrl,
+          isOriginal: false,
+          type: 'file'
+        };
+        this.fonts.push(existing);
+      } else {
+        existing.url = dataUrl;
+        existing.family = familyString;
+        existing.name = fontName;
+        existing.type = 'file';
+      }
+
+      this.activateFont(existing.id);
+      this.saveStorage();
+      this.renderList();
+      this.showStatus(`Fonte "${fontName}" carregada do arquivo e aplicada!`, 'success');
+    } catch (err) {
+      console.warn('FontLoader: Erro ao carregar arquivo de fonte:', err);
+      this.showStatus(`Erro ao carregar o arquivo "${fontName}".`, 'error');
+    }
   }
 
   /**
@@ -397,6 +478,9 @@ class FontLoaderMachine {
           } catch {
             // Se exceder cota de sessionStorage, mantém apenas em memória
           }
+          if (this.dom.catalogInput) {
+            this.renderCatalogAutocomplete(this.dom.catalogInput.value.trim());
+          }
           return;
         }
       }
@@ -413,6 +497,10 @@ class FontLoaderMachine {
       }
     } catch (e) {
       console.warn('FontLoader: Erro ao carregar google-fonts-catalog.json local:', e);
+    } finally {
+      if (this.dom.catalogInput) {
+        this.renderCatalogAutocomplete(this.dom.catalogInput.value.trim());
+      }
     }
   }
 
@@ -494,12 +582,8 @@ class FontLoaderMachine {
       }
     });
 
-    // Fechar dropdown ao clicar fora do input/dropdown
-    document.addEventListener('click', (e) => {
-      if (!this.dom.catalogDropdown.contains(e.target) && e.target !== this.dom.catalogInput) {
-        this.closeCatalogDropdown();
-      }
-    });
+    // Renderiza lista inicial do catálogo
+    this.renderCatalogAutocomplete('');
   }
 
   updateCatalogHighlight(items) {
@@ -592,7 +676,6 @@ class FontLoaderMachine {
   }
 
   async selectCatalogFont(fontName) {
-    this.closeCatalogDropdown();
     if (this.dom.catalogInput) {
       this.dom.catalogInput.value = fontName;
     }
@@ -753,15 +836,12 @@ class FontLoaderMachine {
     }
 
     setTimeout(() => {
-      if (this.activeTab === 'google' && this.dom.input) {
-        this.dom.input.focus();
-        this.dom.input.select();
-      } else if (this.activeTab === 'catalog' && this.dom.catalogInput) {
+      if (this.dom.catalogInput) {
         this.dom.catalogInput.focus();
         this.dom.catalogInput.select();
-      } else if (this.activeTab === 'custom' && this.dom.customNameInput) {
-        this.dom.customNameInput.focus();
-        this.dom.customNameInput.select();
+      } else if (this.dom.input) {
+        this.dom.input.focus();
+        this.dom.input.select();
       }
     }, 50);
   }
