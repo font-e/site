@@ -184,9 +184,6 @@ class FontLoaderMachine {
     this.dom.listContainer = document.getElementById('font-loader-list');
     this.dom.listCount = document.getElementById('font-loader-list-count');
 
-    // Bloco 1: Presets
-    this.dom.presetsWrap = document.getElementById('font-loader-presets-list');
-
     // Bloco 2: Google Fonts (URL direta + Catálogo com autocomplete e preview)
     this.dom.form = document.getElementById('font-loader-form');
     this.dom.input = document.getElementById('font-loader-url-input');
@@ -195,11 +192,7 @@ class FontLoaderMachine {
     this.dom.catalogDropdown = document.getElementById('font-loader-autocomplete-dropdown');
     this.dom.catalogFilters = document.getElementById('font-loader-catalog-filters');
 
-    // Bloco 3: Upload de Arquivos (Drag & Drop)
-    this.dom.dropzone = document.getElementById('font-loader-dropzone');
-    this.dom.fileInput = document.getElementById('font-loader-file-input');
-
-    // Bloco 4: Webfonts Arbitrárias / @font-face
+    // Bloco 3: Webfonts Arbitrárias / @font-face
     this.dom.customForm = document.getElementById('font-loader-custom-form');
     this.dom.customNameInput = document.getElementById('font-loader-custom-name');
     this.dom.customUrlInput = document.getElementById('font-loader-custom-url');
@@ -209,14 +202,43 @@ class FontLoaderMachine {
 
     this.setupPreconnect();
     this.bindEvents();
+    this.bindDrawers();
     this.bindCatalog();
-    this.bindUpload();
     this.bindCustomWebfonts();
     this.renderList();
-    this.renderPresets();
 
     // Carregamento assíncrono antecipado do catálogo
     this.loadCatalog().catch(() => {});
+  }
+
+  /**
+   * Conecta as gavetas do painel lateral para abertura e fechamento independente
+   */
+  bindDrawers() {
+    const drawerBtns = this.dom.popover.querySelectorAll('.font-loader-drawer-btn');
+    drawerBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const targetId = btn.getAttribute('data-drawer-target');
+        const drawerBlock = btn.closest('.font-loader-drawer');
+        const bodyEl = document.getElementById(targetId);
+
+        if (bodyEl && drawerBlock) {
+          const isOpen = drawerBlock.classList.contains('is-open');
+          if (isOpen) {
+            drawerBlock.classList.remove('is-open');
+            bodyEl.classList.add('is-collapsed');
+            btn.setAttribute('aria-expanded', 'false');
+          } else {
+            drawerBlock.classList.add('is-open');
+            bodyEl.classList.remove('is-collapsed');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        }
+      });
+    });
   }
 
   setupPreconnect() {
@@ -966,15 +988,23 @@ class FontLoaderMachine {
   }
 
   async loadCustomWebfont(fontName, fontUrl) {
+    let cleanUrl = fontUrl.trim();
+    // Extrai URL se veio de tag <link href="...">
+    const linkMatch = cleanUrl.match(/href=["']([^"']+)["']/i);
+    if (linkMatch) cleanUrl = linkMatch[1];
+    // Extrai URL se veio de @import url(...)
+    const importMatch = cleanUrl.match(/url\(["']?([^"')]+)["']?\)/i);
+    if (importMatch) cleanUrl = importMatch[1];
+
     this.showStatus(`Importando "${fontName}"...`, 'loading');
     if (this.dom.customSubmitBtn) this.dom.customSubmitBtn.disabled = true;
 
     try {
       const fontId = `custom-${fontName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-      const success = await this.injectCustomFont(fontId, fontName, fontUrl);
+      const success = await this.injectCustomFont(fontId, fontName, cleanUrl);
 
       if (!success) {
-        this.showStatus(`Falha ao carregar arquivo de fonte de: ${fontUrl}`, 'error');
+        this.showStatus(`Falha ao carregar arquivo de fonte de: ${cleanUrl}`, 'error');
         return;
       }
 
@@ -998,13 +1028,13 @@ class FontLoaderMachine {
           id: fontId,
           name: fontName,
           family: familyString,
-          url: fontUrl,
+          url: cleanUrl,
           isOriginal: false,
           type: 'custom'
         };
         this.fonts.push(existing);
       } else {
-        existing.url = fontUrl;
+        existing.url = cleanUrl;
         existing.family = familyString;
         existing.name = fontName;
         existing.type = 'custom';
@@ -1391,31 +1421,6 @@ class FontLoaderMachine {
       }
 
       this.dom.listContainer.appendChild(item);
-    });
-  }
-
-  renderPresets() {
-    if (!this.dom.presetsWrap) return;
-    this.dom.presetsWrap.innerHTML = '';
-
-    const presets = [
-      { name: 'Sofia Sans Semi Condensed', input: 'Sofia Sans Semi Condensed' },
-      { name: 'Space Grotesk', input: 'Space Grotesk' },
-      { name: 'Playfair Display', input: 'Playfair Display' },
-      { name: 'Fira Code', input: 'Fira Code' },
-      { name: 'Roboto Condensed', input: 'Roboto Condensed' }
-    ];
-
-    presets.forEach(p => {
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = 'font-loader-preset-chip';
-      chip.textContent = p.name;
-      chip.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        await this.loadFromInput(p.input);
-      });
-      this.dom.presetsWrap.appendChild(chip);
     });
   }
 }
