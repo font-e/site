@@ -154,9 +154,9 @@
   display: block;
 }
 
+/* O aviso verde de sucesso foi eliminado conforme solicitação do usuário */
 .font-loader-status.is-success {
-  background-color: rgba(230, 249, 230, 0.8);
-  color: #000000;
+  display: none !important;
 }
 
 .font-loader-status.is-error {
@@ -293,6 +293,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 6px;
+  min-height: 44px;
   padding: 6px 8px;
   border: 1.5px solid #000000;
   background-color: rgba(255, 255, 255, 0.2);
@@ -320,7 +321,7 @@
 
 .font-loader-item-name {
   font-size: var(--fs-meta, 0.75rem);
-  font-weight: 700;
+  font-weight: 500 !important;
   letter-spacing: 0.02em;
   white-space: nowrap;
   overflow: hidden;
@@ -329,19 +330,14 @@
 }
 
 .font-loader-item-sample {
-  font-size: 0.6875rem;
-  line-height: 1.1;
-  opacity: 0.85;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: none !important;
 }
 
 .font-loader-item-variants-badge {
   display: inline-block;
   align-self: flex-start;
   font-size: 0.5625rem;
-  font-weight: 700;
+  font-weight: 500 !important;
   letter-spacing: 0.04em;
   padding: 1px 4px;
   border: 1.5px solid #000000;
@@ -368,13 +364,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 22px;
-  padding: 0 6px;
+  height: 26px;
+  padding: 0 8px;
   border: 1.5px solid #000000;
   background-color: rgba(255, 255, 255, 0.1);
   color: #000000;
-  font-size: 0.625rem;
-  font-weight: 700;
+  font-size: 0.6875rem;
+  font-weight: 500 !important;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   cursor: pointer;
@@ -398,13 +394,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border: 1.5px solid #000000;
   background-color: rgba(255, 255, 255, 0.1);
   color: #000000;
   font-size: 0.8125rem;
-  font-weight: 700;
+  font-weight: 500 !important;
   line-height: 1;
   cursor: pointer;
   border-radius: 2px;
@@ -539,6 +535,17 @@
   gap: 6px;
   width: 100%;
   box-sizing: border-box;
+}
+
+/* Campo de busca do catálogo com altura alinhada aos botões das fontes disponíveis (44px) */
+.font-loader-catalog-search-input,
+#font-loader-catalog-input {
+  height: 44px !important;
+  min-height: 44px !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  padding: 0 12px !important;
+  box-sizing: border-box !important;
 }
 
 /* LISTA DE RESULTADOS DO CATÁLOGO: VERTICAL ESTRITO (SEM SCROLL HORIZONTAL) */
