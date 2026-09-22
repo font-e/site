@@ -1,7 +1,8 @@
 /* =========================================
-   PAINEL POPOVER: CARREGAR FONTE (GOOGLE FONTS & UPLOAD)
+   PAINEL LATERAL DIREITO: GAVETAS TIPOGRÁFICAS
    Design System Estrito: Bordas 1.5px (#000), Tipografia Fixa 'Stag Sans',
-   Fundos Translúcidos Hierárquicos (Painel: 0.5, Itens: 0.2, Botões: 0.1)
+   Fundos Translúcidos Hierárquicos (Painel: 0.5, Itens: 0.2, Botões: 0.1),
+   Pesos no máximo 700, 3 Colunas Máx, Scroll Independente
    ========================================= */
 
 .nav-item-font-loader {
@@ -17,6 +18,12 @@
   gap: 6px;
 }
 
+.font-loader-trigger-btn .font-btn-icon {
+  font-size: 1rem;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
 .font-loader-key-hint {
   display: inline-block;
   font-size: 0.65rem;
@@ -29,27 +36,10 @@
   line-height: 1;
 }
 
-.font-loader-header-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.font-loader-badge-shortcut {
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  background-color: var(--accent-cyan, #ccfffe);
-  color: #000000;
-  border: 1.5px solid #000000;
-  padding: 2px 5px;
-  border-radius: 2px;
-  line-height: 1;
-}
-
 /* =========================================
    TIPOGRAFIA RESTRITA DO PAINEL: SEMPRE STAG SANS
    O painel nunca tem suas fontes alteradas pelas escolhas do usuário
+   Pesos limitados rigorosamente a no máximo 700
    ========================================= */
 #font-loader-popover,
 #font-loader-popover button,
@@ -63,88 +53,85 @@
 #font-loader-popover h3,
 #font-loader-popover h4,
 #font-loader-popover code,
+#font-loader-popover a,
 #font-loader-popover span:not(.font-loader-autocomplete-name):not(.font-loader-item-sample) {
   font-family: 'Stag Sans', sans-serif !important;
 }
 
-.font-loader-trigger-btn .font-btn-icon {
-  font-size: 1rem;
-  line-height: 1;
-  transform: translateY(-1px);
-}
-
-/* Painel Popover Expandido (Side-by-side em Linha Única e Largura Total) */
-.font-loader-popover {
+/* =========================================
+   PAINEL LATERAL À DIREITA COM SCROLL VERTICAL INDEPENDENTE
+   Máximo 3 colunas de 12 (aprox. 25vw / máx 380px)
+   ========================================= */
+.font-loader-popover.font-loader-drawer-sidebar {
   position: fixed;
-  top: 50px;
-  left: 12px;
-  right: 12px;
-  width: auto;
-  max-width: calc(100vw - 24px);
-  max-height: calc(100vh - 64px);
-  overflow-y: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: clamp(280px, 25vw, 380px);
+  max-width: 100vw;
+  height: 100vh;
   background-color: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1.5px solid var(--border-color, #000000);
-  border-radius: 4px;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.15);
+  border-left: 1.5px solid #000000;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  box-shadow: -6px 0 28px rgba(0, 0, 0, 0.12);
   z-index: 100002;
-  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   box-sizing: border-box;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translate3d(0, -8px, 0);
-  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
-  white-space: normal;
+  transform: translate3d(100%, 0, 0);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease, visibility 0.28s;
+  overflow-y: auto;
+  overflow-x: hidden;
   scrollbar-width: thin;
 }
 
-.font-loader-popover.is-active {
+.font-loader-popover.font-loader-drawer-sidebar.is-active {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transform: translate3d(0, 0, 0);
 }
 
-/* Cabeçalho do Popover */
-.font-loader-header {
+/* Topbar Discreta do Painel Lateral */
+.font-loader-sidebar-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1.5px solid var(--border-color, #000000);
-  padding-bottom: 10px;
+  padding: 10px 12px;
+  border-bottom: 1.5px solid #000000;
+  background-color: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
 }
 
-.font-loader-title {
-  font-size: var(--fs-nav, 0.8125rem);
+.font-loader-sidebar-label {
+  font-size: 0.6875rem;
   font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
   color: #000000;
-  margin: 0;
-  line-height: 1;
 }
 
-/* Botões do Painel: 0.1 de opacidade com bordas 1.5px */
 .font-loader-close-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  border: 1.5px solid var(--border-color, #000000);
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid #000000;
   background-color: rgba(255, 255, 255, 0.1);
   color: #000000;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 2px;
   transition: background-color 0.15s ease;
 }
 
@@ -152,363 +139,15 @@
   background-color: var(--accent-cyan, #ccfffe);
 }
 
-/* =========================================
-   GRID EXPANDIDO: 4 BLOCOS LADO A LADO EM UMA ÚNICA LINHA
-   Itens do painel: 0.2 de opacidade sobre o painel (0.5)
-   ========================================= */
-.font-loader-columns-wrap {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(240px, 1fr));
-  gap: 12px;
-  align-items: stretch;
-  width: 100%;
-  overflow-x: auto;
-  padding-bottom: 2px;
-  scrollbar-width: thin;
-}
-
-.font-loader-block {
-  display: flex;
-  flex-direction: column;
-  border: 1.5px solid var(--border-color, #000000);
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.font-loader-block-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-bottom: 1.5px solid var(--border-color, #000000);
-}
-
-.font-loader-block-num {
-  font-size: 0.625rem;
-  font-weight: 900;
-  background-color: #000000;
-  color: #ffffff;
-  padding: 2px 4px;
-  border-radius: 2px;
-  line-height: 1;
-}
-
-.font-loader-block-title {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #000000;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.font-loader-block-body {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1;
-}
-
-/* BLOCO 2: Catálogo e Busca */
-.font-loader-catalog-section {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.font-loader-catalog-filters-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.font-loader-catalog-search-box {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-/* Lista embutida sem sobreposição: Item do painel (0.2 de opacidade) */
-.font-loader-autocomplete-dropdown.is-inline {
-  position: static;
-  display: flex;
-  width: 100%;
-  height: 200px;
-  max-height: 200px;
-  overflow-y: auto;
-  background-color: rgba(255, 255, 255, 0.2);
-  border: 1.5px solid var(--border-color, #000000);
-  border-radius: 3px;
-  box-shadow: none;
-  scrollbar-width: thin;
-}
-
-.font-loader-autocomplete-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 6px 8px;
-  cursor: pointer;
-  border-bottom: 1.5px solid rgba(0, 0, 0, 0.1);
-  transition: background-color 0.12s ease;
-}
-
-.font-loader-autocomplete-item:last-child {
-  border-bottom: none;
-}
-
-.font-loader-autocomplete-item:hover,
-.font-loader-autocomplete-item.is-selected {
-  background-color: rgba(204, 255, 254, 0.5);
-}
-
-.font-loader-autocomplete-name {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #000000;
-  line-height: 1.25;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: opacity 0.2s ease;
-}
-
-.font-loader-autocomplete-cat {
-  font-size: 0.5625rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 1px 4px;
-  border: 1.5px solid #000000;
-  border-radius: 2px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #000000;
-}
-
-.font-loader-catalog-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-}
-
-/* Botões filtros: 0.1 de opacidade */
-.font-loader-filter-chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 20px;
-  padding: 0 5px;
-  border: 1.5px solid var(--border-color, #000000);
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #000000;
-  font-size: 0.5625rem;
-  font-weight: 700;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: background-color 0.15s ease;
-}
-
-.font-loader-filter-chip:hover {
-  background-color: var(--accent-cyan, #ccfffe);
-}
-
-.font-loader-filter-chip.is-active {
-  background-color: #000000;
-  color: #ffffff;
-}
-
-/* BLOCO 3: Upload de Arquivos / Drag & Drop: Item do painel (0.2 de opacidade) */
-.font-loader-dropzone {
-  position: relative;
-  border: 1.5px dashed var(--border-color, #000000);
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-  padding: 24px 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
-  outline: none;
-}
-
-.font-loader-dropzone:hover,
-.font-loader-dropzone:focus {
-  background-color: rgba(204, 255, 254, 0.3);
-  border-color: #000000;
-}
-
-.font-loader-dropzone.is-dragover {
-  background-color: var(--accent-cyan, #ccfffe);
-  border-style: solid;
-}
-
-.font-loader-file-input {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-  z-index: 2;
-}
-
-.font-loader-dropzone-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  pointer-events: none;
-}
-
-.font-loader-dropzone-icon {
-  color: #000000;
-  margin-bottom: 2px;
-}
-
-.font-loader-dropzone-title {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: #000000;
-}
-
-.font-loader-dropzone-subtitle {
-  font-size: 0.625rem;
-  color: #333333;
-  font-weight: 600;
-}
-
-.font-loader-dropzone-badge {
-  font-size: 0.5625rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  background-color: #000000;
-  color: #ffffff;
-  padding: 2px 6px;
-  border-radius: 2px;
-  margin-top: 4px;
-}
-
-.font-loader-block-info {
-  font-size: 0.65rem;
-  line-height: 1.35;
-  color: #000000;
-  background-color: rgba(255, 255, 255, 0.2);
-  border: 1.5px solid rgba(0, 0, 0, 0.15);
-  padding: 6px 8px;
-  border-radius: 2px;
-}
-
-.font-loader-code {
-  font-family: monospace;
-  font-size: 0.65rem;
-  background-color: rgba(0, 0, 0, 0.06);
-  padding: 1px 3px;
-  border-radius: 2px;
-}
-
-/* BLOCO 4: Webfonts / @font-face */
-.font-loader-custom-hint {
-  font-size: 0.65rem;
-  line-height: 1.35;
-  color: #000000;
-  background-color: rgba(255, 255, 255, 0.2);
-  border: 1.5px dashed rgba(0, 0, 0, 0.25);
-  padding: 6px 8px;
-  border-radius: 2px;
-}
-
-/* Formulário de Input */
-.font-loader-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.font-loader-label {
-  font-size: var(--fs-meta, 0.75rem);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #000000;
-  line-height: 1.2;
-}
-
-.font-loader-input-wrap {
-  display: flex;
-  gap: 6px;
-  width: 100%;
-}
-
-/* Inputs: Item do painel (0.2 de opacidade) com borda 1.5px */
-.font-loader-input {
-  flex: 1;
-  min-width: 0;
-  height: 32px;
-  padding: 0 10px;
-  border: 1.5px solid var(--border-color, #000000);
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #000000;
-  font-size: var(--fs-meta, 0.75rem);
-  border-radius: 3px;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.font-loader-input:focus {
-  background-color: rgba(255, 255, 255, 0.4);
-  border-color: #000000;
-}
-
-/* Botões submit: 0.1 de opacidade com borda 1.5px */
-.font-loader-submit-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 32px;
-  padding: 0 12px;
-  border: 1.5px solid var(--border-color, #000000);
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #000000;
-  font-size: var(--fs-meta, 0.75rem);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  border-radius: 3px;
-  white-space: nowrap;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.font-loader-submit-btn:hover {
-  background-color: var(--accent-cyan, #ccfffe);
-  color: #000000;
-}
-
-.font-loader-submit-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
 /* Feedback de Status */
 .font-loader-status {
   font-size: var(--fs-meta, 0.75rem);
   font-weight: 600;
   line-height: 1.3;
-  padding: 4px 8px;
-  border: 1.5px solid transparent;
+  padding: 6px 10px;
+  border-bottom: 1.5px solid #000000;
   display: none;
-  border-radius: 3px;
+  flex-shrink: 0;
 }
 
 .font-loader-status.is-visible {
@@ -516,72 +155,109 @@
 }
 
 .font-loader-status.is-success {
-  background-color: rgba(230, 249, 230, 0.75);
-  border-color: #000000;
+  background-color: rgba(230, 249, 230, 0.8);
   color: #000000;
 }
 
 .font-loader-status.is-error {
-  background-color: rgba(255, 235, 235, 0.75);
-  border-color: #000000;
+  background-color: rgba(255, 235, 235, 0.8);
   color: #000000;
 }
 
 .font-loader-status.is-loading {
-  background-color: rgba(240, 247, 255, 0.75);
-  border-color: #000000;
+  background-color: rgba(240, 247, 255, 0.8);
   color: #000000;
 }
 
-/* Sugestões Rápidas */
-.font-loader-presets-wrap {
+/* =========================================
+   CONTAINER DE GAVETAS INDEPENDENTES
+   ========================================= */
+.font-loader-drawers-container {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  padding: 10px;
+  flex: 1;
 }
 
-.font-loader-presets-label {
-  font-size: var(--fs-meta, 0.75rem);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #000000;
-}
-
-.font-loader-presets-list {
+/* Bloco Gaveta */
+.font-loader-drawer {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-/* Botões presets: 0.1 de opacidade com borda 1.5px */
-.font-loader-preset-chip {
-  display: inline-flex;
-  align-items: center;
-  height: 24px;
-  padding: 0 8px;
-  border: 1.5px solid var(--border-color, #000000);
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #000000;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  cursor: pointer;
+  flex-direction: column;
+  border: 1.5px solid #000000;
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: 2px;
-  line-height: 1;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Cabeçalho da Gaveta (Botão de Toggle) */
+.font-loader-drawer-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  cursor: pointer;
+  text-align: left;
   transition: background-color 0.15s ease;
+  box-sizing: border-box;
 }
 
-.font-loader-preset-chip:hover {
-  background-color: var(--accent-cyan, #ccfffe);
+.font-loader-drawer-btn:hover {
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
-/* Lista de Fontes Carregadas */
+.font-loader-drawer.is-open .font-loader-drawer-btn {
+  border-bottom: 1.5px solid #000000;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Títulos das Gavetas: Mesma tipografia e peso para números e texto */
+.font-loader-block-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #000000;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.font-loader-drawer-indicator {
+  font-size: 0.75rem;
+  color: #000000;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: rotate(-90deg);
+  line-height: 1;
+}
+
+.font-loader-drawer.is-open .font-loader-drawer-indicator {
+  transform: rotate(0deg);
+}
+
+/* Corpo da Gaveta */
+.font-loader-block-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+.font-loader-block-body.is-collapsed {
+  display: none;
+}
+
+/* =========================================
+   GAVETA 01: BIBLIOTECA
+   ========================================= */
 .font-loader-list-section {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  border-top: 1.5px solid var(--border-color, #000000);
-  padding-top: 12px;
 }
 
 .font-loader-list-title {
@@ -605,24 +281,24 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-height: 190px;
+  max-height: 260px;
   overflow-y: auto;
-  padding-right: 4px;
+  overflow-x: hidden;
+  padding-right: 2px;
   scrollbar-width: thin;
 }
 
-/* Item da lista: 0.2 de opacidade com borda 1.5px */
 .font-loader-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 6px 10px;
-  border: 1.5px solid var(--border-color, #000000);
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1.5px solid #000000;
   background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
+  border-radius: 2px;
   box-sizing: border-box;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition: background-color 0.15s ease;
 }
 
 .font-loader-item:hover {
@@ -667,7 +343,7 @@
   font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  padding: 1px 5px;
+  padding: 1px 4px;
   border: 1.5px solid #000000;
   border-radius: 2px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -688,17 +364,16 @@
   gap: 4px;
 }
 
-/* Botões da lista: 0.1 de opacidade com borda 1.5px */
 .font-loader-apply-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 24px;
-  padding: 0 8px;
-  border: 1.5px solid var(--border-color, #000000);
+  height: 22px;
+  padding: 0 6px;
+  border: 1.5px solid #000000;
   background-color: rgba(255, 255, 255, 0.1);
   color: #000000;
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -723,12 +398,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: 1.5px solid var(--border-color, #000000);
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid #000000;
   background-color: rgba(255, 255, 255, 0.1);
   color: #000000;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
@@ -747,19 +422,253 @@
   color: #cc0000 !important;
 }
 
-/* Responsividade: Ocupa toda a largura da tela, centralizado e sempre em uma linha única */
-@media (max-width: 768px) {
-  .font-loader-popover {
-    top: 48px;
-    left: 6px;
-    right: 6px;
-    max-width: calc(100vw - 12px);
-    max-height: calc(100vh - 54px);
-    padding: 10px;
-    gap: 8px;
-  }
-  .font-loader-columns-wrap {
-    grid-template-columns: repeat(4, minmax(210px, 1fr));
-    gap: 8px;
+/* =========================================
+   GAVETA 02: GOOGLE FONTS (BUSCA VERTICAL ESTREITA)
+   Fim do erro horizontal: flex-direction column estrito
+   ========================================= */
+.font-loader-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.font-loader-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #000000;
+  line-height: 1.2;
+}
+
+.font-loader-input-wrap {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+}
+
+.font-loader-input {
+  flex: 1;
+  min-width: 0;
+  height: 30px;
+  padding: 0 8px;
+  border: 1.5px solid #000000;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #000000;
+  font-size: var(--fs-meta, 0.75rem);
+  border-radius: 2px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.font-loader-input:focus {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-color: #000000;
+}
+
+.font-loader-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 10px;
+  border: 1.5px solid #000000;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #000000;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border-radius: 2px;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.font-loader-submit-btn:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+  color: #000000;
+}
+
+.font-loader-catalog-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.font-loader-catalog-filters-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.font-loader-catalog-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.font-loader-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding: 0 5px;
+  border: 1.5px solid #000000;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #000000;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background-color 0.15s ease;
+}
+
+.font-loader-filter-chip:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+}
+
+.font-loader-filter-chip.is-active {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.font-loader-catalog-search-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* LISTA DE RESULTADOS DO CATÁLOGO: VERTICAL ESTRITO (SEM SCROLL HORIZONTAL) */
+.font-loader-autocomplete-dropdown.is-inline {
+  position: static;
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  height: 220px;
+  max-height: 220px;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 1.5px solid #000000;
+  border-radius: 2px;
+  box-shadow: none;
+  scrollbar-width: thin;
+  box-sizing: border-box;
+}
+
+.font-loader-autocomplete-item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 6px 8px !important;
+  cursor: pointer;
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.12);
+  transition: background-color 0.12s ease;
+  flex-shrink: 0 !important;
+  background: transparent;
+}
+
+.font-loader-autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.font-loader-autocomplete-item:hover,
+.font-loader-autocomplete-item.is-selected {
+  background-color: rgba(204, 255, 254, 0.55);
+}
+
+.font-loader-autocomplete-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #000000;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 68%;
+  flex: 1;
+  transition: opacity 0.2s ease;
+}
+
+.font-loader-autocomplete-cat {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 4px;
+  border: 1.5px solid #000000;
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #000000;
+  flex-shrink: 0;
+}
+
+/* =========================================
+   GAVETA 03: WEBFONTS COM LINKS EXTERNOS
+   ========================================= */
+.font-loader-webfont-links-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-bottom: 8px;
+  border-bottom: 1.5px dashed rgba(0, 0, 0, 0.2);
+}
+
+.font-loader-webfont-links-title {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #000000;
+  text-transform: uppercase;
+}
+
+.font-loader-webfont-links-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.font-loader-external-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #000000;
+  border: 1.5px solid #000000;
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 3px 6px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.font-loader-external-link:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.font-loader-custom-hint {
+  font-size: 0.625rem;
+  line-height: 1.35;
+  color: #000000;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1.5px dashed rgba(0, 0, 0, 0.2);
+  padding: 6px 8px;
+  border-radius: 2px;
+}
+
+/* Responsividade Mobile */
+@media (max-width: 640px) {
+  .font-loader-popover.font-loader-drawer-sidebar {
+    width: 88vw;
+    max-width: 340px;
   }
 }
