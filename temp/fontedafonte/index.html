@@ -85,32 +85,88 @@
 
         <!-- BOTÃO FINAL DO MENU RETRÁTIL: CARREGAR FONTE -->
         <div class="nav-item-dropdown nav-item-font-loader" id="nav-item-font-loader">
-          <button type="button" class="header-nav-btn font-loader-trigger-btn" id="font-loader-trigger-btn" aria-expanded="false" aria-haspopup="dialog" aria-label="Carregar Fonte">
+          <button type="button" class="header-nav-btn font-loader-trigger-btn" id="font-loader-trigger-btn" aria-expanded="false" aria-haspopup="dialog" aria-label="Carregar Fonte (Atalho: F)">
             <span class="font-btn-icon">Aa</span>
             <span>CARREGAR FONTE</span>
+            <span class="font-loader-key-hint" title="Atalho de teclado">[F]</span>
           </button>
           <div class="font-loader-popover" id="font-loader-popover" role="dialog" aria-labelledby="font-loader-title" aria-hidden="true">
             <div class="font-loader-header">
-              <span class="font-loader-title" id="font-loader-title">CARREGAR FONTE</span>
+              <div class="font-loader-header-title-wrap">
+                <span class="font-loader-title" id="font-loader-title">CARREGAR FONTE</span>
+                <span class="font-loader-badge-shortcut">TECLA [F]</span>
+              </div>
               <button type="button" class="font-loader-close-btn" id="font-loader-close-btn" aria-label="Fechar painel de fontes">&times;</button>
             </div>
 
-            <form class="font-loader-form" id="font-loader-form">
-              <label class="font-loader-label" for="font-loader-url-input">URL DO GOOGLE FONTS OU NOME</label>
-              <div class="font-loader-input-wrap">
-                <input type="text" id="font-loader-url-input" class="font-loader-input" placeholder="Ex: Space Grotesk ou URL..." autocomplete="off" spellcheck="false" required>
-                <button type="submit" class="font-loader-submit-btn" id="font-loader-submit-btn">CARREGAR</button>
-              </div>
-            </form>
+            <!-- Subseções em abas: Caminho 1, Caminho 2 e Caminho 3 -->
+            <div class="font-loader-tabs" role="tablist" aria-label="Modos de carregamento de fonte">
+              <button type="button" class="font-loader-tab is-active" id="font-tab-btn-google" role="tab" aria-selected="true" aria-controls="font-tab-panel-google">
+                GOOGLE FONTS
+              </button>
+              <button type="button" class="font-loader-tab" id="font-tab-btn-catalog" role="tab" aria-selected="false" aria-controls="font-tab-panel-catalog">
+                CATÁLOGO
+              </button>
+              <button type="button" class="font-loader-tab" id="font-tab-btn-custom" role="tab" aria-selected="false" aria-controls="font-tab-panel-custom">
+                WEBFONTS / @FONT-FACE
+              </button>
+            </div>
 
-            <div class="font-loader-status" id="font-loader-status" role="status" aria-live="polite"></div>
+            <!-- PAINEL 1: URL / NOME GOOGLE FONTS (Caminho 1) -->
+            <div class="font-loader-tab-panel is-active" id="font-tab-panel-google" role="tabpanel" aria-labelledby="font-tab-btn-google">
+              <form class="font-loader-form" id="font-loader-form">
+                <label class="font-loader-label" for="font-loader-url-input">URL DO GOOGLE FONTS OU NOME</label>
+                <div class="font-loader-input-wrap">
+                  <input type="text" id="font-loader-url-input" class="font-loader-input" placeholder="Ex: Space Grotesk ou URL css2..." autocomplete="off" spellcheck="false" required>
+                  <button type="submit" class="font-loader-submit-btn" id="font-loader-submit-btn">CARREGAR</button>
+                </div>
+              </form>
 
-            <div class="font-loader-presets-wrap">
-              <span class="font-loader-presets-label">TESTE RÁPIDO:</span>
-              <div class="font-loader-presets-list" id="font-loader-presets-list">
-                <!-- Injetado dinamicamente via JS -->
+              <div class="font-loader-presets-wrap">
+                <span class="font-loader-presets-label">TESTE RÁPIDO:</span>
+                <div class="font-loader-presets-list" id="font-loader-presets-list">
+                  <!-- Injetado dinamicamente via JS -->
+                </div>
               </div>
             </div>
+
+            <!-- PAINEL 2: AUTOCOMPLETE DO CATÁLOGO GOOGLE FONTS (Caminho 2) -->
+            <div class="font-loader-tab-panel" id="font-tab-panel-catalog" role="tabpanel" aria-labelledby="font-tab-btn-catalog" hidden>
+              <div class="font-loader-catalog-section">
+                <label class="font-loader-label" for="font-loader-catalog-input">BUSCA NO CATÁLOGO DO GOOGLE FONTS</label>
+                <div class="font-loader-autocomplete-wrap">
+                  <input type="text" id="font-loader-catalog-input" class="font-loader-input" placeholder="Buscar por nome (ex: Inter, Syne, Lora, Oswald...)" autocomplete="off" spellcheck="false">
+                  <div class="font-loader-autocomplete-dropdown" id="font-loader-autocomplete-dropdown" role="listbox" aria-label="Sugestões do catálogo"></div>
+                </div>
+                <div class="font-loader-catalog-filters" id="font-loader-catalog-filters">
+                  <button type="button" class="font-loader-filter-chip is-active" data-cat="all">TODAS</button>
+                  <button type="button" class="font-loader-filter-chip" data-cat="sans-serif">SANS</button>
+                  <button type="button" class="font-loader-filter-chip" data-cat="serif">SERIF</button>
+                  <button type="button" class="font-loader-filter-chip" data-cat="display">DISPLAY</button>
+                  <button type="button" class="font-loader-filter-chip" data-cat="monospace">MONO</button>
+                  <button type="button" class="font-loader-filter-chip" data-cat="handwriting">HAND</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- PAINEL 3: INGESTÃO DE WEBFONTS ARBITRÁRIAS (@FONT-FACE) (Caminho 3) -->
+            <div class="font-loader-tab-panel" id="font-tab-panel-custom" role="tabpanel" aria-labelledby="font-tab-btn-custom" hidden>
+              <form class="font-loader-form" id="font-loader-custom-form">
+                <label class="font-loader-label" for="font-loader-custom-name">NOME DA FAMÍLIA</label>
+                <input type="text" id="font-loader-custom-name" class="font-loader-input" placeholder="Ex: Minha Custom Font" autocomplete="off" spellcheck="false" required>
+
+                <label class="font-loader-label" for="font-loader-custom-url">URL (.WOFF2, .WOFF, .TTF OU FONTSHARE / CDN FONTS)</label>
+                <div class="font-loader-input-wrap">
+                  <input type="url" id="font-loader-custom-url" class="font-loader-input" placeholder="https://.../fonte.woff2 ou link css" autocomplete="off" spellcheck="false" required>
+                  <button type="submit" class="font-loader-submit-btn" id="font-loader-custom-submit-btn">IMPORTAR</button>
+                </div>
+              </form>
+              <div class="font-loader-custom-hint">
+                Aceita arquivos binários (.woff2, .woff, .ttf) ou CSS direto de Fontshare / CDN Fonts / repositórios abertos.
+              </div>
+            </div>
+
+            <div class="font-loader-status" id="font-loader-status" role="status" aria-live="polite"></div>
 
             <div class="font-loader-list-section">
               <div class="font-loader-list-title">
