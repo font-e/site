@@ -138,28 +138,20 @@
         </div>
       </div>
 
-      <!-- GAVETA 02: GOOGLE FONTS (INICIA FECHADA) -->
-      <div class="font-loader-block font-loader-drawer" id="font-block-catalog">
-        <button type="button" class="font-loader-block-header font-loader-drawer-btn" data-drawer-target="drawer-body-catalog" aria-expanded="false">
+      <!-- GAVETA 02: GOOGLE FONTS (INICIA ABERTA) -->
+      <div class="font-loader-block font-loader-drawer is-open" id="font-block-catalog">
+        <button type="button" class="font-loader-block-header font-loader-drawer-btn" data-drawer-target="drawer-body-catalog" aria-expanded="true">
           <span class="font-loader-block-title">02 / GOOGLE FONTS</span>
           <span class="font-loader-drawer-indicator" aria-hidden="true">&#9662;</span>
         </button>
 
-        <div class="font-loader-block-body is-collapsed" id="drawer-body-catalog">
-          <!-- Formulário URL / Nome Direto -->
-          <form class="font-loader-form" id="font-loader-form">
-            <label class="font-loader-label" for="font-loader-url-input">DIGITAR NOME OU URL CSS2</label>
-            <div class="font-loader-input-wrap">
-              <input type="text" id="font-loader-url-input" class="font-loader-input" placeholder="Ex: Space Grotesk ou URL..." autocomplete="off" spellcheck="false">
-              <button type="submit" class="font-loader-submit-btn" id="font-loader-submit-btn">APLICAR</button>
-            </div>
-          </form>
-
-          <!-- Filtros de Categoria -->
+        <div class="font-loader-block-body" id="drawer-body-catalog">
+          <!-- Campo de Busca/Filtro e Seleção Direta no Catálogo -->
           <div class="font-loader-catalog-section">
-            <div class="font-loader-catalog-filters-head">
-              <label class="font-loader-label" for="font-loader-catalog-input">BUSCA NO CATÁLOGO COM PREVIEW</label>
+            <div class="font-loader-catalog-search-box">
+              <input type="text" id="font-loader-catalog-input" class="font-loader-input font-loader-catalog-search-input" placeholder="Buscar no catálogo (ex: Inter, Syne, Space Grotesk...)" autocomplete="off" spellcheck="false">
             </div>
+
             <div class="font-loader-catalog-filters" id="font-loader-catalog-filters">
               <button type="button" class="font-loader-filter-chip is-active" data-cat="all">TODAS</button>
               <button type="button" class="font-loader-filter-chip" data-cat="sans-serif">SANS</button>
@@ -169,23 +161,19 @@
               <button type="button" class="font-loader-filter-chip" data-cat="handwriting">HAND</button>
             </div>
 
-            <!-- Input de Busca e Lista Vertical de Resultados com Preview -->
-            <div class="font-loader-catalog-search-box">
-              <input type="text" id="font-loader-catalog-input" class="font-loader-input" placeholder="Filtrar catálogo (ex: Inter, Syne, Lora, Oswald...)" autocomplete="off" spellcheck="false">
-              <div class="font-loader-autocomplete-dropdown is-inline" id="font-loader-autocomplete-dropdown" role="listbox" aria-label="Resultados verticais do catálogo de fontes"></div>
-            </div>
+            <div class="font-loader-autocomplete-dropdown is-inline" id="font-loader-autocomplete-dropdown" role="listbox" aria-label="Resultados do catálogo de fontes"></div>
           </div>
         </div>
       </div>
 
-      <!-- GAVETA 03: WEBFONTS / @FONT-FACE (INICIA FECHADA) -->
-      <div class="font-loader-block font-loader-drawer" id="font-block-custom">
-        <button type="button" class="font-loader-block-header font-loader-drawer-btn" data-drawer-target="drawer-body-custom" aria-expanded="false">
+      <!-- GAVETA 03: WEBFONTS / @FONT-FACE (INICIA ABERTA) -->
+      <div class="font-loader-block font-loader-drawer is-open" id="font-block-custom">
+        <button type="button" class="font-loader-block-header font-loader-drawer-btn" data-drawer-target="drawer-body-custom" aria-expanded="true">
           <span class="font-loader-block-title">03 / WEBFONTS</span>
           <span class="font-loader-drawer-indicator" aria-hidden="true">&#9662;</span>
         </button>
 
-        <div class="font-loader-block-body is-collapsed" id="drawer-body-custom">
+        <div class="font-loader-block-body" id="drawer-body-custom">
           <!-- Atalhos para Repositórios Compatíveis -->
           <div class="font-loader-webfont-links-section">
             <span class="font-loader-webfont-links-title">REPOSITÓRIOS COMPATÍVEIS:</span>
