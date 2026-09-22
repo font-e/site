@@ -1432,7 +1432,7 @@ class FontLoaderMachine {
     });
   }
 }
-
+ 
 let instance = null;
 
 export function initFontLoader() {
