@@ -1,0 +1,47 @@
+/* ==========================================================================
+   DESIGN SYSTEM FONTE - SECTION-TITLE-SCROLL.CSS (VERSÃO BASIC)
+   Revelação Tectônica Pura via CSS Nativo (Zero Jank / Zero JS no Scroll)
+   - Títulos em tipografia sólida, única e estática: Epilogue (wght 700)
+   - Sem camadas duplicadas (.title-layer-light / .title-layer-bold / .sr-only)
+   - Sem mix-blend-mode e sem interpolação de pesos ou letter-spacing no scroll
+   - Efeito cortina nativo pela GPU: empilhamento z-index descendente entre seções
+     com painéis de conteúdo opacos (#ffffff) deslizando naturalmente sobre a base
+   ========================================================================== */
+
+/* 1. Stacking descendente entre seções: a seção anterior atua fisicamente
+   como cortina opaca que cobre e revela a seção seguinte durante o scroll */
+#sec-programacao { z-index: 50; position: relative; }
+#sec-residencia  { z-index: 40; position: relative; }
+#sec-atelies     { z-index: 30; position: relative; }
+#sec-arquivo     { z-index: 20; position: relative; }
+#sec-info        { z-index: 10; position: relative; }
+
+/* 2. Contêiner de cabeçalho da seção: 600px de altura, fundo ciano suave */
+.section-hero-wrapper {
+  background-color: var(--hover-bg, #eefffe) !important;
+  background-image: none !important;
+  position: relative;
+  /* Preservação estrita: sem overflow: hidden para não interferir no hover das abas */
+}
+
+/* 3. Painel de conteúdo 100% opaco para atuar como cortina física sobre a próxima seção */
+.section-content-panel {
+  background-color: var(--bg-white, #ffffff) !important;
+  position: relative;
+  z-index: 5;
+}
+
+/* 4. Título de Seção: declaração tipográfica sólida, estática, sem interpolações ou transforms */
+.section-hero-title {
+  position: relative;
+  display: block;
+  font-family: var(--font-epilogue) !important;
+  color: var(--bg-black, #002424) !important;
+  font-weight: 700 !important;
+  font-variation-settings: 'wght' 700 !important;
+  letter-spacing: -0.01em !important;
+  mix-blend-mode: normal !important;
+  opacity: 1 !important;
+  transform: none !important;
+  user-select: none;
+}

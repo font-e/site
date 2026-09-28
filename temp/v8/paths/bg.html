@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FONTE - Engine de Camadas e Blend Modes</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. VARIÁVEIS CSS (Controladas pelo Painel)
+       ========================================================================== */
+    :root {
+      --font-epilogue: 'Epilogue', sans-serif;
+      --font-spline: 'Spline Sans', sans-serif;
+      --bg-white: lab(100% 0.01 -0.01);
+      --border-color: #002424;
+      --content-indent-left: 60px;
+
+      /* Controles do Título */
+      --title-color: #002424;
+      --title-weight: 700;
+      --title-opacity: 1;
+      --title-blend: normal;
+      --z-title: 20;
+
+      /* Controles das Letras Normais */
+      --normal-opacity: 1;
+      --normal-blend: normal;
+      --z-normal: 10;
+
+      /* Controles das Letras em Destaque */
+      --highlight-opacity: 1;
+      --highlight-blend: normal;
+      --z-highlight: 30;
+
+      /* Fundo da Página */
+      --page-bg-color: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; width: 100%; }
+    
+    body {
+      font-family: var(--font-spline);
+      background-color: var(--page-bg-color);
+      width: 100%;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      transition: background-color 0.2s;
+    }
+
+    /* ==========================================================================
+       2. ARQUITETURA DE MÚLTIPLOS CANVASES
+       ========================================================================== */
+    .canvas-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      display: block;
+    }
+
+    #canvas-normal {
+      z-index: var(--z-normal);
+      opacity: var(--normal-opacity);
+      mix-blend-mode: var(--normal-blend);
+    }
+
+    #canvas-highlight {
+      z-index: var(--z-highlight);
+      opacity: var(--highlight-opacity);
+      mix-blend-mode: var(--highlight-blend);
+    }
+
+    /* ==========================================================================
+       3. ESTRUTURA DO SITE MOCKUP (Simplificada)
+       ========================================================================== */
+    .section-block { width: 100%; position: relative; }
+    
+    .section-hero-wrapper {
+      position: relative;
+      width: 100%;
+      height: 600px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background-color: transparent !important;
+      pointer-events: none;
+    }
+
+    /* O Título controlado por variáveis CSS e Clamp travado em 120px máximo */
+    .section-hero-title {
+      font-family: var(--font-epilogue) !important;
+      font-size: clamp(2.25rem, 8vw, 120px); /* Modificado conforme pedido */
+      font-variation-settings: 'wght' var(--title-weight);
+      font-weight: var(--title-weight);
+      color: var(--title-color);
+      opacity: var(--title-opacity);
+      mix-blend-mode: var(--title-blend);
+      z-index: var(--z-title);
+      position: relative;
+      padding-left: var(--content-indent-left);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+
+    .section-content-panel {
+      width: 100%;
+      background-color: var(--bg-white);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+      z-index: 1000;
+      pointer-events: auto;
+    }
+
+    .programacao-event-item {
+      padding: 24px 0 28px var(--content-indent-left); border-bottom: 1px solid var(--border-color);
+    }
+    
+    /* Clamp adicionado aos títulos dos eventos para coerência visual */
+    .event-title-text { font-size: clamp(2.25rem, 8vw, 120px); font-weight: 500; letter-spacing: -0.01em; color: var(--border-color);}
+    .event-subtitle-text { display: block; font-size: 1.5rem; margin-top: 6px; color: var(--border-color);}
+    .event-names { font-size: 1.2rem; margin-top: 10px; color: var(--border-color);}
+
+    /* ==========================================================================
+       4. ESTILOS DO PAINEL
+       ========================================================================== */
+    input[type=range] { accent-color: #00ffff; }
+    input[type=color] { -webkit-appearance: none; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; background: none; padding: 0; }
+    input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+    input[type=color]::-webkit-color-swatch { border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 4px; }
+    select { background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 4px; padding: 2px 4px; outline: none;}
+    select option { background-color: #002424; color: white; }
+    .panel-transition { transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+    .collapse-transition { transition: max-height 0.3s ease, opacity 0.25s ease; overflow: hidden; }
+    #control-panel::-webkit-scrollbar { width: 4px; }
+    #control-panel::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+  <!-- Duas Camadas de Canvas Independentes -->
+  <canvas id="canvas-normal" class="canvas-layer"></canvas>
+  <canvas id="canvas-highlight" class="canvas-layer"></canvas>
+
+  <!-- PAINEL DE CONTROLE -->
+  <aside id="control-panel" class="panel-transition fixed top-4 right-4 z-[9999] bg-[#0d2222]/95 backdrop-blur-md border border-white/15 rounded-xl p-3 shadow-2xl flex flex-col gap-2 w-80 max-h-[96vh] overflow-y-auto text-xs text-white">
+    <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-[#00ffff] animate-pulse"></span>
+        <span class="font-bold tracking-wider uppercase text-[10px]">Arte & Camadas</span>
+      </div>
+      <span class="text-white/40 text-[9px]">Atalho 'P'</span>
+    </div>
+
+    <!-- FUNDO DA PÁGINA -->
+    <div class="flex items-center justify-between bg-white/5 p-2 rounded-lg border border-white/10">
+      <span class="font-semibold text-white/80">Fundo da Página:</span>
+      <input id="color-page-bg" type="color" value="#ffffff" />
+    </div>
+
+    <!-- BLOCO 1: TÍTULO DA SEÇÃO -->
+    <div class="flex flex-col gap-1.5 bg-white/5 p-2 rounded-lg border border-white/10">
+      <div class="font-bold text-[10px] text-cyan-200 uppercase mb-1 border-b border-white/10 pb-1">Camada: Títulos HTML</div>
+      
+      <div class="flex justify-between items-center">
+        <label>Z-Index (Ordem):</label>
+        <select id="sel-z-title">
+          <option value="5">Fundo (Atrás)</option>
+          <option value="20" selected>Meio</option>
+          <option value="40">Frente (Topo)</option>
+        </select>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-2 mt-1">
+        <div class="flex flex-col gap-1">
+          <label class="text-[9px]">Cor</label>
+          <input id="color-title" type="color" value="#002424" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-[9px]">Mix Blend Mode</label>
+          <select id="blend-title" class="w-full text-[9px] h-6">
+            <!-- 16 Mix Blend Modes Inseridos -->
+            <option value="normal" selected>Normal</option>
+            <option value="multiply">Multiply</option>
+            <option value="screen">Screen</option>
+            <option value="overlay">Overlay</option>
+            <option value="darken">Darken</option>
+            <option value="lighten">Lighten</option>
+            <option value="color-dodge">Color Dodge</option>
+            <option value="color-burn">Color Burn</option>
+            <option value="hard-light">Hard Light</option>
+            <option value="soft-light">Soft Light</option>
+            <option value="difference">Difference</option>
+            <option value="exclusion">Exclusion</option>
+            <option value="hue">Hue</option>
+            <option value="saturation">Saturation</option>
+            <option value="color">Color</option>
+            <option value="luminosity">Luminosity</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="flex flex-col gap-1 mt-1">
+        <div class="flex justify-between text-[9px]"><label>Peso da Fonte (Weight):</label><span id="val-weight">700</span></div>
+        <input id="input-title-weight" type="range" min="100" max="900" step="100" value="700" class="h-1.5" />
+      </div>
+
+      <div class="flex flex-col gap-1 mt-1">
+        <div class="flex justify-between text-[9px]"><label>Opacidade:</label><span id="val-title-op">1.0</span></div>
+        <input id="input-title-op" type="range" min="0" max="1" step="0.05" value="1" class="h-1.5" />
+      </div>
+    </div>
+
+    <!-- BLOCO 2: LETRAS NORMAIS -->
+    <div class="flex flex-col gap-1.5 bg-white/5 p-2 rounded-lg border border-white/10">
+      <div class="font-bold text-[10px] text-cyan-200 uppercase mb-1 border-b border-white/10 pb-1">Camada: Letras Normais</div>
+      
+      <div class="flex justify-between items-center">
+        <label>Z-Index (Ordem):</label>
+        <select id="sel-z-normal">
+          <option value="10" selected>Fundo (Atrás)</option>
+          <option value="20">Meio</option>
+          <option value="40">Frente (Topo)</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 mt-1">
+        <div class="flex flex-col gap-1">
+          <label class="text-[9px]">Cor</label>
+          <input id="color-normal" type="color" value="#002424" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-[9px]">Mix Blend Mode</label>
+          <select id="blend-normal" class="w-full text-[9px] h-6">
+            <option value="normal" selected>Normal</option>
+            <option value="multiply">Multiply</option>
+            <option value="screen">Screen</option>
+            <option value="overlay">Overlay</option>
+            <option value="darken">Darken</option>
+            <option value="lighten">Lighten</option>
+            <option value="color-dodge">Color Dodge</option>
+            <option value="color-burn">Color Burn</option>
+            <option value="hard-light">Hard Light</option>
+            <option value="soft-light">Soft Light</option>
+            <option value="difference">Difference</option>
+            <option value="exclusion">Exclusion</option>
+            <option value="hue">Hue</option>
+            <option value="saturation">Saturation</option>
+            <option value="color">Color</option>
+            <option value="luminosity">Luminosity</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1 mt-1">
+        <div class="flex justify-between text-[9px]"><label>Opacidade:</label><span id="val-normal-op">1.0</span></div>
+        <input id="input-normal-op" type="range" min="0" max="1" step="0.05" value="1" class="h-1.5" />
+      </div>
+    </div>
+
+    <!-- BLOCO 3: LETRAS EM DESTAQUE -->
+    <div class="flex flex-col gap-1.5 bg-white/5 p-2 rounded-lg border border-white/10">
+      <div class="font-bold text-[10px] text-cyan-200 uppercase flex justify-between border-b border-white/10 pb-1">
+        <span>Camada: Destaques</span>
+        <div class="flex gap-1">
+          <label class="cursor-pointer"><input type="checkbox" value="f" class="letter-cb"> F</label>
+          <label class="cursor-pointer"><input type="checkbox" value="o" class="letter-cb"> O</label>
+          <label class="cursor-pointer"><input type="checkbox" value="n" class="letter-cb"> N</label>
+          <label class="cursor-pointer"><input type="checkbox" value="t" class="letter-cb"> T</label>
+          <label class="cursor-pointer"><input type="checkbox" value="e" class="letter-cb"> E</label>
+        </div>
+      </div>
+      
+      <div class="flex justify-between items-center mt-1">
+        <label>Z-Index (Ordem):</label>
+        <select id="sel-z-highlight">
+          <option value="10">Fundo (Atrás)</option>
+          <option value="20">Meio</option>
+          <option value="30" selected>Frente (Topo)</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 mt-1">
+        <div class="flex flex-col gap-1">
+          <label class="text-[9px]">Cor</label>
+          <input id="color-highlight" type="color" value="#00ffff" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-[9px]">Mix Blend Mode</label>
+          <select id="blend-highlight" class="w-full text-[9px] h-6">
+            <option value="normal" selected>Normal</option>
+            <option value="multiply">Multiply</option>
+            <option value="screen">Screen</option>
+            <option value="overlay">Overlay</option>
+            <option value="darken">Darken</option>
+            <option value="lighten">Lighten</option>
+            <option value="color-dodge">Color Dodge</option>
+            <option value="color-burn">Color Burn</option>
+            <option value="hard-light">Hard Light</option>
+            <option value="soft-light">Soft Light</option>
+            <option value="difference">Difference</option>
+            <option value="exclusion">Exclusion</option>
+            <option value="hue">Hue</option>
+            <option value="saturation">Saturation</option>
+            <option value="color">Color</option>
+            <option value="luminosity">Luminosity</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1 mt-1">
+        <div class="flex justify-between text-[9px]"><label>Opacidade:</label><span id="val-highlight-op">1.0</span></div>
+        <input id="input-highlight-op" type="range" min="0" max="1" step="0.05" value="1" class="h-1.5" />
+      </div>
+    </div>
+
+    <!-- BLOCO 4: GEOMETRIA E INTERAÇÃO -->
+    <div class="flex flex-col gap-1.5 bg-white/5 p-2 rounded-lg border border-white/10">
+      <div class="grid grid-cols-2 gap-2">
+        <div class="flex flex-col gap-1">
+          <div class="flex justify-between text-[9px]"><label>Gap:</label><span id="label-gap">12px</span></div>
+          <input id="input-gap" type="range" min="0" max="40" value="12" class="h-1.5" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <div class="flex justify-between text-[9px]"><label>Célula:</label><span id="label-density">80px</span></div>
+          <input id="input-density" type="range" min="40" max="200" value="80" class="h-1.5" />
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-2 mt-1">
+        <div class="flex flex-col gap-1">
+          <div class="flex justify-between text-[9px]"><label>Espessura:</label><span id="label-base-stroke">2px</span></div>
+          <input id="input-base-stroke" type="range" min="1" max="40" step="1" value="2" class="h-1.5" />
+        </div>
+        <div class="flex items-center justify-between pt-2">
+          <span class="font-bold text-[9px]">Interação Mouse</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input id="toggle-mouseover" type="checkbox" class="sr-only peer">
+            <div class="w-6 h-3.5 bg-white/30 rounded-full peer peer-checked:after:translate-x-full after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-2.5 after:w-2.5 transition-all peer-checked:bg-[#00ffff]"></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Mouseover Expandível -->
+      <div id="mouseover-container" class="collapse-transition max-h-0 opacity-0 flex flex-col gap-2 mt-1 border-t border-white/10 pt-2">
+        <div class="flex flex-col gap-1">
+          <div class="flex justify-between text-[9px]"><label>Raio de Ação:</label><span id="label-radius">120px</span></div>
+          <input id="input-radius" type="range" min="20" max="600" value="120" class="h-1.5" />
+        </div>
+        
+        <div class="flex flex-col gap-1">
+          <div class="flex justify-between text-[9px]"><label>Espessura Alvo:</label><span id="label-mouse-stroke">12px</span></div>
+          <input id="input-mouse-stroke" type="range" min="1" max="60" value="12" class="h-1.5" />
+        </div>
+        
+        <!-- Novos Toggles dentro do Mouseover -->
+        <div class="flex flex-col gap-2 mt-1">
+          <div class="flex justify-between items-center">
+            <span class="text-[9px]">Espessura Aleatória:</span>
+            <input id="toggle-random" type="checkbox" class="accent-cyan-400">
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[9px] font-bold text-cyan-200">Revelar Letra Completa:</span>
+            <input id="toggle-complete-hover" type="checkbox" class="accent-cyan-400">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RODAPÉ AÇÕES -->
+    <div class="flex justify-end gap-1.5 pt-1">
+      <button id="btn-total-chaos" title="Modo Caótico" class="p-1.5 bg-white/10 hover:bg-white/20 rounded text-sm transition-colors">🤪</button>
+      <button id="btn-restore-rule" title="Restaurar Grid" class="p-1.5 bg-white/10 hover:bg-white/20 rounded text-sm transition-colors">↶</button>
+    </div>
+  </aside>
+
+  <main>
+    <!-- FAIXA CIANO INICIAL -->
+    <div style="width: 100%; height: 800px; background-color: transparent; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2000;">
+    </div>
+
+    <!-- SEÇÃO PROGRAMAÇÃO COMPLETA -->
+    <section class="section-block" id="sec-programacao">
+      <div class="section-hero-wrapper">
+        <h1 class="section-hero-title"></h1>
+      </div>
+    </section>
+
+    <!-- SEÇÃO RESIDÊNCIA SIMPLIFICADA -->
+    <section class="section-block" id="sec-residencia">
+      <div class="section-hero-wrapper">
+        <h2 class="section-hero-title"></h2>
+      </div>
+      </section>
+  </main>
+
+  <!-- LÓGICA DO CANVAS E PAINEL -->
+  <script>
+    // ----------------------------------------------------------------------
+    // 1. DADOS VETORIAIS E CONFIGURAÇÃO
+    // ----------------------------------------------------------------------
+    const VIEWBOX_SIZE = 1060;
+    
+    // Fragmentos (usados para formar a padronagem padrão)
+    const FRAGMENT_PATHS = {
+      "e1": new Path2D("M538.226 406.93V292.36M148.067 1025.09H911.422"),
+      "e2": new Path2D("M900.11 292.36V34.91m11.31 990.18V774.72m-131.47 -367.79H538.23"),
+      "e3": new Path2D("M900.11 34.91H148.07m763.35 739.81H538.23"),
+      "e4": new Path2D("M538.23 774.72v-125.9h241.72m-631.88 -613.91v990.18"),
+      "e5": new Path2D("M779.95 648.82V406.93m-241.72 -114.57h361.88"),
+      "f1": new Path2D("M708.665 873.189H901.589M595.243 807.425v-202.6"),
+      "f2": new Path2D("M408.68 604.827v202.6m186.56 -202.6h113.43"),
+      "f3": new Path2D("M159.57 604.827h249.11m492.91 268.362V312.069"),
+      "f4": new Path2D("M159.57 312.069V604.827m249.11 202.6h186.56"),
+      "f5": new Path2D("M708.67 604.827V873.189m192.92 -561.12H159.57"),
+      "n1": new Path2D("M681.805 463.52h-4.241L448.558 34.91H65.466"),
+      "n2": new Path2D("M994.21 34.91H681.8m-616.33 990.18h312.41"),
+      "n3": new Path2D("M994.21 1025.09V34.91m-312.41 0v428.61h-4.24"),
+      "n4": new Path2D("M377.88 1025.09V546.97h4.24l257.28 478.12"),
+      "n5": new Path2D("M639.4 1025.09h354.81m-928.74 -990.18v990.18"),
+      "o1": new Path2D("M136.286 654.48q0 181.08 111.767 282.91 M485.88 531.06q15.256 -35.01 43.826 -35.01 29.368 0 44.707 35.36"),
+      "o2": new Path2D("M248.05 937.39q111.765 101.85 281.66 101.85 M574.41 531.41q15.33 35.385 15.33 125.9m-18.1 134.11q-14.865 34.215 -41.93 34.22"),
+      "o3": new Path2D("M813.28 365.21q-109.875 -103.98 -283.57 -103.97M248.69 364.5q-112.41 103.275 -112.4 289.98 M589.74 657.31q0 92.43 -18.1 134.11"),
+      "o4": new Path2D("M529.71 1039.24q168.6 0 281.01 -99.73m112.41 -285.03q0 -185.3 -109.85 -289.27 M468.39 657.31h0q0 -86.115 17.49 -126.25"),
+      "o5": new Path2D("M810.72 939.51q112.38 -99.72 112.41 -285.03m-393.42 -393.24q-168.615 0 -281.02 103.26 M529.71 825.64q-27.645 0 -42.82 -34.19 -18.495 -41.67 -18.5 -134.14h0"),
+      "t1": new Path2D("M116.878 299.43h217.7m390.159 725.66V299.43"),
+      "t2": new Path2D("M724.74 299.43h217.69V34.91"),
+      "t3": new Path2D("M334.58 299.43v725.66"),
+      "t4": new Path2D("M334.58 1025.09h390.16m-607.86 -990.18v264.52"),
+      "t5": new Path2D("M942.43 34.91H116.88")
+    };
+
+    // Letras Completas (usadas quando o botão de Hover Completo estiver ativo)
+    const COMPLETE_PATHS = {
+      "f": new Path2D("M708.665,604.83v268.36m192.924-561.12H159.573 M159.573,312.07v292.76m249.106,202.59H595.243 M159.573,604.83H408.679M901.59,873.19V312.07 M408.679,604.83v202.59m186.564-202.59H708.665 M708.665,873.19H901.589m-306.346-65.77V604.83"),
+      "o": new Path2D("M136.29,654.48q0,181.08,111.76,282.91 M485.88,531.06q15.255-35.01,43.83-35.01,29.37,0,44.7,35.36 M248.05,937.39q111.765,101.85,281.66,101.85 M574.41,531.41q15.33,35.385,15.33,125.9m-18.1,134.11q-14.865,34.215-41.93,34.22 M813.28,365.21q-109.875-103.98-283.57-103.97M248.69,364.5q-112.41,103.275-112.4,289.98 M589.74,657.31q0,92.43-18.1,134.11 M810.72,939.51q112.38-99.72,112.41-285.03m-393.42-393.24q-168.615,0-281.02,103.26 M529.71,825.64q-27.645,0-42.82-34.19-18.5-41.67-18.5-134.14h0 M529.71,1039.24q168.6,0,281.01-99.73m112.41-285.03q0-185.3-109.85-289.27 M468.39,657.31h0q0-86.115,17.49-126.25"),
+      "n": new Path2D("M681.8,463.52h-4.24l-229-428.61H65.47 M994.21,34.91H681.8m-616.33,990.18h312.41 M994.21,1025.09V34.91m-312.41,0v428.61h-4.24 M377.88,1025.09V546.97h4.24l257.28,478.12 M639.4,1025.09h354.81m-928.74-990.18v990.18"),
+      "t": new Path2D("M116.88,299.43h217.7m390.16,725.66V299.43 M724.74,299.43h217.69V34.91 M334.58,299.43v725.66 M334.58,1025.09h390.15m-607.85-990.18v264.52 M942.43,34.91H116.88"),
+      "e": new Path2D("M538.23,406.93V292.36m-390.16,732.73h763.35 M900.11,292.36V34.91m11.31,990.18V774.72m-131.46-367.79H538.23 M900.11,34.91H148.07m763.35,739.81H538.23 M538.23,774.72v-125.9h241.73m-631.89-613.91v990.18 M779.96,648.82V406.93m-241.73-114.57h361.88")
+    };
+    
+    const LETTERS = ["f", "o", "n", "t", "e"];
+
+    // ----------------------------------------------------------------------
+    // 2. VARIÁVEIS DE ESTADO E REFERÊNCIAS
+    // ----------------------------------------------------------------------
+    const canvasNormal = document.getElementById('canvas-normal');
+    const ctxNormal = canvasNormal.getContext('2d', { alpha: true }); 
+    const canvasHighlight = document.getElementById('canvas-highlight');
+    const ctxHighlight = canvasHighlight.getContext('2d', { alpha: true });
+    
+    let cells = [];
+    let canvasWidth, canvasHeight;
+    const mouse = { x: -9999, y: -9999, active: false };
+    let isLoopRunning = false;
+
+    // Configurações do App
+    let baseStroke = 2;
+    let cellSize = 80;
+    let gap = 12;
+    let useTotalRandom = false;
+    
+    // Cores Iniciais
+    let colorNormal = "#002424";
+    let colorHighlight = "#00ffff";
+
+    // Mouseover configs
+    let isMouseoverEnabled = false;
+    let effectRadius = 120;
+    let mouseStroke = 12;
+    let isRandomThickness = false;
+    let isCompleteLetterHover = false; // Estado do novo Toggle de Letra Completa
+    let lerpSpeed = 0.03;
+    const highlightedLetters = new Set();
+
+    // ----------------------------------------------------------------------
+    // 3. ATUALIZAR VARIÁVEIS CSS PELO PAINEL
+    // ----------------------------------------------------------------------
+    const rootStyle = document.documentElement.style;
+
+    document.getElementById("color-page-bg").addEventListener("input", e => {
+      rootStyle.setProperty("--page-bg-color", e.target.value);
+    });
+
+    // Bloco 1: Títulos
+    document.getElementById("sel-z-title").addEventListener("change", e => rootStyle.setProperty("--z-title", e.target.value));
+    document.getElementById("color-title").addEventListener("input", e => rootStyle.setProperty("--title-color", e.target.value));
+    document.getElementById("blend-title").addEventListener("change", e => rootStyle.setProperty("--title-blend", e.target.value));
+    document.getElementById("input-title-weight").addEventListener("input", e => {
+      rootStyle.setProperty("--title-weight", e.target.value);
+      document.getElementById("val-weight").textContent = e.target.value;
+    });
+    document.getElementById("input-title-op").addEventListener("input", e => {
+      rootStyle.setProperty("--title-opacity", e.target.value);
+      document.getElementById("val-title-op").textContent = e.target.value;
+    });
+
+    // Bloco 2: Normais
+    document.getElementById("sel-z-normal").addEventListener("change", e => rootStyle.setProperty("--z-normal", e.target.value));
+    document.getElementById("color-normal").addEventListener("input", e => { colorNormal = e.target.value; if(!isLoopRunning) drawStatic(); });
+    document.getElementById("blend-normal").addEventListener("change", e => rootStyle.setProperty("--normal-blend", e.target.value));
+    document.getElementById("input-normal-op").addEventListener("input", e => {
+      rootStyle.setProperty("--normal-opacity", e.target.value);
+      document.getElementById("val-normal-op").textContent = e.target.value;
+    });
+
+    // Bloco 3: Destaques
+    document.getElementById("sel-z-highlight").addEventListener("change", e => rootStyle.setProperty("--z-highlight", e.target.value));
+    document.getElementById("color-highlight").addEventListener("input", e => { colorHighlight = e.target.value; if(!isLoopRunning) drawStatic(); });
+    document.getElementById("blend-highlight").addEventListener("change", e => rootStyle.setProperty("--highlight-blend", e.target.value));
+    document.getElementById("input-highlight-op").addEventListener("input", e => {
+      rootStyle.setProperty("--highlight-opacity", e.target.value);
+      document.getElementById("val-highlight-op").textContent = e.target.value;
+    });
+
+    // Checkboxes das letras
+    document.querySelectorAll(".letter-cb").forEach(cb => {
+      cb.addEventListener("change", e => {
+        if(e.target.checked) highlightedLetters.add(e.target.value);
+        else highlightedLetters.delete(e.target.value);
+        if(!isLoopRunning) drawStatic();
+      });
+    });
+
+    // Geometria e Interação
+    document.getElementById("input-gap").addEventListener("input", e => {
+      gap = parseFloat(e.target.value); document.getElementById("label-gap").textContent = gap + "px"; buildGrid();
+    });
+    document.getElementById("input-density").addEventListener("input", e => {
+      cellSize = parseFloat(e.target.value); document.getElementById("label-density").textContent = cellSize + "px"; buildGrid();
+    });
+    document.getElementById("input-base-stroke").addEventListener("input", e => {
+      baseStroke = parseFloat(e.target.value); document.getElementById("label-base-stroke").textContent = baseStroke + "px";
+      cells.forEach(c => c.currentWidth = baseStroke);
+      if(!isLoopRunning) drawStatic();
+    });
+
+    // Mouseover Toggle Principal
+    document.getElementById("toggle-mouseover").addEventListener("change", e => {
+      isMouseoverEnabled = e.target.checked;
+      const cont = document.getElementById("mouseover-container");
+      if(isMouseoverEnabled) {
+        cont.style.maxHeight = "300px"; cont.style.opacity = "1"; startLoop();
+      } else {
+        cont.style.maxHeight = "0"; cont.style.opacity = "0"; stopLoop();
+      }
+    });
+
+    document.getElementById("input-radius").addEventListener("input", e => {
+      effectRadius = parseFloat(e.target.value); document.getElementById("label-radius").textContent = effectRadius + "px";
+    });
+    document.getElementById("input-mouse-stroke").addEventListener("input", e => {
+      mouseStroke = parseFloat(e.target.value); document.getElementById("label-mouse-stroke").textContent = mouseStroke + "px";
+    });
+    document.getElementById("toggle-random").addEventListener("change", e => {
+      isRandomThickness = e.target.checked;
+    });
+    
+    // Novo Toggle: Revelar Letra Completa no Hover
+    document.getElementById("toggle-complete-hover").addEventListener("change", e => {
+      isCompleteLetterHover = e.target.checked;
+    });
+
+    // Caótico e Restaurar
+    document.getElementById("btn-total-chaos").addEventListener("click", () => {
+      useTotalRandom = true; buildGrid();
+    });
+    document.getElementById("btn-restore-rule").addEventListener("click", () => {
+      useTotalRandom = false; buildGrid();
+    });
+
+    // Toggle do Painel via 'P'
+    let isPanelOpen = true;
+    window.addEventListener("keydown", (e) => {
+      // Bloqueia a tecla se o foco estiver num input (para evitar fechar o painel enquanto se digita algo)
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) return;
+      
+      if(e.key.toLowerCase() === 'p') {
+        isPanelOpen = !isPanelOpen;
+        const p = document.getElementById("control-panel");
+        p.style.opacity = isPanelOpen ? "1" : "0";
+        p.style.pointerEvents = isPanelOpen ? "auto" : "none";
+        p.style.transform = isPanelOpen ? "translateY(0)" : "translateY(-10px)";
+      }
+    });
+
+    // ----------------------------------------------------------------------
+    // 4. LÓGICA DO CANVAS E PADRONAGEM
+    // ----------------------------------------------------------------------
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      canvasWidth = window.innerWidth;
+      canvasHeight = window.innerHeight;
+      
+      canvasNormal.width = canvasWidth * dpr;
+      canvasNormal.height = canvasHeight * dpr;
+      ctxNormal.setTransform(1, 0, 0, 1, 0, 0);
+      ctxNormal.scale(dpr, dpr);
+
+      canvasHighlight.width = canvasWidth * dpr;
+      canvasHighlight.height = canvasHeight * dpr;
+      ctxHighlight.setTransform(1, 0, 0, 1, 0, 0);
+      ctxHighlight.scale(dpr, dpr);
+      
+      buildGrid();
+    }
+
+    function buildGrid() {
+      cells = [];
+      const cols = Math.ceil(canvasWidth / cellSize);
+      const rows = Math.ceil(canvasHeight / cellSize);
+      const usableSize = Math.max(2, cellSize - gap);
+      const scale = usableSize / VIEWBOX_SIZE;
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const cx = c * cellSize + cellSize / 2;
+          const cy = r * cellSize + cellSize / 2;
+          
+          let letter, version;
+          if(useTotalRandom) {
+             letter = LETTERS[Math.floor(Math.random() * 5)];
+             version = Math.floor(Math.random() * 5) + 1;
+          } else {
+             letter = LETTERS[(r + c) % 5];
+             version = (((2 * r + c) % 5) + 1);
+          }
+
+          cells.push({
+            cx, cy, letter, version, scale,
+            path: FRAGMENT_PATHS[`${letter}${version}`], // Inicia sempre com o fragmento
+            currentWidth: baseStroke,
+            randT: Math.random() // Usado para a variação de espessura aleatória
+          });
+        }
+      }
+      if(!isLoopRunning) drawStatic();
+    }
+
+    function drawStatic() {
+      // Limpa as duas telas transparentes
+      ctxNormal.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctxHighlight.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      ctxNormal.lineCap = 'square'; ctxNormal.lineJoin = 'miter';
+      ctxHighlight.lineCap = 'square'; ctxHighlight.lineJoin = 'miter';
+
+      for (let i = 0; i < cells.length; i++) {
+        const cell = cells[i];
+        const isHighlight = highlightedLetters.has(cell.letter);
+        const ctx = isHighlight ? ctxHighlight : ctxNormal;
+        
+        ctx.save();
+        ctx.translate(cell.cx, cell.cy);
+        ctx.scale(cell.scale, cell.scale);
+        ctx.translate(-VIEWBOX_SIZE / 2, -VIEWBOX_SIZE / 2);
+        
+        ctx.lineWidth = cell.currentWidth / cell.scale; 
+        ctx.strokeStyle = isHighlight ? colorHighlight : colorNormal;
+        
+        // Em estado estático desenha sempre o fragmento base
+        ctx.stroke(cell.path); 
+        
+        ctx.restore();
+      }
+    }
+
+    function renderLoop() {
+      if (!isLoopRunning) return;
+
+      const radiusSq = effectRadius * effectRadius;
+      let needsRedraw = false;
+
+      ctxNormal.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctxHighlight.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctxNormal.lineCap = 'square'; ctxNormal.lineJoin = 'miter';
+      ctxHighlight.lineCap = 'square'; ctxHighlight.lineJoin = 'miter';
+
+      for (let i = 0; i < cells.length; i++) {
+        const cell = cells[i];
+        let targetWidth = baseStroke;
+        
+        // Define qual Path será desenhado (O fragmento ou a letra inteira)
+        let activePath = cell.path; 
+
+        if (mouse.active) {
+          const dx = mouse.x - cell.cx;
+          const dy = mouse.y - cell.cy;
+          const distSq = dx * dx + dy * dy;
+
+          if (distSq < radiusSq) {
+            
+            // SE O TOGGLE DA LETRA COMPLETA ESTIVER ATIVO, SUBSTITUI O PATH:
+            if (isCompleteLetterHover) {
+               activePath = COMPLETE_PATHS[cell.letter];
+            }
+            
+            if(isRandomThickness) {
+               targetWidth = baseStroke + (mouseStroke - baseStroke) * cell.randT;
+            } else {
+               const dist = Math.sqrt(distSq);
+               const proximity = 1 - (dist / effectRadius);
+               const smoothDecay = Math.cos((1 - proximity) * Math.PI * 0.5);
+               targetWidth = baseStroke + (mouseStroke - baseStroke) * smoothDecay;
+            }
+          }
+        }
+
+        const diff = targetWidth - cell.currentWidth;
+        if (Math.abs(diff) > 0.05) {
+          cell.currentWidth += diff * lerpSpeed;
+          needsRedraw = true;
+        } else {
+          cell.currentWidth = targetWidth;
+        }
+
+        const isHighlight = highlightedLetters.has(cell.letter);
+        const ctx = isHighlight ? ctxHighlight : ctxNormal;
+        
+        ctx.save();
+        ctx.translate(cell.cx, cell.cy);
+        ctx.scale(cell.scale, cell.scale);
+        ctx.translate(-VIEWBOX_SIZE / 2, -VIEWBOX_SIZE / 2);
+        ctx.lineWidth = cell.currentWidth / cell.scale;
+        ctx.strokeStyle = isHighlight ? colorHighlight : colorNormal;
+        
+        // Desenha utilizando o caminho ativo (Fragmento ou Completo)
+        ctx.stroke(activePath);
+        
+        ctx.restore();
+      }
+
+      if (!needsRedraw && !mouse.active) {
+        stopLoop();
+      } else {
+        requestAnimationFrame(renderLoop);
+      }
+    }
+
+    function startLoop() {
+      if (!isLoopRunning && isMouseoverEnabled) {
+        isLoopRunning = true;
+        requestAnimationFrame(renderLoop);
+      }
+    }
+
+    function stopLoop() {
+      isLoopRunning = false;
+      drawStatic();
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      if(!isMouseoverEnabled) return;
+      mouse.x = e.clientX;
+      mouse.y = e.clientY; 
+      mouse.active = true;
+      startLoop();
+    });
+
+    window.addEventListener('mouseleave', () => { mouse.active = false; });
+    window.addEventListener('resize', resize);
+    
+    // Inicia tudo
+    resize();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1188 @@
+/* ==========================================================================
+   SANDBOX.CSS - MINI SANDBOX LIGHTBOX EM TELA CHEIA (TECLA L)
+   Residência Artística FONTE
+   ========================================================================== */
+
+/* 1. Botão Flutuante de Acesso Rápido */
+.sandbox-trigger-badge {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9990;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #000000;
+  color: #ffffff;
+  border: 1.5px solid #ffffff;
+  border-radius: 9999px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+}
+
+.sandbox-trigger-badge:hover {
+  transform: translateY(-2px);
+  background-color: var(--accent-cyan, #ccfffe);
+  color: #000000;
+  border-color: #000000;
+}
+
+.sandbox-trigger-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 3px;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: inherit;
+}
+
+.sandbox-trigger-badge:hover .sandbox-trigger-key {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+/* 2. Lightbox Tela Cheia com Layout em Linha (Sidebar Lateral + Conteúdo) */
+.sandbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999999;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(14, 14, 16, 0.97);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  display: none;
+  flex-direction: row;
+  overflow: hidden;
+  color: #ffffff;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.sandbox-overlay.is-active {
+  display: flex;
+}
+
+/* 3. Sidebar Lateral Fixa à Esquerda */
+.sandbox-sidebar {
+  width: 240px;
+  min-width: 240px;
+  max-width: 240px;
+  height: 100vh;
+  background-color: #000000;
+  border-right: 2px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 18px;
+  flex-shrink: 0;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+.sandbox-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+
+.sandbox-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sandbox-sidebar-title {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.sandbox-tag-pill {
+  font-size: 0.625rem;
+  font-weight: 700;
+  background-color: var(--accent-cyan, #ccfffe);
+  color: #000000;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  border: 1px solid #000000;
+  letter-spacing: 0.04em;
+}
+
+.sandbox-sidebar-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 300;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.sandbox-sidebar-close:hover {
+  background-color: #ff3344;
+  border-color: #ff3344;
+  color: #ffffff;
+}
+
+/* Navegação de Abas na Lateral */
+.sandbox-sidebar-nav {
+  margin-top: 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sandbox-sidebar-section-title {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  padding: 0 4px;
+}
+
+.sandbox-sidebar-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sandbox-sidebar-tab {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  padding: 12px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sandbox-sidebar-tab:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.sandbox-sidebar-tab.is-active {
+  background-color: var(--accent-cyan, #ccfffe);
+  color: #000000;
+  border-color: #000000;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(204, 255, 254, 0.25);
+}
+
+.sandbox-tab-badge {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.04em;
+}
+
+.sandbox-sidebar-tab.is-active .sandbox-tab-badge {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+.sandbox-tab-text {
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Rodapé da Sidebar */
+.sandbox-sidebar-footer {
+  padding-top: 18px;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sandbox-shortcut-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.sandbox-kbd {
+  display: inline-block;
+  padding: 2px 7px;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 3px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #ffffff;
+  min-width: 14px;
+  text-align: center;
+}
+
+/* 4. Área de Conteúdo Principal (À Direita da Sidebar) */
+.sandbox-content-area {
+  flex: 1;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(14, 14, 16, 0.98);
+  position: relative;
+}
+
+/* 4. Viewport Scrollável dos Blocos (88vh de altura cada) */
+.sandbox-viewport {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 32px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+/* Gerenciamento de Abas do Sandbox */
+.sandbox-tab-pane {
+  width: 100%;
+}
+
+.sandbox-tab-pane:not(.is-active) {
+  display: none !important;
+}
+
+.sandbox-tab-pane.is-active {
+  display: flex !important;
+}
+
+/* 5. Bloco de Teste Individual */
+.sandbox-block {
+  width: 100%;
+  max-width: 1200px;
+  height: 88vh;
+  max-height: 88vh;
+  flex-shrink: 0;
+  position: relative;
+  border: 2px solid #000000;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  background-color: #161618;
+}
+
+/* Barra de Ações Superior do Bloco */
+.sandbox-block-header {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.sandbox-block-badge {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #000000;
+  color: #ffffff;
+  padding: 6px 14px;
+  border: 1.5px solid #ffffff;
+  border-radius: 2px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+.sandbox-block-actions {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sandbox-action-btn {
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  padding: 6px 12px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sandbox-action-btn:hover {
+  background-color: var(--accent-cyan, #ccfffe);
+  color: #000000;
+  border-color: #000000;
+}
+
+/* Palco / Stage com a Imagem Real de RESIDÊNCIA */
+.sandbox-block-stage {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+/* Camada da Imagem de Fundo (Sempre nítida e opaca) */
+.sandbox-stage-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-terceira-edicao/26fd11888f-1789686302/230225_lava_0097-2560x2560-q85.webp');
+  background-size: cover;
+  background-position: center bottom;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 6. Wrapper Draggable, Scalable & Rotatable do Elemento */
+.sandbox-composition-wrapper {
+  position: relative;
+  z-index: 5;
+  display: inline-block;
+  cursor: grab;
+  touch-action: none;
+  transform-origin: center center;
+  mix-blend-mode: var(--comp-blend, normal);
+}
+
+.sandbox-composition-wrapper.is-dragging {
+  cursor: grabbing !important;
+  z-index: 25;
+}
+
+/* Alça de Rotação (Canto Superior Direito) */
+.sandbox-rotate-handle {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 26px;
+  height: 26px;
+  background-color: #000000;
+  color: #ffffff;
+  border: 1.5px solid #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  z-index: 12;
+  opacity: 0;
+  font-size: 0.875rem;
+  line-height: 1;
+  transition: opacity 0.15s ease, transform 0.15s ease, background-color 0.15s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+.sandbox-composition-wrapper:hover .sandbox-rotate-handle,
+.sandbox-composition-wrapper.is-rotating .sandbox-rotate-handle {
+  opacity: 1;
+}
+
+.sandbox-rotate-handle:hover,
+.sandbox-composition-wrapper.is-rotating .sandbox-rotate-handle {
+  background-color: var(--accent-cyan, #ccfffe);
+  color: #000000;
+  border-color: #000000;
+  transform: scale(1.18);
+  cursor: grabbing;
+}
+
+/* Alça de Redimensionamento Proporcional (Canto Inferior Direito) */
+.sandbox-resize-handle {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
+  background-color: #000000;
+  color: #ffffff;
+  border: 1.5px solid #ffffff;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: nwse-resize;
+  z-index: 12;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.sandbox-composition-wrapper:hover .sandbox-resize-handle,
+.sandbox-composition-wrapper.is-resizing .sandbox-resize-handle {
+  opacity: 1;
+}
+
+.sandbox-resize-handle:hover,
+.sandbox-composition-wrapper.is-resizing .sandbox-resize-handle {
+  background-color: var(--accent-cyan, #ccfffe);
+  color: #000000;
+  border-color: #000000;
+  transform: scale(1.15);
+}
+
+/* Camada Dedicada de Fundo (Backdrop):
+   O blur e a opacidade incidem sobre ela e a composição,
+   enquanto texto e bordas permanecem nítidos no z-index: 2 */
+.sandbox-comp-backdrop {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--comp-bg, rgba(255, 255, 255, 0.08));
+  opacity: var(--comp-bg-opacity, 1);
+  backdrop-filter: blur(var(--comp-bg-blur, 10px));
+  -webkit-backdrop-filter: blur(var(--comp-bg-blur, 10px));
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==========================================================================
+   CONSTRUÇÃO DAS FORMAS MANTIDAS: 01, 02 E 06
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   01 / LIARS RING STACK - ANÉIS REPOSICIONÁVEIS & REDIMENSIONÁVEIS INDIVIDUALMENTE
+   -------------------------------------------------------------------------- */
+.sandbox-rings-stage-group {
+  position: relative;
+  width: 580px;
+  max-width: 92vw;
+  height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slr-ring-wrapper {
+  position: absolute;
+  transform-origin: center center;
+}
+
+.style-liars-ring {
+  width: 520px;
+  max-width: 88vw;
+  aspect-ratio: 2.35 / 1;
+  border: 3.5px solid var(--comp-border, #0044ff);
+  border-radius: 100% / 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  position: relative;
+  background-color: var(--comp-bg, rgba(255, 255, 255, 0.08));
+  backdrop-filter: blur(var(--comp-bg-blur, 10px));
+  -webkit-backdrop-filter: blur(var(--comp-bg-blur, 10px));
+  overflow: hidden;
+}
+
+.style-liars-ring .slr-title {
+  position: relative;
+  z-index: 2;
+  color: var(--comp-text, #0044ff);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 1;
+  text-align: center;
+}
+
+.style-liars-ring .slr-subtitle {
+  position: relative;
+  z-index: 2;
+  color: var(--comp-text, #0044ff);
+  font-size: clamp(1.35rem, 3vw, 2.1rem);
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.style-liars-ring .slr-info {
+  position: relative;
+  z-index: 2;
+  color: var(--comp-text, #0044ff);
+  font-size: clamp(1.1rem, 2.4vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.style-liars-ring .slr-footer {
+  position: relative;
+  z-index: 2;
+  color: var(--comp-text, #0044ff);
+  font-size: clamp(1rem, 2.2vw, 1.55rem);
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   02 / ARCO TOMBSTONE (FIEL À IMAGEM ANEXADA: CÚPULA SEMICIRCULAR 180° + BASE RETANGULAR)
+   A linha horizontal acontece exatamente no centro do círculo superior.
+   -------------------------------------------------------------------------- */
+.style-arch-tombstone {
+  width: 280px;
+  position: relative;
+  border: 3.5px solid var(--comp-border, #000000);
+  border-radius: 140px 140px 2px 2px;
+  background-color: transparent !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Semicírculo Superior: raio exato = metade da largura (140px) */
+.style-arch-tombstone .sat-top-semicircle {
+  width: 100%;
+  height: 140px;
+  border-bottom: 3.5px solid var(--comp-border, #000000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.style-arch-tombstone .sat-top-text {
+  color: var(--comp-text, #000000);
+  font-size: 2.6rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Retângulo/Quadrado Inferior com LAVA! #4 e inscreva-se */
+.style-arch-tombstone .sat-bottom-box {
+  width: 100%;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px 20px;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.style-arch-tombstone .sat-bottom-title {
+  color: var(--comp-text, #000000);
+  font-size: 2.75rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+  text-align: center;
+}
+
+.style-arch-tombstone .sat-bottom-sub {
+  color: var(--comp-text, #000000);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* --------------------------------------------------------------------------
+   06 / CÚPULA BIPARTIDA ('N1C Coal Drops Yard')
+   PADRÃO: FUNDO TRANSPARENTE, LETRA E BORDAS CYAN (#00FFFF)
+   -------------------------------------------------------------------------- */
+.style-bipartite-dome {
+  width: 380px;
+  position: relative;
+  border: 2.5px solid var(--comp-border, #00ffff);
+  border-bottom: 2.5px solid white;
+  color: var(--comp-text, #00ffff);
+  border-radius: 80px 80px 0px 0px;
+  background-color: transparent !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.style-bipartite-dome .sbd-top-dome {
+  padding: 34px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 2.5px solid var(--comp-border, #00ffff);
+  position: relative;
+  z-index: 2;
+}
+
+.style-bipartite-dome .sbd-top-text {
+  color: var(--comp-text, #00ffff);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.style-bipartite-dome .sbd-bottom-block {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.style-bipartite-dome .sbd-bottom-text {
+  color: var(--comp-text, #00ffff);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  text-align: left;
+  line-height: 1.1;
+}
+
+/* ==========================================================================
+   POPOVER FLUTUANTE DE AJUSTES & RECOMBINAÇÃO EM TEMPO REAL
+   ========================================================================== */
+.sandbox-popover {
+  position: fixed;
+  z-index: 100010;
+  width: 360px;
+  max-width: 94vw;
+  background-color: #121214;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+  padding: 16px;
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.sandbox-popover.is-visible {
+  display: flex;
+}
+
+.sandbox-popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 8px;
+}
+
+.sandbox-popover-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-cyan, #ccfffe);
+}
+
+.sandbox-popover-close {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+.sandbox-popover-close:hover {
+  color: #ff3344;
+}
+
+.sandbox-popover-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sandbox-popover-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sandbox-popover-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.sandbox-popover-value {
+  font-size: 0.625rem;
+  font-weight: 800;
+  color: var(--accent-cyan, #ccfffe);
+}
+
+.sandbox-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.sandbox-pill-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  padding: 4px 8px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1.2;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sandbox-pill-btn:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.sandbox-pill-btn.is-active {
+  background-color: var(--accent-cyan, #ccfffe);
+  color: #000000;
+  border-color: #000000;
+}
+
+/* Indicadores de cor nas pílulas */
+.sandbox-color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  display: inline-block;
+}
+
+/* Sliders */
+.sandbox-slider {
+  width: 100%;
+  height: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+}
+
+.sandbox-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent-cyan, #ccfffe);
+  border: 1.5px solid #000000;
+  cursor: pointer;
+}
+
+.sandbox-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent-cyan, #ccfffe);
+  border: 1.5px solid #000000;
+  cursor: pointer;
+}
+
+.sandbox-copy-btn {
+  background-color: var(--accent-cyan, #ccfffe);
+  color: #000000;
+  border: 1.5px solid #000000;
+  padding: 8px 12px;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  margin-top: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.sandbox-copy-btn:hover {
+  background-color: #ffffff;
+}
+
+/* ==========================================================================
+   ABA BOTÕES: ABAS SUPERIORES DE FICHÁRIO & PROGRAMAÇÃO (PRINTS 1 & 2)
+   ========================================================================== */
+
+.sandbox-block-botoes {
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  min-height: 640px;
+  background-color: var(--bg-white, #ffffff);
+  border: 1.5px solid #000000;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.sandbox-block-botoes .sandbox-block-header {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  z-index: 20;
+  background-color: #000000;
+  padding: 12px 20px;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.25);
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Controle de Curvatura com Slider 0-800px e Input Numérico */
+.sandbox-radius-ctrl-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: rgba(255, 255, 255, 0.08);
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.sandbox-radius-ctrl-label {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
+}
+
+.sandbox-radius-slider {
+  width: 140px;
+  height: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.sandbox-radius-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent-cyan, #00ffff);
+  border: 1.5px solid #000000;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.sandbox-radius-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.sandbox-radius-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent-cyan, #00ffff);
+  border: 1.5px solid #000000;
+  cursor: pointer;
+}
+
+.sandbox-radius-input-group {
+  display: flex;
+  align-items: center;
+  background-color: #000000;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 3px;
+  padding: 2px 6px;
+  gap: 2px;
+}
+
+.sandbox-radius-num-input {
+  width: 48px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: right;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.sandbox-radius-num-input::-webkit-outer-spin-button,
+.sandbox-radius-num-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.sandbox-radius-unit {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Palco / Stage de Botões */
+.sandbox-botoes-stage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: #e5e0d8;
+}
+
+/* 1. Fundo com Textura Real de Concreto (Fundo da Seção Programação) */
+.sandbox-botoes-hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background-image: url('https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-3-edicao/c4be8a7d74-1789686604/capa_arquivo-d-2560x2560-q85.webp');
+  background-size: cover;
+  background-position: center bottom;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 2. Header das Abas de Fichário (Repousando sobre a borda divisória) */
+.sandbox-folder-tabs-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  padding-top: 140px;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 24px;
+  box-sizing: border-box;
+}
+
+/* Trilho das Abas sobreposto exatamente na borda superior da janela de montagem */
+.sandbox-folder-tabs-rail {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  position: relative;
+  z-index: 15;
+  /* Margem negativa de exatamente 1.5px: a borda inferior dos botões fica exatamente sobre a borda divisória */
+  margin-bottom: -1.5px;
+}
+
+/* BOTÃO DE ABA SUPERIOR DE FICHÁRIO / NAVEGADOR */
+.sandbox-folder-tab-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  border-top: 1.5px solid #000000;
+  border-left: 1.5px solid #000000;
+  border-right: 1.5px solid #000000;
+  border-bottom: 1.5px solid #000000;
+  border-radius: var(--folder-tab-radius, 16px 16px 0 0);
+  background-color: rgba(238, 255, 254, 0.5);
+  color: #000000;
+  padding: 12px 24px 11px;
+  font-family: var(--font-primary, 'Stag Sans', sans-serif);
+  font-size: var(--fs-meta, 0.875rem);
+  font-weight: 500; /* Reduzido em 100 do peso original */
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+  box-sizing: border-box;
+  margin-bottom: 0;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  user-select: none;
+  transition: padding 0.13s ease-in-out,
+              border-radius 0.13s ease-in-out,
+              background-color 0.13s ease-in-out,
+              backdrop-filter 0.13s ease-in-out,
+              -webkit-backdrop-filter 0.13s ease-in-out,
+              margin-bottom 0.13s ease-in-out,
+              border-bottom-color 0.13s ease-in-out;
+}
+
+/* Pseudo-elemento de reforço anti-subpixel para a linha de separação da aba ativa */
+.sandbox-folder-tab-btn::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 4px;
+  background-color: #ffffff;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.13s ease-in-out;
+}
+
+/* ABA INATIVA: SEMPRE ACCENT-CYAN COM BORDA INFERIOR PRETA DE 1.5px */
+.sandbox-folder-tab-btn:not(.is-active) {
+  background-color: rgba(238, 255, 254, 0.5);
+  border-bottom-color: #000000;
+  border-radius: var(--folder-tab-radius, 16px 16px 0 0);
+  color: #000000;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  margin-bottom: 0;
+  z-index: 10;
+}
+
+.sandbox-folder-tab-btn:not(.is-active):hover {
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  margin-bottom: -6px;
+  padding: 15px 24px 14px;
+}
+
+/* ABA ATIVA (PRESENTE / CLICADA): FUNDO BRANCO E BORDA INFERIOR BRANCA */
+.sandbox-folder-tab-btn.is-active {
+  background-color: #ffffff;
+  color: #000000;
+  /* A borda inferior fica BRANCA sobrepondo e apagando a linha preta de 1.5px abaixo */
+  border-bottom-color: #ffffff;
+  border-radius: var(--folder-tab-radius, 16px 16px 0 0);
+  margin-bottom: 0;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  z-index: 25;
+}
+
+.sandbox-folder-tab-btn.is-active::after {
+  opacity: 1;
+}
+
+.sandbox-folder-tab-btn.is-active:hover {
+  background-color: #ffffff;
+}
+
+/* 3. Janela / Painel de Montagem (Fundo Branco com Borda Superior de 1.5px #000000) */
+.sandbox-botoes-content-panel {
+  width: 100%;
+  background-color: var(--bg-white, #ffffff);
+  border-top: 1.5px solid #000000; /* Linha horizontal divisória contínua de 1.5px */
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Bloco de Título e Artista (Abaixo dos botões já vemos MONTAGEM) */
+.sandbox-botoes-title-wrap {
+  padding: 36px 24px 72px var(--content-indent-left, 60px);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sbm-event-title {
+  font-family: var(--font-primary, 'Stag Sans', sans-serif);
+  font-size: clamp(3rem, 5.5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  color: #000000;
+  margin: 0;
+}
+
+.sbm-event-subtitle {
+  font-family: var(--font-primary, 'Stag Sans', sans-serif);
+  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: #000000;
+  margin: 0;
+}
+

@@ -1,0 +1,16 @@
+/* ==========================================================================
+   LAB-OVERRIDE.CSS - CAMADA CIRÚRGICA DE TESTES DE LAYOUT E OVERRIDES
+   Residência Artística FONTE
+   ========================================================================== */
+
+/* 1. Redução de 20% na altura da área destinada às imagens de fundo no cabeçalho de cada seção
+   Cálculo: 118vh * 0.8 = 94.4vh */
+.programacao-hero-bg,
+.residencia-hero-bg,
+.atelies-hero-bg,
+.archive-hero-bg {
+  height: 94.4vh !important;
+}
+
+/* 2. ÁREA DE EXPERIMENTAÇÃO (Pronta para botões, elipses e títulos de seção) */
+/* (Novas regras de teste serão inseridas aqui de forma modular e concisa) */
