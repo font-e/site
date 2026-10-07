@@ -1,0 +1,6 @@
+{
+  "name": "FONTE de la FONTE",
+  "description": "Navegação completa e fluida entre Programação, Residência, Ateliês e Arquivo com grid suíço de 12 colunas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

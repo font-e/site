@@ -1,0 +1,1559 @@
+/* ==========================================================================
+   RESIDÊNCIA FONTE — LAYOUT.CSS (ARQUITETURA MACRO & GRID SUÍÇO)
+   Consolidação canônica: Canvas, Grid 12 colunas, Heros, Seções e Responsividade
+   Paleta: Base #ffffff | Texto/Bordas #002424 | Fundo inativo #eefffe | Ciano #ccfffe
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CAMADAS FIXAS DO CANVAS DE FUNDO (PADRONAGEM FONTE)
+   -------------------------------------------------------------------------- */
+.canvas-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  pointer-events: none;
+  display: block;
+}
+
+#canvas-normal {
+  z-index: var(--z-canvas-bg, 10);
+  mix-blend-mode: normal;
+  opacity: 1;
+  filter: blur(1.5px);
+}
+
+#canvas-highlight {
+  z-index: var(--z-canvas-fg, 30);
+  mix-blend-mode: color-dodge;
+  opacity: 0.88;
+  filter: blur(0.5px);
+}
+
+/* --------------------------------------------------------------------------
+   2. FLUXO GLOBAL & GRID MESTRE DE 12 COLUNAS
+   -------------------------------------------------------------------------- */
+#main-content {
+  position: relative;
+  z-index: auto;
+  width: 100%;
+  padding-bottom: 120px;
+}
+
+.grid-12-master {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   2.1. SEÇÃO DE ABERTURA (BANNER EM CARTAZ — SOLTO SOBRE O GRAFISMO)
+   -------------------------------------------------------------------------- */
+.abertura-section {
+  position: relative;
+  width: 100%;
+  min-height: calc(88vh - var(--header-height, 60px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px var(--content-indent-left, 60px) 80px;
+  box-sizing: border-box;
+  background-color: transparent !important;
+  border: none !important;
+  z-index: 38;
+}
+
+/* Fundo em blur extrapolando as bordas com difusão suave (sem margem reta) */
+.abertura-section::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  bottom: -100px;
+  left: 0;
+  right: 0;
+  backdrop-filter: blur(4px) saturate(113%);
+  -webkit-backdrop-filter: blur(4px) saturate(113%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 240px, black calc(100% - 240px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 240px, black calc(100% - 240px), transparent 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.abertura-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 24px;
+  row-gap: 32px;
+  width: 100%;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.abertura-info-col {
+  grid-column: 1 / 9;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.abertura-kicker {
+  font-family: var(--font-primary);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bg-black);
+  margin-bottom: 14px;
+}
+
+.abertura-title {
+  font-family: var(--font-epilogue);
+  font-weight: 800;
+  font-size: clamp(2.2rem, 4.6vw, 4.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--bg-black);
+  margin: 0 0 24px 0;
+  z-index: 1000;
+}
+
+.abertura-meta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 32px;
+  max-width: 620px;
+}
+
+.abertura-meta-item {
+  font-family: var(--font-primary);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  color: var(--bg-black);
+}
+
+.abertura-meta-label {
+width: 100%;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.abertura-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.abertura-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  font-family: var(--font-primary);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--bg-black);
+  background-color: rgba(255, 255, 255, 0.6);
+  border: var(--border-width, 1px) solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.abertura-cta-btn:hover {
+  background-color:  rgba(238, 255, 254, 0.88);
+}
+
+.abertura-media-col {
+  grid-column: 9 / 13;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.abertura-image-card {
+  display: block;
+  width: 100%;
+  max-width: 440px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-decoration: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.abertura-image-card:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+.abertura-image-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1081 / 1350;
+  object-fit: cover;
+  display: block;
+  border-radius: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   3. SEÇÕES, HEROS & CABEÇALHOS EM DEGRAU (CANÔNICOS)
+   -------------------------------------------------------------------------- */
+.section-block,
+.programacao-section,
+.residencia-section,
+.atelies-section,
+.archive-section {
+  width: 100%;
+  position: relative;
+  background-color: transparent !important;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Wrapper transparente de 700px para visualização da padronagem */
+.section-hero-wrapper {
+  position: relative;
+  width: 100%;
+  height: 700px;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: transparent;
+  z-index: auto;
+}
+
+/* Backgrounds fotográficos de seção em 118dvh */
+.section-hero-bg,
+.programacao-hero-bg,
+.residencia-hero-bg,
+.atelies-hero-bg,
+.archive-hero-bg {
+  width: 100%;
+  height: 118dvh;
+  margin-top: 0;
+  background-size: cover;
+  background-position: center bottom;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 1;
+}
+
+.programacao-hero-bg {
+  background-image: url('https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-3-edicao/c4be8a7d74-1789686604/capa_arquivo-d-2560x2560-q85.webp');
+}
+
+.residencia-hero-bg {
+  background-image: url('https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-terceira-edicao/26fd11888f-1789686302/230225_lava_0097-2560x2560-q85.webp');
+}
+
+.atelies-hero-bg {
+  background-image: url('https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/a-duracao-das-coisas/8a68ff0b92-1789686093/0056-1400x1400-q82.webp');
+}
+
+.archive-hero-bg {
+  background-image: url('https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-3-edicao/7e9c3efa4e-1789686608/capa_arquivo-b-2560x2560-q85.webp');
+}
+
+/* Título vazado gigante no topo do degrau */
+.section-hero-title {
+  position: relative;
+  width: 100%;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 24px;
+  margin-top: 0;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  font-family: var(--font-epilogue) !important;
+  font-size: calc(var(--fs-title) * 1.75);
+  font-weight: 800 !important;
+  font-variation-settings: 'wght' 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--bg-black, #002424) !important;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+  z-index: var(--z-title, 20);
+  white-space: nowrap;
+  overflow: visible;
+  opacity: 1;
+}
+
+#sec-atelies .section-hero-title,
+#sec-arquivo .section-hero-title {
+  margin-bottom: 16px;
+}
+
+/* Barras de cabeçalho em degrau (Colunas 1 a 4 para título, 5 a 12 para abas/facilidades) */
+.section-header-bar,
+.programacao-header-bar,
+.residencia-header-bar,
+.atelies-header-bar,
+.archive-header-bar {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  background: transparent;
+  position: relative;
+  z-index: 2;
+  align-items: end;
+}
+
+.section-title-box,
+.programacao-title-box,
+.residencia-title-box,
+.atelies-title-box,
+.archive-title-box {
+  grid-column: 1 / 5;
+  background-color: var(--accent-cyan);
+  border: var(--border-width, 1px) solid var(--border-color);
+  height: 96px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-top: 8px;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 12px;
+  box-sizing: border-box;
+}
+
+.section-title,
+.residencia-section-title,
+.programacao-section-title,
+.atelies-section-title,
+.archive-section-title {
+  font-size: var(--fs-name);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: 0.038em;
+  color: var(--bg-black);
+  text-transform: uppercase;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  align-self: flex-start;
+}
+
+/* Painel opaco inferior que barra a transparência e assenta o conteúdo */
+.section-content-panel {
+  width: 100%;
+  background-color: var(--bg-white, #ffffff);
+  border-top: none;
+  position: relative;
+  z-index: var(--z-panel, 50);
+}
+
+/* Borda horizontal superior com recorte dinâmico exato sob a aba ativa (Opção 4: Fusão em Peça Única) */
+.section-content-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--border-width, 1px);
+  background-color: var(--border-color);
+  z-index: 55;
+  pointer-events: none;
+  mask-image: linear-gradient(
+    to right,
+    #000 0px,
+    #000 var(--tab-cut-left, 0px),
+    transparent var(--tab-cut-left, 0px),
+    transparent calc(var(--tab-cut-left, 0px) + var(--tab-cut-width, 0px)),
+    #000 calc(var(--tab-cut-left, 0px) + var(--tab-cut-width, 0px))
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0px,
+    #000 var(--tab-cut-left, 0px),
+    transparent var(--tab-cut-left, 0px),
+    transparent calc(var(--tab-cut-left, 0px) + var(--tab-cut-width, 0px)),
+    #000 calc(var(--tab-cut-left, 0px) + var(--tab-cut-width, 0px))
+  );
+}
+
+/* Transparência controlada para revelação dinâmica do canvas no hover */
+#sec-programacao .section-content-panel,
+#sec-arquivo .section-content-panel,
+#sec-atelies .section-content-panel,
+#sec-residencia .section-content-panel {
+  background-color: transparent !important;
+}
+
+#sec-residencia .section-content-panel,
+#sec-atelies .section-content-panel,
+#sec-arquivo .section-content-panel {
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+}
+
+/* --------------------------------------------------------------------------
+   4. MACRO ESTRUTURA: PROGRAMAÇÃO
+   -------------------------------------------------------------------------- */
+.programacao-container,
+.events-list,
+.programacao-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.programacao-event-item,
+.event-item {
+  position: relative;
+  width: 100%;
+  background-color: var(--bg-white, #ffffff);
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  padding: 0 0 28px 0;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+}
+
+.event-header {
+  width: 100%;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+/* Grade de metadados da linha fechada (Tags 1-4 | Horário 5-8 | Data 9-10) */
+.event-meta-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: stretch;
+  gap: 0;
+  height: 38px;
+  min-height: 38px;
+  margin-bottom: 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.event-meta-tags {
+  grid-column: 1 / span 4;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 10px;
+}
+
+.event-meta-horario {
+  grid-column: 5 / span 4;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-left: var(--border-width, 1px) solid var(--border-color);
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.event-meta-date {
+  grid-column: 9 / span 2;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+  padding-left: 10px;
+  border-left: none;
+}
+
+.event-title {
+  margin-bottom: 8px;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 20px;
+  max-width: calc(100% * 11 / 12);
+  box-sizing: border-box;
+}
+
+.event-names {
+  font-size: var(--fs-name);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  color: var(--bg-black);
+  word-break: break-word;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 20px;
+  max-width: calc(100% * 11 / 12);
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   5. MACRO ESTRUTURA: RESIDÊNCIA (ARQUITETURA EM 12 COLUNAS)
+   -------------------------------------------------------------------------- */
+.residencia-layout-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  background-color: var(--bg-white, #ffffff);
+  box-sizing: border-box;
+  min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
+  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  position: relative;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+}
+
+/* Coluna 1 a 8: Conteúdo textual */
+.residencia-left-column {
+  grid-column: 1 / 9;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  background-color: var(--bg-white, #ffffff);
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 36px 36px 64px var(--content-indent-left, 60px);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.residencia-left-column::-webkit-scrollbar {
+  display: none;
+}
+
+/* Coluna 9 a 12: Galeria com scroll vertical */
+.residencia-media-pane {
+  grid-column: 9 / 13;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  position: relative;
+  display: block;
+  background-color: var(--bg-white, #ffffff);
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.residencia-media-pane::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.residencia-gallery-track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  height: auto;
+}
+
+.residencia-media-card {
+  width: 100%;
+  position: relative;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  background-color: var(--bg-white, #ffffff);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.residencia-card-image-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: transparent;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.residencia-card-image-wrap img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  filter: url(#duotone-fonte);
+  opacity: 0.95;
+  transition: filter 0.35s ease, opacity 0.35s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .residencia-media-card:hover .residencia-card-image-wrap img {
+    filter: none !important;
+    opacity: 1;
+  }
+}
+
+.residencia-card-meta {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-sizing: border-box;
+}
+
+.residencia-card-name {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--bg-black);
+}
+
+.residencia-card-sub {
+  font-size: var(--fs-meta);
+  text-transform: uppercase;
+  color: var(--bg-black);
+  opacity: 0.85;
+}
+
+.residencia-card-caption {
+  font-size: var(--fs-meta);
+  line-height: 1.4;
+  opacity: 0.75;
+  margin-top: 4px;
+  color: var(--bg-black);
+}
+
+/* Tipografia e Blocos de Conteúdo Textual de Residência */
+.residencia-intro-lead {
+  font-size: var(--fs-name);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--bg-black);
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+}
+
+.residencia-content-subtitle {
+  font-size: var(--fs-name);
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  color: var(--bg-black);
+}
+
+.residencia-body-text {
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--bg-black);
+  margin-bottom: 14px;
+}
+
+.residencia-email-line {
+  margin-top: 8px;
+}
+
+.residencia-section-label {
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-top: 24px;
+  margin-bottom: 14px;
+  color: var(--bg-black);
+}
+
+.residencia-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.residencia-checklist li {
+  margin-bottom: 10px;
+  font-size: var(--fs-body);
+  line-height: 1.45;
+  color: var(--bg-black);
+}
+
+.residencia-destaques-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0;
+}
+
+.residencia-destaques-list li {
+  margin-bottom: 10px;
+  font-size: var(--fs-body);
+  line-height: 1.45;
+  color: var(--bg-black);
+}
+
+/* Grid com 5 thumbs por linha em Residência (Proporção 4:3, gap 12px) */
+.residencia-artists-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: 12px !important;
+  padding: 48px var(--content-indent-left, 60px) 64px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border-bottom: var(--border-width, 1px) solid var(--border-color) !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.residencia-photo-card {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  margin-bottom: 0 !important;
+  cursor: pointer !important;
+  user-select: none !important;
+}
+
+.residencia-photo-wrapper {
+  width: 100% !important;
+  aspect-ratio: 3 / 4 !important;
+  height: auto !important;
+  overflow: hidden !important;
+  border: var(--border-width, 1px) solid var(--border-color) !important;
+  background: transparent !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+}
+
+.residencia-photo-wrapper img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  filter: url(#duotone-fonte);
+  transition: filter 0.35s ease, opacity 0.35s ease;
+  opacity: 0.95;
+  display: block !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .residencia-photo-card:hover .residencia-photo-wrapper img {
+    filter: none !important;
+    opacity: 1;
+  }
+}
+
+/* Área de Thumbs de Ateliês: Padronizada à altura de tela (100dvh) idêntica à de Residência */
+.atelies-container,
+.atelies-empty-pane,
+.atelies-drawer-pane {
+  min-height: 100vh !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  min-height: 100dvh !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  box-sizing: border-box !important;
+}
+
+.atelies-container {
+  width: 100% !important;
+  position: relative !important;
+  background: transparent !important;
+  overflow: hidden !important;
+}
+
+.atelies-gallery-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  grid-template-rows: max-content !important;
+  grid-auto-rows: max-content !important;
+  align-content: start !important;
+  align-items: start !important;
+  gap: 12px !important;
+  padding: 48px var(--content-indent-left, 60px) 64px !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  border-bottom: var(--border-width, 1px) solid var(--border-color) !important;
+  transition: background-color 0.15s ease !important;
+  box-sizing: border-box !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.atelies-gallery-grid::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Quando a gaveta de artista está aberta em Ateliês, oculta o grid e exibe a gaveta sobreposta */
+.atelies-container:has(.atelies-drawer-pane.is-open) #atelies-gallery,
+.atelies-container:has(.atelies-drawer-pane.is-open) #atelies-empty-pane,
+#atelies-gallery.is-hidden,
+#atelies-empty-pane.is-hidden {
+  display: none !important;
+}
+
+.atelies-drawer-pane {
+  display: none;
+  width: 100% !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  max-height: 100dvh !important;
+  background: transparent !important;
+  position: relative !important;
+}
+
+.atelies-drawer-pane.is-open {
+  display: block !important;
+}
+
+.atelies-photo-card {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  margin-bottom: 0 !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  box-sizing: border-box !important;
+}
+
+.atelies-photo-wrapper {
+  width: 100% !important;
+  aspect-ratio: 3 / 4 !important;
+  flex: none !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: hidden !important;
+  border: var(--border-width, 1px) solid var(--border-color) !important;
+  background: #e6e6e6 !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+}
+
+.atelies-photo-wrapper img {
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: 3 / 4 !important;
+  object-fit: cover !important;
+  filter: url(#duotone-fonte);
+  transition: filter 0.35s ease, opacity 0.35s ease;
+  opacity: 0.95;
+  display: block !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .atelies-photo-card:hover .atelies-photo-wrapper img {
+    filter: none !important;
+    opacity: 1;
+  }
+}
+
+.residencia-photo-meta,
+.atelies-photo-meta {
+  margin-top: 8px !important;
+  display: flex !important;
+  align-items: baseline !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.atelies-photo-meta {
+  flex-shrink: 0 !important;
+}
+
+.residencia-photo-meta {
+  justify-content: space-between !important;
+  gap: 8px !important;
+}
+
+.residencia-photo-name,
+.atelies-photo-name {
+  font-size: var(--fs-body) !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.01em !important;
+  color: var(--bg-black) !important;
+  text-transform: none !important;
+  word-break: break-word !important;
+}
+
+.residencia-photo-year {
+  font-size: var(--fs-body);
+  font-weight: 400; /* mesmo tamanho do nome, peso 100 a menos (500 -> 400) */
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--bg-black);
+  white-space: nowrap;
+  margin-left: auto;
+  opacity: 0.85;
+}
+
+/* Quando em Artistas Residentes: largura total e galeria lateral à direita oculta */
+.residencia-layout-grid.is-artistas-residentes {
+  display: block !important;
+  width: 100% !important;
+  background-color: transparent !important;
+}
+
+.residencia-layout-grid.is-artistas-residentes .residencia-left-column,
+.residencia-left-column.is-artistas-residentes {
+  width: 100% !important;
+  max-width: 100% !important;
+  border-right: none !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+}
+
+.residencia-layout-grid.is-artistas-residentes .residencia-media-pane {
+  display: none !important;
+}
+
+/* Oculta os thumbs quando a gaveta de perfil de artista residente está aberta (ocupa o mesmo espaço) */
+#sec-residencia .section-content-panel:has(.residencia-drawer-pane.is-open) #residencia-layout-container,
+#residencia-layout-container.is-drawer-open {
+  display: none !important;
+}
+
+/* Unificação da aba ativa em Residência quando na aba artistas residentes e gaveta fechada */
+#sec-residencia:not(:has(.residencia-drawer-pane.is-open)) .filter-pill.is-active[data-mod="artistas-residentes"] {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Gaveta de Perfil em Residência: abre no mesmo espaço dos thumbs */
+.residencia-drawer-pane {
+  display: none;
+  width: 100%;
+  background: transparent !important;
+}
+
+.residencia-drawer-pane.is-open {
+  display: block !important;
+}
+
+#residencia-drawer-pane .universal-drawer {
+  border-top: none !important;
+  border-bottom: none !important;
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+}
+
+@media (max-width: 899px) {
+  .residencia-layout-grid {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+  }
+  .residencia-left-column {
+    grid-column: 1 / -1;
+    width: 100%;
+    border-right: none;
+    border-bottom: var(--border-width, 1px) solid var(--border-color);
+    padding: 24px 16px 36px 16px;
+    height: auto;
+    overflow: visible;
+  }
+  .residencia-media-pane {
+    grid-column: 1 / -1;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .residencia-artists-grid {
+    column-count: 1;
+  }
+  .residencia-photo-card {
+    margin-bottom: 24px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. MACRO ESTRUTURA: ATELIÊS
+   -------------------------------------------------------------------------- */
+.atelies-layout-container {
+  width: 100%;
+  border-top: none;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.atelies-master-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+/* Coluna lateral esquerda: 9 residentes em proporção de 25% (Colunas 1 a 3) */
+.atelies-names-sidebar {
+  grid-column: 1 / span 3;
+  display: grid;
+  grid-template-rows: repeat(9, 1fr);
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  background-color: transparent !important;
+  position: relative;
+  z-index: 20;
+  box-sizing: border-box;
+}
+
+.artist-name-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 16px 20px 16px var(--content-indent-left, 60px);
+  cursor: pointer;
+  user-select: none;
+  background-color: var(--bg-white, #ffffff);
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  transition: background-color 0.2s ease, color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.artist-name-item:last-child {
+  border-bottom: none;
+}
+
+.artist-name-title {
+  font-size: calc(var(--fs-name) * 0.68);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--bg-black);
+  word-break: break-word;
+  transition: color 0.2s ease;
+}
+
+/* Palco dinâmico direito: 75% da largura (Colunas 4 a 12) */
+.atelies-stage-wrapper {
+  grid-column: 4 / span 9;
+  position: relative;
+  overflow: hidden;
+  background-color: transparent;
+  height: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+/* Matriz 3x3 de fotos com aspect ratio rígido 16:7 */
+.atelies-photos-stage {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  position: relative;
+  z-index: 5;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.photo-cell {
+  position: relative;
+  aspect-ratio: 16 / 7;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.photo-cell:not(:nth-child(3n)) {
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.photo-cell:nth-child(-n+6) {
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+}
+
+.photo-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0);
+  transition: filter 0.25s ease, opacity 0.2s ease;
+}
+
+/* Painel de detalhes do residente aberto */
+.atelies-detail-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: none;
+  background-color: var(--bg-white);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.atelies-detail-inner {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.detail-media-column {
+  grid-column: span 4;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  background-color: transparent;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.detail-media-column::-webkit-scrollbar {
+  display: none;
+}
+
+.detail-content-column {
+  grid-column: span 5;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px 24px 20px;
+  background-color: transparent;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   7. MACRO ESTRUTURA: ARQUIVO (PLANILHA SUÍÇA DE 12 COLUNAS)
+   -------------------------------------------------------------------------- */
+.table-container,
+.archive-spreadsheet-wrap {
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.search-tags-container {
+  padding: 8px 20px 8px var(--content-indent-left, 60px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px 0;
+  box-sizing: border-box;
+}
+
+.search-tags-container:empty {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Linha de cabeçalho da tabela */
+.header-row,
+.archive-table-header {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: stretch;
+  gap: 0;
+  height: 38px;
+  min-height: 38px;
+  max-height: 38px;
+  background-color: var(--accent-cyan);
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  padding: 0;
+  margin: 0;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--bg-black);
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.th-cell {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  height: 38px;
+  min-height: 38px;
+  box-sizing: border-box;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--bg-black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+}
+
+/* Linhas do acervo */
+.expo-group-row {
+  width: 100%;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  box-sizing: border-box;
+  background-color: var(--bg-white, #ffffff);
+  position: relative;
+}
+
+.expo-item-clickable,
+.archive-table-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: stretch;
+  gap: 0;
+  min-height: 38px;
+  height: auto;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  user-select: none;
+  background-color: transparent;
+  font-size: var(--fs-meta);
+  letter-spacing: 0.02em;
+  box-sizing: border-box;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  box-sizing: border-box;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.35;
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  color: var(--bg-black);
+}
+
+/* Mapeamento de Colunas do Arquivo — Modo EVENTOS (4 | 4 | 3 | 1) */
+.th-title, .cell-title,
+.archive-th-titulo, .archive-td-titulo {
+  grid-column: 1 / 5;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  font-weight: 500;
+}
+
+.th-artists, .cell-artists,
+.archive-th-artistas, .archive-td-artistas {
+  grid-column: 5 / 9;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.th-category, .cell-category,
+.archive-th-categoria, .archive-td-categoria {
+  grid-column: 9 / 12;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.th-year, .cell-year,
+.archive-th-ano, .archive-td-ano {
+  grid-column: 12 / 13;
+  padding-left: 12px;
+  padding-right: 20px;
+  border-right: none;
+}
+
+/* Mapeamento de Colunas — Modo PESSOAS (4 | 3 | 5) */
+.th-person-name, .cell-person-name {
+  grid-column: 1 / 5;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  font-weight: 500;
+}
+
+.th-person-actions, .cell-person-actions {
+  grid-column: 5 / 8;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.th-person-roles, .cell-person-roles {
+  grid-column: 8 / 13;
+  padding-left: 12px;
+  padding-right: 20px;
+  border-right: none;
+}
+
+/* Mapeamento de Colunas — Modo TEXTOS (4 | 3 | 2 | 3) */
+.th-text-title, .cell-text-title {
+  grid-column: 1 / 5;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  font-weight: 500;
+}
+
+.th-text-author, .cell-text-author {
+  grid-column: 5 / 8;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.th-text-category, .cell-text-category {
+  grid-column: 8 / 10;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.th-text-event, .cell-text-event {
+  grid-column: 10 / 13;
+  padding-left: 12px;
+  padding-right: 20px;
+  border-right: none;
+}
+
+/* --------------------------------------------------------------------------
+   8. PROTEÇÃO TOUCH (HOVER BLINDADO)
+   -------------------------------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  .event-item:not(.is-open):hover,
+  .event-item:hover,
+  .artist-name-item:hover,
+  .artist-name-item.is-hovered,
+  .expo-item-clickable:hover,
+  .expo-group-row:not(.is-open):hover {
+    background-color: rgba(255, 255, 255, 0.4) !important;
+  }
+
+  .th-cell:hover {
+    background-color: rgba(0, 36, 36, 0.08);
+  }
+
+  .photo-cell:hover img,
+  .photo-cell.is-highlighted img {
+    filter: saturate(1);
+    opacity: 1;
+  }
+}
+
+/* Estados ativos fixos */
+.artist-name-item.is-active {
+  background-color: var(--bg-black);
+}
+
+.artist-name-item.is-active .artist-name-title {
+  color: var(--bg-white, #ffffff);
+}
+
+.expo-group-row.is-open .expo-item-clickable {
+  background-color: var(--hover-bg, #eefffe);
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+}
+
+/* --------------------------------------------------------------------------
+   9. RESPONSIVIDADE ADAPTATIVA (WINDOW SIZE CLASSES)
+   -------------------------------------------------------------------------- */
+/* Size Class: Intermediário e Compacto (<900px) */
+@media (max-width: 899px) {
+  :root {
+    --content-indent-left: 20px;
+  }
+
+  .section-hero-title {
+    padding-left: 16px;
+    font-size: calc(var(--fs-title) * 1.25);
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .section-title-box,
+  .programacao-title-box,
+  .residencia-title-box,
+  .atelies-title-box,
+  .archive-title-box {
+    grid-column: 1 / -1;
+    height: auto;
+    min-height: 64px;
+    padding-left: 16px;
+  }
+
+  /* Residência empilhada */
+  .residencia-intro-text {
+    grid-column: 1 / -1;
+    border-right: none;
+    border-bottom: var(--border-width, 1px) solid var(--border-color);
+    padding: 32px 16px;
+  }
+
+  .residencia-content-column {
+    grid-column: 1 / -1;
+    padding: 32px 16px;
+  }
+
+  .residencia-media-item {
+    flex: 0 0 80vw;
+    width: 80vw;
+    max-width: 320px;
+    min-width: 240px;
+  }
+
+  /* Ateliês reconfigurado para matriz vertical */
+  .atelies-master-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .atelies-names-sidebar {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    border-right: none;
+    border-bottom: var(--border-width, 1px) solid var(--border-color);
+  }
+
+  .artist-name-item {
+    padding: 10px 8px;
+    justify-content: center;
+    text-align: center;
+    min-height: 56px;
+  }
+
+  .artist-name-item:not(:nth-child(3n)) {
+    border-right: var(--border-width, 1px) solid var(--border-color);
+  }
+
+  .artist-name-item:nth-child(-n+6) {
+    border-bottom: var(--border-width, 1px) solid var(--border-color);
+  }
+
+  .artist-name-title {
+    font-size: 0.75rem;
+    text-align: center;
+  }
+
+  .atelies-stage-wrapper {
+    grid-column: 1 / -1;
+  }
+
+  .atelies-detail-inner {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .detail-media-column {
+    grid-column: 1 / -1;
+    border-right: none;
+    border-bottom: var(--border-width, 1px) solid var(--border-color);
+    height: 300px;
+  }
+
+  .detail-content-column {
+    grid-column: 1 / -1;
+    height: auto;
+  }
+
+  /* Arquivo reorganizado em cartões flexíveis */
+  .header-row,
+  .archive-table-header {
+    display: none;
+  }
+
+  .expo-item-clickable,
+  .archive-table-row {
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px;
+    gap: 4px;
+  }
+
+  .th-title, .cell-title,
+  .th-artists, .cell-artists,
+  .th-category, .cell-category,
+  .th-year, .cell-year,
+  .th-person-name, .cell-person-name,
+  .th-person-actions, .cell-person-actions,
+  .th-person-roles, .cell-person-roles,
+  .th-text-title, .cell-text-title,
+  .th-text-author, .cell-text-author,
+  .th-text-category, .cell-text-category,
+  .th-text-event, .cell-text-event {
+    padding: 0;
+    border-right: none;
+    width: 100%;
+  }
+}
+
+/* Size Class: Compacto (<600px) */
+@media (max-width: 599px) {
+  :root {
+    --content-indent-left: 16px;
+  }
+
+  .section-hero-wrapper {
+    height: 520px;
+  }
+
+  .event-meta-row {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    margin-bottom: 12px;
+    gap: 6px;
+  }
+
+  .event-meta-tags,
+  .event-meta-horario,
+  .event-meta-date {
+    padding-left: 16px;
+    padding-right: 16px;
+    border: none;
+  }
+
+  .event-title,
+  .event-names {
+    padding-left: 16px;
+    padding-right: 16px;
+    max-width: 100%;
+  }
+
+  .residencia-media-item {
+    flex: 0 0 85vw;
+    width: 85vw;
+  }
+}

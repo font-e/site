@@ -1,0 +1,630 @@
+/* ==========================================================================
+   RESIDÊNCIA FONTE — MOBILE.CSS (ADAPTAÇÃO TÁTIL & HARDWARE MOBILE)
+   Módulo isolado de responsividade mobile e proteção contra comportamentos parasitas
+   Compatibilidade estrita: Telas touch, Viewport dinâmica (dvh), WCAG 2.2
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. REGULAÇÃO DE HARDWARE & SISTEMA OPERACIONAL (POINTER & TOUCH)
+   -------------------------------------------------------------------------- */
+
+/* Desativação de cursores customizados em telas táteis */
+@media (pointer: coarse) {
+  *, *::before, *::after {
+    cursor: auto !important;
+  }
+}
+
+/* Blindagem contra Auto-Zoom no iOS Safari (Fonte mínima de 16px em inputs) */
+@media (max-width: 899px) {
+  input,
+  select,
+  textarea,
+  input[type="text"],
+  input[type="search"],
+  .search-input {
+    font-size: 16px !important;
+  }
+}
+
+/* Bloqueio de gestos parasitas laterais do sistema (Swipe back acidental) */
+.residencia-gallery-horizontal,
+.section-folder-tabs-header,
+.section-folder-tabs-rail,
+.drawer-media-pane {
+  overscroll-behavior-x: contain;
+}
+
+/* Otimização de renderização da GPU para rolagem contínua */
+.programacao-event-item,
+.arq-group-row {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 160px;
+}
+
+/* --------------------------------------------------------------------------
+   2. BOTÕES MOBILE: SEM HOVER, APENAS DOIS ESTADOS (SELECIONADO / SEM SELEÇÃO)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px), (pointer: coarse) {
+  button:hover,
+  .header-nav-btn:hover,
+  .filter-pill:hover,
+  .section-folder-tab-btn:hover,
+  .artist-name-btn:hover,
+  .drawer-btn-icon:hover,
+  .gallery-nav-btn:hover,
+  .drawer-sticky-btn:hover,
+  .atelies-drawer-tab:hover {
+    background-color: transparent;
+    color: inherit;
+    border-color: inherit;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transform: none !important;
+  }
+
+  /* Estado 1: Sem Seleção (Padrão) */
+  .filter-pill:not(.is-active),
+  .section-folder-tab-btn:not(.is-active),
+  .drawer-sticky-btn:not(.is-active),
+  .header-nav-btn:not(.is-active) {
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    color: var(--bg-black) !important;
+    border: var(--border-width, 1px) solid var(--border-color) !important;
+  }
+
+  /* Estado 2: Selecionado (Ativo) */
+  .filter-pill.is-active,
+  .section-folder-tab-btn.is-active,
+  .drawer-sticky-btn.is-active,
+  .header-nav-btn.is-active {
+    background-color: var(--bg-black) !important;
+    color: var(--bg-white) !important;
+    border: var(--border-width, 1px) solid var(--bg-black) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. ADAPTAÇÕES DE LAYOUT MOBILE (< 768px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+
+  /* --- Cabeçalho e Menu Gaveta Vertical --- */
+  #logo-controller {
+    height: 56px;
+    min-height: 56px;
+    padding: 0 16px;
+    background-color: rgba(175, 255, 250, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: var(--border-width, 1px) solid var(--border-color);
+  }
+
+  .header-nav-left {
+    margin-left: 0;
+    position: relative;
+  }
+
+  .menu-toggle-btn {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+  }
+
+  .header-nav-items {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 260px;
+    max-width: calc(100vw - 32px);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    background-color: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: var(--border-width, 1px) solid var(--border-color);
+    border-radius: 6px;
+    padding: 12px;
+    box-shadow: 0 16px 36px rgba(0, 36, 36, 0.25);
+    box-sizing: border-box;
+    transform: translateY(-8px);
+    transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.3s ease;
+    max-height: 0;
+    z-index: var(--z-nav, 300);
+  }
+
+  .header-nav-collapsible.is-open .header-nav-items {
+    max-height: 80vh;
+    overflow-y: auto;
+    transform: translateY(0);
+  }
+
+  .header-nav-btn {
+    width: 100%;
+    height: 42px;
+    min-height: 42px;
+    justify-content: flex-start;
+    padding: 0 14px;
+    font-size: 0.8rem;
+    box-sizing: border-box;
+  }
+
+  .nav-item-dropdown {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .header-subnav-menu {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px 0 6px 12px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .header-subnav-btn {
+    height: 34px;
+    min-height: 34px;
+    font-size: 0.72rem;
+    background-color: rgba(238, 255, 254, 0.85);
+    border-color: rgba(0, 36, 36, 0.3);
+  }
+
+  .logo-hero-wrap {
+    margin-right: 0;
+    max-width: 110px;
+  }
+
+  /* --- Programação: Gavetas Fechadas (Apenas Categoria à esq e Data à dir) --- */
+  .programacao-event-item:not(.is-open) .event-meta-horario {
+    display: none !important;
+  }
+
+  .programacao-event-item:not(.is-open) .event-meta-row {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    height: auto !important;
+    margin-bottom: 8px !important;
+    padding: 14px 16px 0 16px !important;
+    border-bottom: none !important;
+  }
+
+  .programacao-event-item:not(.is-open) .event-meta-tags {
+    padding: 0 !important;
+    border: none !important;
+    font-size: var(--fs-meta) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+  }
+
+  .programacao-event-item:not(.is-open) .event-meta-date {
+    padding: 0 !important;
+    border: none !important;
+    margin-left: auto !important;
+    font-size: var(--fs-meta) !important;
+    font-weight: 600 !important;
+    text-align: right !important;
+  }
+
+  .programacao-event-item:not(.is-open) .event-title {
+    padding: 0 16px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .programacao-event-item:not(.is-open) .event-names {
+    padding: 0 16px 14px 16px !important;
+  }
+
+  /* --- Arquivo: Gavetas Fechadas (Mesmo visual de Programação: Categoria + Ano, Título e Artistas) --- */
+  .arq-header-row {
+    display: none !important;
+  }
+
+  .arq-group-row:not(.is-open) .arq-table-row {
+    display: grid !important;
+    grid-template-areas:
+      "cat year"
+      "title title"
+      "names names";
+    grid-template-columns: 1fr auto !important;
+    padding: 14px 16px !important;
+    gap: 6px 12px !important;
+    border-bottom: var(--border-width, 1px) solid var(--border-color) !important;
+    background-color: var(--hover-glass) !important;
+    cursor: pointer;
+  }
+
+  .arq-group-row:not(.is-open) .col-category {
+    grid-area: cat !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 !important;
+    border: none !important;
+    font-size: var(--fs-meta) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    color: var(--bg-black) !important;
+  }
+
+  .arq-group-row:not(.is-open) .col-year {
+    grid-area: year !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    padding: 0 !important;
+    border: none !important;
+    font-size: var(--fs-meta) !important;
+    font-weight: 600 !important;
+    color: var(--bg-black) !important;
+  }
+
+  .arq-group-row:not(.is-open) .col-title {
+    grid-area: title !important;
+    padding: 0 !important;
+    border: none !important;
+    font-family: var(--font-primary) !important;
+    font-size: var(--fs-title) !important;
+    font-weight: 500 !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.04em !important;
+    word-break: break-word !important;
+    color: var(--bg-black) !important;
+    margin-bottom: 2px !important;
+  }
+
+  .arq-group-row:not(.is-open) .col-artists {
+    grid-area: names !important;
+    padding: 0 !important;
+    border: none !important;
+    font-size: var(--fs-name) !important;
+    font-weight: 400 !important;
+    line-height: 1.4 !important;
+    letter-spacing: -0.015em !important;
+    word-break: break-word !important;
+    color: var(--bg-black) !important;
+  }
+
+  /* --- Ateliês: Matriz em 2 Colunas Compactas --- */
+  .atelies-gallery-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 20px 16px 40px !important;
+  }
+
+  .atelies-photo-card {
+    grid-column: auto !important;
+  }
+
+  .atelies-photo-wrapper {
+    aspect-ratio: 1 / 1;
+    border-radius: 2px;
+  }
+
+  .atelies-photo-meta {
+    font-size: 0.72rem;
+    margin-top: 6px;
+  }
+
+  /* --- Sticky Control Bar no Topo (Abaixo do Header) com Badges --- */
+  .section-folder-tabs-header {
+    position: sticky;
+    top: 56px;
+    z-index: var(--z-tabs, 60);
+    background: rgba(175, 255, 250, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 16px;
+    border-bottom: var(--border-width, 1px) solid var(--border-color);
+    box-sizing: border-box;
+  }
+
+  .section-folder-tabs-rail {
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    gap: 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    padding: 2px 0;
+  }
+
+  .section-folder-tabs-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-pill,
+  .section-folder-tab-btn {
+    flex-shrink: 0;
+    height: 34px;
+    min-height: 34px;
+    padding: 0 14px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+  }
+
+  /* --- Trilho de Residência (Scroll Snap & Card Peeking) --- */
+  .residencia-gallery-horizontal {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 16px;
+    gap: 12px;
+    padding: 16px;
+    isolation: isolate;
+    mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 40px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 40px), transparent 100%);
+    will-change: transform;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .residencia-media-item {
+    flex: 0 0 calc(75vw - 16px) !important;
+    width: calc(75vw - 16px) !important;
+    min-width: 230px !important;
+    max-width: 320px !important;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+  }
+
+  /* --------------------------------------------------------------------------
+     4. DIAGRAMAÇÃO DE GAVETA ABERTA NO MOBILE (ROLAGEM CONTÍNUA & SEM CONFLITO COM HEADER)
+     -------------------------------------------------------------------------- */
+  .event-universal-drawer,
+  .universal-drawer {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background-color: var(--bg-white) !important;
+  }
+
+  .drawer-left-column {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    border-right: none !important;
+    overflow: visible !important;
+  }
+
+  /* Barra de Breadcrumbs & Controles Sticky abaixo do Header (Top 56px) */
+  .drawer-top-line {
+    position: sticky !important;
+    top: 56px !important;
+    z-index: 120 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    background-color: var(--hover-bg) !important;
+    border-top: none !important;
+    border-bottom: var(--border-width, 1px) solid var(--border-color) !important;
+    padding: 0 16px !important;
+    box-shadow: 0 4px 12px rgba(0, 36, 36, 0.08) !important;
+    box-sizing: border-box !important;
+  }
+
+  .drawer-breadcrumb-col {
+    display: flex !important;
+    align-items: center !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+  }
+
+  .drawer-breadcrumb-col .breadcrumb-trail {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-meta);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .drawer-breadcrumb-col .breadcrumb-step.is-current {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: 600;
+  }
+
+  .drawer-gallery-nav-col {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+    border: none !important;
+    padding: 0 8px !important;
+    gap: 4px !important;
+  }
+
+  .drawer-gallery-nav-col .gallery-nav-btn {
+    width: 32px !important;
+    height: 32px !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 3px !important;
+    background: var(--bg-white) !important;
+  }
+
+  .drawer-control-col {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .drawer-btn-icon.drawer-btn-close {
+    width: 32px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 3px !important;
+    background: var(--bg-white) !important;
+    font-size: 1rem !important;
+  }
+
+  /* Bloco Editorial da Gaveta Aberta */
+  .drawer-content-pane {
+    width: 100% !important;
+    padding: 20px 16px 32px 16px !important;
+    overflow: visible !important;
+    height: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .drawer-editorial-header {
+    padding: 0 !important;
+    margin-bottom: 16px !important;
+  }
+
+  .drawer-editorial-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  .drawer-sticky-nav {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    position: static !important;
+    width: 100% !important;
+    border-bottom: var(--border-width, 1px) solid var(--border-color) !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .drawer-sticky-btn {
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 14px !important;
+    font-size: 0.75rem !important;
+    border-radius: 4px !important;
+  }
+
+  .drawer-editorial-body {
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .editorial-meta-subgrid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  /* Galeria Horizontal na Gaveta Aberta (85% width, 100% height, alinhada ao topo) */
+  .drawer-media-pane {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    border-top: var(--border-width, 1px) solid var(--border-color) !important;
+    border-bottom: var(--border-width, 1px) solid var(--border-color) !important;
+    background: var(--bg-white) !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-x: contain !important;
+    box-sizing: border-box !important;
+  }
+
+  .drawer-media-pane::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .drawer-gallery-track {
+    display: flex !important;
+    flex-direction: row !important;
+    width: max-content !important;
+    gap: 12px !important;
+    padding: 16px !important;
+    scroll-snap-type: x mandatory !important;
+    scroll-padding-inline: 16px !important;
+    align-items: flex-start !important;
+    box-sizing: border-box !important;
+  }
+
+  .drawer-gallery-item {
+    flex: 0 0 85vw !important;
+    width: 85vw !important;
+    height: auto !important;
+    scroll-snap-align: start !important;
+    border: none !important;
+    align-self: flex-start !important;
+    box-sizing: border-box !important;
+  }
+
+  .drawer-gallery-item img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 55vh !important;
+    object-fit: cover !important;
+    object-position: top center !important;
+    display: block !important;
+    border: var(--border-width, 1px) solid var(--border-color) !important;
+  }
+
+  /* --- Respiros de Heros no Mobile --- */
+  .section-hero-wrapper {
+    height: 480px;
+  }
+
+  .section-hero-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+    padding-left: 16px;
+    padding-bottom: 12px;
+  }
+
+  /* --- Seção de Abertura (Banner em Cartaz) no Mobile --- */
+  .abertura-section {
+    padding: 24px 16px 40px !important;
+    min-height: auto !important;
+  }
+
+  .abertura-grid {
+    grid-template-columns: 1fr !important;
+    row-gap: 24px !important;
+  }
+
+  .abertura-info-col {
+    grid-column: 1 / -1 !important;
+  }
+
+  .abertura-media-col {
+    grid-column: 1 / -1 !important;
+    justify-content: flex-start !important;
+  }
+
+  .abertura-image-card {
+    max-width: 100% !important;
+  }
+
+  .abertura-image-card img {
+    max-height: 60vh !important;
+    width: auto !important;
+    max-width: 100% !important;
+  }
+}

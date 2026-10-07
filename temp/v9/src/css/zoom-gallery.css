@@ -1,0 +1,657 @@
+/* ==========================================================================
+   RESIDÊNCIA FONTE — ZOOM-GALLERY.CSS
+   Modo Zoom Unificado: 100dvh, Rolagem Horizontal sem Barra, Corte Seco,
+   1 Coluna no Início, 2.5 Colunas de Gap, 3 Colunas no Final,
+   Controles Absolutos Centralizados (48px de largura x 32px de altura),
+   Módulo do Contador com Aba (16px 16px 0 0) dividida (< e >) e Base com 4px,
+   Painel Central Unificado de Info (Legendas Toggle, Busca e Tags),
+   Tag Ativa na Base e Dança de Z-Index do Logotipo FONTE
+   ========================================================================== */
+
+/* Contêiner Geral da Galeria Zoom ocupando 100dvh da área da gaveta */
+.zoom-gallery-container {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  z-index: auto; /* Permite que os filhos participem do z-index global */
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Fundo Translúcido da Galeria Zoom: z-index 280 (Atrás do logo FONTE que tem z-index 300) */
+.zoom-gallery-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(238, 255, 254, 0.9);
+  z-index: 280;
+  pointer-events: none;
+}
+
+/* Trilho de Rolagem Horizontal: 
+   - Espaço à esquerda da 1ª imagem: 2 colunas (começa na 3ª coluna, linha 2/3)
+   - Gap entre imagens: 1.5 coluna
+   - Espaço após a última imagem: 5 colunas
+   - z-index: 350 (Na frente do logotipo FONTE, cobrindo o logo quando as imagens passam por ele!)
+*/
+.zoom-horizontal-track {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-left: calc(100vw * 2 / 12);   /* 2 colunas: margem esquerda na linha 2/3 */
+  gap: calc(100vw * 2 / 12);          /* 1.5 coluna de gap */
+  padding-right: calc(100vw * 5 / 12);  /* 5 colunas */
+  box-sizing: border-box;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  scroll-behavior: auto; /* Garante corte seco sem rolagem animada */
+  scroll-snap-type: none; /* Desativa snap em desktop */
+  will-change: scroll-position;
+  z-index: 350; /* Sobrepõe o logotipo FONTE que tem z-index 300 */
+}
+
+.zoom-horizontal-track::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Slide individual da imagem no trilho */
+.zoom-slide-item {
+  display: inline-flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  box-sizing: border-box;
+  align-items: flex-start;
+  justify-content: center;
+  width: auto;
+  position: relative;
+  contain: layout;
+}
+
+.zoom-slide-item.is-filtered-out {
+  display: none !important;
+}
+
+/* Invólucro direto da imagem: largura correspondente à própria imagem */
+.zoom-slide-img-wrap {
+  position: relative;
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  display: inline-block;
+  cursor: pointer;
+  box-sizing: border-box;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transform: translateZ(0); /* Estabiliza camada de composição na GPU */
+}
+
+.zoom-slide-img-wrap.no-info-pointer {
+  cursor: default;
+}
+
+.zoom-slide-img-wrap img {
+  height: 100dvh;
+  max-height: 100dvh;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* --------------------------------------------------------------------------
+   CAIXA DE INFORMAÇÕES (ⓘ) SOBRE A BASE DA IMAGEM
+   Texto no tamanho fs-body e ancorado rigorosamente na base da imagem
+   -------------------------------------------------------------------------- */
+.zoom-info-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  background: rgba(238, 255, 254, 0.8);
+  border: none;
+  box-sizing: border-box;
+  padding: 14px 18px;
+  color: var(--bg-black);
+  font-family: var(--font-primary);
+  font-size: var(--fs-body);
+  opacity: 0;
+  visibility: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+  pointer-events: none;
+  z-index: 360;
+}
+
+/* Ativação: quando o slide individual for aberto */
+.zoom-slide-img-wrap.is-info-open .zoom-info-overlay {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.zoom-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--fs-body);
+  line-height: 1.4;
+}
+
+.zoom-info-legenda {
+  font-weight: 400;
+  color: var(--bg-black);
+  font-size: var(--fs-body);
+  line-height: 1.4;
+}
+
+.zoom-info-legenda p {
+  margin: 0 0 6px 0;
+  font-size: var(--fs-body);
+}
+
+.zoom-info-legenda p:last-child {
+  margin-bottom: 0;
+}
+
+.zoom-info-meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: var(--fs-nav);
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.zoom-info-venda {
+  margin-top: 6px;
+}
+
+.zoom-buy-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: var(--fs-nav);
+  font-weight: 400;
+  transition: background-color 0.15s ease;
+}
+
+.zoom-buy-link:hover {
+  background-color: var(--accent-cyan);
+  color: var(--bg-black);
+}
+
+.zoom-buy-icon {
+  font-weight: 400;
+}
+
+/* --------------------------------------------------------------------------
+   BOTÕES LATERAIS DE CONTROLE (NÃO STICKY!)
+   - Largura igual do menu compacto: 32px (var(--h-menu, 32px))
+   - Alinhados na margem esquerda canônica (left: 20px)
+   - Grupo central de navegação (<, contador de 3 alturas, >):
+     * Barra entre contadores rigorosamente no centro da tela (top: 50%)
+     * Altura total do grupo = 32px + 8px + 96px + 8px + 32px = 176px
+     * Centro do grupo aos 88px = centro da barra /
+   - Botão ✕ no meio entre topo do modo zoom (0) e topo do botão < (calc(50% - 88px)):
+     * top: calc(25% - 44px); transform: translateY(-50%);
+   - Botão ⓘ no meio entre base do botão > (calc(50% + 88px)) e base do modo zoom (100%):
+     * top: calc(75% + 44px); transform: translateY(-50%);
+   - Todos os caracteres com font-size: var(--fs-body) e font-weight: 300!
+   -------------------------------------------------------------------------- */
+.zoom-controls-rail {
+  position: absolute; /* Não é sticky! Fica na área da galeria zoom */
+  top: 0;
+  bottom: 0;
+  left: var(--menu-compact-left, 20px);
+  width: var(--h-menu, 32px);
+  height: 100dvh;
+  z-index: 600; /* Sobrepõe as imagens e a página */
+  pointer-events: none;
+}
+
+.zoom-ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--h-menu, 32px);
+  width: var(--h-menu, 32px);
+  min-width: var(--h-menu, 32px);
+  min-height: var(--h-menu, 32px);
+  padding: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  border: var(--border-width, 1px) solid var(--border-color);
+  border-radius: 4px;
+  background-color: rgba(175, 255, 250, 0.8);
+  color: var(--bg-black);
+  font-family: var(--font-primary);
+  font-size: var(--fs-body);
+  line-height: 1;
+  font-weight: 300;
+  text-align: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  pointer-events: auto;
+}
+
+.zoom-ctrl-btn:hover:not(:disabled) {
+  background-color: var(--btn-hover-bg);
+  backdrop-filter: blur(var(--btn-hover-blur));
+  -webkit-backdrop-filter: blur(var(--btn-hover-blur));
+  color: var(--bg-black);
+}
+
+.zoom-ctrl-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+  background-color: rgba(175, 255, 250, 0.2);
+}
+
+/* Estado Ativo */
+.zoom-ctrl-btn.is-active {
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+}
+
+.zoom-ctrl-btn.is-active:hover:not(:disabled) {
+  background-color: var(--btn-hover-bg);
+  backdrop-filter: blur(var(--btn-hover-blur));
+  -webkit-backdrop-filter: blur(var(--btn-hover-blur));
+  color: var(--bg-black);
+}
+
+/* Botão ✕ no meio vertical exato entre a base do menu cabeçalho (46px) e o topo do bloco de navegação unificado (calc(50% - 80px)) */
+.zoom-ctrl-btn.zoom-btn-close {
+  position: absolute;
+  top: calc(25% - 17px);
+  left: 0;
+  transform: translateY(-50%);
+}
+
+/* Botão ⓘ no meio entre a base do bloco de navegação (calc(50% + 80px)) e a base da tela (100%) */
+.zoom-ctrl-btn.zoom-btn-info {
+  position: absolute;
+  top: calc(75% + 40px);
+  left: 0;
+  transform: translateY(-50%);
+}
+
+/* Bloco central de navegação unificado (<, contador, > unidos sem gap) */
+.zoom-nav-counter-group {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0; /* Unidos! */
+  width: var(--h-menu, 32px);
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.zoom-nav-sub-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--h-menu, 32px);
+  min-width: var(--h-menu, 32px);
+  height: var(--h-menu, 32px);
+  min-height: var(--h-menu, 32px);
+  padding: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  border: var(--border-width, 1px) solid var(--border-color);
+  background-color: rgba(175, 255, 250, 0.8);
+  color: var(--bg-black);
+  font-family: var(--font-primary);
+  font-size: var(--fs-body);
+  font-weight: 300;
+  line-height: 1;
+  text-align: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Apenas a seta superior tem topo arredondado; limite com o contador é uma linha reta normal */
+.zoom-nav-sub-btn[data-action="prev-zoom"] {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+}
+
+/* Apenas a seta inferior tem base arredondada; limite com o contador é uma linha reta normal */
+.zoom-nav-sub-btn[data-action="next-zoom"] {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: var(--border-width, 1px) solid var(--border-color);
+}
+
+.zoom-nav-sub-btn:hover:not(:disabled) {
+  background-color: var(--btn-hover-bg);
+  backdrop-filter: blur(var(--btn-hover-blur));
+  -webkit-backdrop-filter: blur(var(--btn-hover-blur));
+  color: var(--bg-black);
+}
+
+.zoom-nav-sub-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+  background-color: rgba(175, 255, 250, 0.2);
+}
+
+/* Contador unido: cantos retos (sem border-radius), bordas laterais e limite reto com as setas */
+.zoom-ctrl-counter-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: var(--h-menu, 32px);
+  min-width: var(--h-menu, 32px);
+  height: calc(var(--h-menu, 32px) * 3); /* 96px */
+  min-height: calc(var(--h-menu, 32px) * 3);
+  box-sizing: border-box;
+  background-color: rgba(238, 255, 254, 0.9);
+  border-left: var(--border-width, 1px) solid var(--border-color);
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+  user-select: none;
+  font-family: var(--font-primary);
+  color: var(--bg-black);
+  text-align: center;
+  padding: 14px 0;
+}
+
+.zoom-ctrl-counter-box span {
+  font-size: var(--fs-body);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.zoom-counter-slash {
+  opacity: 0.8;
+}
+
+/* --------------------------------------------------------------------------
+   TAG ATIVA NA BASE DA TELA ALINHADA AOS BOTÕES (Print 1)
+   Surge alinhada a left: 20px, com a largura necessária e botão ✕ para fechar
+   -------------------------------------------------------------------------- */
+.zoom-bottom-active-tag {
+  position: absolute;
+  bottom: calc((var(--header-height, 60px) - var(--h-menu, 32px)) / 2); /* 14px da base */
+  left: var(--menu-compact-left, 20px);
+  z-index: 600;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  height: var(--h-menu, 32px);
+  padding: 0 10px;
+  background-color: var(--bg-black, #002424);
+  color: var(--bg-white, #ffffff);
+  border: var(--border-width, 1px) solid var(--border-color);
+  border-radius: 4px;
+  font-family: var(--font-primary);
+  font-size: var(--fs-nav);
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  box-sizing: border-box;
+  user-select: none;
+  transition: background-color 0.15s ease;
+}
+
+.zoom-bottom-active-tag:hover {
+  background-color: rgba(0, 36, 36, 0.9);
+}
+
+.zoom-bottom-active-tag.is-visible {
+  display: inline-flex;
+}
+
+.zoom-active-tag-close {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: var(--fs-nav);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoom-active-tag-close:hover {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   PAINEL CENTRAL UNIFICADO DE INFO (Legendas Toggle, Busca e Tags)
+   Abre ao lado do botão ⓘ (left: 60px)
+   -------------------------------------------------------------------------- */
+.zoom-info-popover {
+  position: absolute; /* Não é sticky! Acompanha a área da galeria zoom */
+  left: calc(var(--menu-compact-left, 20px) + var(--h-menu, 32px) + var(--menu-gap, 8px)); /* 60px */
+  top: clamp(160px, calc(75% + 40px), calc(100% - 180px));
+  transform: translateY(-50%);
+  z-index: 610;
+  background: rgba(238, 255, 254, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--border-width, 1px) solid var(--border-color);
+  border-radius: 4px;
+  padding: 14px 16px;
+  box-sizing: border-box;
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 290px;
+  max-width: 380px;
+  font-family: var(--font-primary);
+}
+
+.zoom-info-popover.is-open {
+  display: flex;
+}
+
+/* a) Seção de Controle de Legendas (Toggle) */
+.zoom-popover-legendas-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: var(--border-width, 1px) solid rgba(0, 36, 36, 0.2);
+  font-size: var(--fs-meta);
+  color: var(--bg-black);
+}
+
+.zoom-popover-legendas-label {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.zoom-popover-legendas-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 10px;
+  font-family: var(--font-primary);
+  font-size: var(--fs-nav);
+  font-weight: 600;
+  border-radius: 3px;
+  border: var(--border-width, 1px) solid var(--border-color);
+  cursor: pointer;
+  background-color: rgba(0, 36, 36, 0.2);
+  color: var(--bg-black);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.zoom-popover-legendas-toggle-btn.is-active {
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+}
+
+.zoom-popover-legendas-toggle-btn:hover {
+  background-color: var(--accent-cyan);
+  color: var(--bg-black);
+}
+
+/* b) Seção de Busca Textual */
+.zoom-search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.zoom-search-input {
+  width: 100%;
+  height: 30px;
+  padding: 0 28px 0 8px;
+  background: #ffffff;
+  border: var(--border-width, 1px) solid var(--border-color);
+  border-radius: 4px;
+  font-family: var(--font-primary);
+  font-size: var(--fs-meta);
+  color: var(--bg-black);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.zoom-search-input:focus {
+  border-color: var(--bg-black);
+  background: #ffffff;
+}
+
+.zoom-search-clear {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  cursor: pointer;
+  color: var(--bg-black);
+  opacity: 0.5;
+  font-size: var(--fs-nav);
+  line-height: 1;
+}
+
+.zoom-search-clear:hover {
+  opacity: 1;
+}
+
+/* c) Seção de Tags Comuns */
+.zoom-search-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  line-height: 1.4;
+  font-size: var(--fs-nav);
+}
+
+.zoom-search-tag-btn {
+  background: none;
+  border: none;
+  padding: 2px 0;
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: var(--fs-nav);
+  color: var(--bg-black);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.85;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.zoom-search-tag-btn:hover {
+  opacity: 1;
+  color: var(--bg-black);
+  background-color: rgba(0, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.zoom-search-tag-btn.is-active {
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+  text-decoration: none;
+  padding: 2px 6px;
+  border-radius: 3px;
+  opacity: 1;
+}
+
+.zoom-tag-separator {
+  user-select: none;
+  opacity: 0.45;
+  font-size: var(--fs-nav);
+  margin: 0 1px;
+}
+
+.zoom-search-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--fs-meta);
+  color: var(--bg-black);
+  border-top: var(--border-width, 1px) solid rgba(0, 36, 36, 0.2);
+  padding-top: 6px;
+  margin-top: 2px;
+}
+
+.zoom-search-reset-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--bg-black);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: var(--fs-meta);
+  opacity: 0.75;
+}
+
+.zoom-search-reset-btn:hover {
+  opacity: 1;
+}

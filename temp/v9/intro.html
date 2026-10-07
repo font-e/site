@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FONTE — Parede 3D & Intro Integrada</title>
+
+  <!-- Tipografia Oficial -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@800&family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Folhas de Estilo Modulares -->
+  <link rel="stylesheet" href="./src/css/tokens.css">
+  <link rel="stylesheet" href="./src/css/reset.css">
+  <link rel="stylesheet" href="./intro.css">
+</head>
+<body>
+
+  <!-- PADRONAGEM FIXA NO FUNDO (Renderizada via geral.js) -->
+  <canvas id="canvas-normal" class="canvas-layer"></canvas>
+  <canvas id="canvas-highlight" class="canvas-layer"></canvas>
+
+  <!-- CABEÇALHO IDÊNTICO À PÁGINA OFICIAL COM LOGO EXPANDIDO (400%) -->
+  <header id="logo-controller">
+    <nav class="header-nav-left header-nav-collapsible" aria-label="Navegação Principal" id="header-nav-left">
+      <button type="button" class="header-nav-btn menu-toggle-btn" id="menu-toggle-btn" aria-expanded="false" aria-label="Menu de Navegação">
+        <span class="menu-toggle-icon" id="menu-toggle-icon">≡</span>
+      </button>
+      <div class="header-nav-items" id="header-nav-items" aria-hidden="true">
+        <a href="./index.html#sec-programacao" class="header-nav-btn">PROGRAMAÇÃO</a>
+        <a href="./index.html#sec-residencia" class="header-nav-btn">RESIDÊNCIA</a>
+        <a href="./index.html#sec-atelies" class="header-nav-btn">ATELIÊS</a>
+        <a href="./index.html#sec-arquivo" class="header-nav-btn">ARQUIVO</a>
+        <a href="./index.html#sec-info" class="header-nav-btn">INFO</a>
+      </div>
+    </nav>
+    <div class="logo-hero-wrap">
+      <a href="./index.html" title="FONTE - Início">
+        <img id="site-logo" src="https://www.font-e.org/content/logo_fonte_preto.png" alt="FONTE">
+      </a>
+    </div>
+  </header>
+
+  <!-- ESPAÇADOR DE ROLAGEM (600vh total: 150vh por 180° de giro) -->
+  <div class="scroll-spacer" aria-hidden="true"></div>
+
+  <!-- PALCO 3D FIXO NA VIEWPORT -->
+  <div id="stage" class="viewport-stage" aria-label="Apresentação 3D da Galeria">
+    <div id="wall" class="wall-3d">
+      
+      <!-- FACE 1: FRENTE (Texto Manifesto de Abertura) -->
+      <div class="wall-face wall-face-front">
+        <div id="frontContent">
+          <p class="gallery-text">
+            é uma plataforma independente em São Paulo dedicada ao fomento da arte contemporânea por meio de exposições, residências, cursos e práticas de ateliê.
+          </p>
+        </div>
+      </div>
+
+      <!-- FACE 2: VERSO (Apenas em cartaz / título abaixo / confira na programação) -->
+      <div class="wall-face wall-face-back">
+        <div id="backContent" class="wall-back-layout">
+          <div class="wall-back-info">
+            <span class="wall-back-kicker">em cartaz</span>
+            <h2 class="wall-back-title">Olho D’água #1: de longe &amp; de perto</h2>
+            <div class="wall-back-actions">
+              <a href="./index.html#sec-programacao" class="wall-cta-btn">
+                confira na programação →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- IMAGEM LATERAL ROLANTE (À esquerda da parede, gap 5vw, máx 80vh) -->
+  <div id="sidePoster" class="intro-side-poster" aria-hidden="true">
+    <img 
+      src="./src/img/811028616_18631576894055783_1241793499549554803_n.jpg" 
+      alt="Cartaz da exposição Olho D’água #1"
+      loading="eager"
+    />
+  </div>
+
+  <script type="module" src="./intro.js"></script>
+</body>
+</html>

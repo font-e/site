@@ -1,0 +1,55 @@
+/* ==========================================================================
+   RESIDÊNCIA FONTE — TOKENS.CSS (DESIGN SYSTEM & PALETA OFICIAL)
+   Paleta: #002424 (Preto) | #ffffff (Branco) | #affffa (Azul) | #00ffff (Ciano)
+   ========================================================================== */
+
+:root {
+  /* 1. TIPOGRAFIA CANÓNICA */
+  --font-primary: 'Spline Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-epilogue: 'Epilogue', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* 2. ESCALA MODULAR TIPOGRÁFICA (CLAMP) */
+  --fs-title: clamp(1.9rem, 4.8vw + 0.15rem, 3.8rem);
+  --fs-name: clamp(1rem, 2.5vw + 0.1rem, 2rem);
+  --fs-body: clamp(0.8rem, 0.3vw + 0.75rem, 1rem);
+  --fs-meta: clamp(0.7rem, 0.2vw + 0.65rem, 0.8rem);
+  --fs-nav: clamp(0.69rem, 0.15vw + 0.6rem, 0.75rem);
+
+  /* 3. PALETA CROMÁTICA RECALIBRADA */
+  --bg-black: rgb(0, 36, 36, 0.8);           /* Preto petróleo estrutural, textos e bordas */
+  --bg-white: #ffffff;           /* Branco puro para painéis e texto invertido */
+  --bg-canvas: #affffa;          /* Azul padrão do grafismo e do ecrã */
+  --bg-page: var(--bg-canvas);   /* Cor base do documento */
+  --accent-cyan: #00ffff;        /* Ciano elétrico saturado para destaques */
+  --btn-hover-bg: rgba(255, 255, 255, 0.88); /* Fundo bg-canvas para hover */
+  --btn-hover-blur: 2px;                     /* Desfoque do fundo no hover (backdrop-filter) */
+  --hover-bg: #eefffe;           /* Ciano suave para breadcrumbs e estados inativos */
+  --hover-glass: rgba(255, 255, 255, 0.88); /* Fundo hover translúcido */
+  --border-color: var(--bg-black);
+
+  /* 4. GEOMETRIA, GRID & ACESSIBILIDADE */
+  --border-width: 1px;
+  --h-menu: 32px;                /* Padrão canônico v8 */
+  --menu-compact-w: 32px;
+  --menu-gap: 8px;
+  --menu-compact-left: 20px;     /* 20px + 32px + 8px = 60px exatos */
+  --content-indent-left: calc(100vw * 3 / 48);   /* 3/4 da largura de 1 coluna (3/48 da largura total do viewport) */
+  --header-height: 60px;
+  --section-spacing: 80px;
+  --folder-tab-radius: 16px 16px 0 0;
+
+  /* 5. GESTÃO CENTRALIZADA DE Z-INDEX */
+  --z-canvas-bg: 10;
+  --z-title: 20;
+  --z-canvas-fg: 30;
+  --z-panel: 50;
+  --z-tabs: 60;
+  --z-drawer: 100;
+  --z-popover: 200;
+  --z-nav: 300;
+}
+
+/* Fixação forçada do fundo atmosférico do documento */
+html, body {
+  background-color: var(--bg-canvas) !important;
+}

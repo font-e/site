@@ -1,0 +1,61 @@
+[
+  {
+    "id": "evt-01",
+    "title": "Futuro Movimento Futuro: REPROVADO",
+    "categoria": "Documentário / Instalação",
+    "ano": 2026,
+    "artistas": ["Bruno Moreschi", "Pedro Gallego"],
+    "curadoria": ["Rafael Santacosta"],
+    "sobre": "Investigação documental sobre o colapso das expectativas de futuro e a estética do erro.",
+    "fotos": [
+      { "url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000", "legenda": "Frame oficial da vídeo instalação" }
+    ],
+    "textos": [
+      { "titulo": "A Estética do Reprovado", "autoria": "Bruno Moreschi", "categoria": "Ensaio", "texto": "Reflexões sobre a falha como método de criação através da manipulação em software de edição e scripts Python." }
+    ]
+  },
+  {
+    "id": "evt-02",
+    "title": "Baixa Resolução",
+    "categoria": "Performance",
+    "ano": 2025,
+    "artistas": ["Pedro Gallego"],
+    "curadoria": ["Ateliê397"],
+    "sobre": "Participação no ciclo de exposições independentes com a performance da peça sonora porta-porta-voz. Ação com desdobramentos críticos debatidos posteriormente no espaço independente Surplus.",
+    "fotos": [
+      { "url": "https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?q=80&w=1000", "legenda": "Registro da performance ao vivo" }
+    ]
+  },
+  {
+    "id": "evt-03",
+    "title": "Acapulco",
+    "categoria": "Documentário",
+    "ano": 2026,
+    "artistas": ["Bruno Moreschi", "Pedro Gallego"],
+    "curadoria": [],
+    "sobre": "Documentário explorando narrativas visuais sobrepostas através de montagem e VFX.",
+    "fotos": [
+      { "url": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000", "legenda": "Still oficial do documentário Acapulco" }
+    ]
+  },
+  {
+    "id": "evt-04",
+    "title": "O Mundo Através da IA",
+    "categoria": "Exposição Coletiva",
+    "ano": 2025,
+    "artistas": ["Bruno Moreschi", "Pedro Gallego"],
+    "curadoria": ["Sesc Campinas"],
+    "sobre": "Exposição coletiva sediada no Sesc Campinas que investiga as fronteiras e alucinações da visão computacional e inteligência artificial aplicadas à arte contemporânea.",
+    "fotos": []
+  },
+  {
+    "id": "evt-05",
+    "title": "Casa de Criadores 54",
+    "categoria": "Direção de Arte / Vídeo",
+    "ano": 2024,
+    "artistas": ["Pedro Gallego"],
+    "curadoria": [],
+    "sobre": "Projeto de direção de arte, produção de vídeo e animação de vinhetas cenográficas para o evento de moda Casa de Criadores 54, em São Paulo.",
+    "fotos": []
+  }
+]
