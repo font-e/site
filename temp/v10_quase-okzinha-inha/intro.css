@@ -1,0 +1,404 @@
+/* ==========================================================================
+   RESIDÊNCIA FONTE — INTRO.CSS (INTEGRAÇÃO PAREDE 3D & INTRO)
+   - Camadas fixas do Canvas (geral.js)
+   - Cabeçalho canônico fixo com logo ancorado em top-right
+   - Logo escalonando de 400% (scale: 4) até 100% (scale: 1) até 180° de rotação da parede
+   - Parede 3D interativa de dupla face:
+     * Frente: Texto institucional manifesto
+     * Verso: Conteúdo de intro (exposição Olho D'água #1, texto e cartaz diagramados)
+   - Painel de calibragem física (X, Y, Z, Distância e Velocidade)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CAMADAS FIXAS DO CANVAS DE FUNDO
+   -------------------------------------------------------------------------- */
+.canvas-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  pointer-events: none;
+  display: block;
+}
+
+#canvas-normal {
+  z-index: var(--z-canvas-bg, 10);
+  mix-blend-mode: normal;
+  opacity: 1;
+  filter: blur(1.5px);
+}
+
+#canvas-highlight {
+  z-index: var(--z-canvas-fg, 30);
+  mix-blend-mode: color-dodge;
+  opacity: 0.88;
+  filter: blur(0.5px);
+}
+
+/* --------------------------------------------------------------------------
+   2. CABEÇALHO & LOGO (ANCORADO EM TOP RIGHT)
+   -------------------------------------------------------------------------- */
+#logo-controller {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-nav, 300);
+  width: 100%;
+  height: var(--header-height, 60px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  background-color: transparent;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.header-nav-left,
+.logo-hero-wrap {
+  pointer-events: auto;
+}
+
+.header-nav-left {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  gap: var(--menu-gap, 8px);
+  position: relative;
+  z-index: 10;
+}
+
+.menu-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--h-menu, 32px);
+  width: var(--menu-compact-w, 32px);
+  min-width: var(--menu-compact-w, 32px);
+  padding: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  border: var(--border-width, 1px) solid var(--border-color, #002424);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.88);
+  color: var(--bg-black, #002424);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.menu-toggle-btn:hover {
+  background-color: var(--btn-hover-bg, #ffffff);
+}
+
+.menu-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  line-height: 1;
+  font-weight: 500;
+  transform: translateY(-1px);
+}
+
+.header-nav-items {
+  display: flex;
+  align-items: center;
+  gap: var(--menu-gap, 8px);
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translate3d(-8px, 0, 0);
+  transition: max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.25s ease,
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.header-nav-collapsible.is-open .header-nav-items {
+  max-width: 1200px;
+  opacity: 1;
+  pointer-events: auto;
+  overflow: visible;
+  transform: translate3d(0, 0, 0);
+}
+
+.header-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--h-menu, 32px);
+  font-size: var(--fs-nav, 0.775rem);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0 12px;
+  border: var(--border-width, 1px) solid var(--border-color, #002424);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.88);
+  color: var(--bg-black, #002424);
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+
+.header-nav-btn:hover {
+  background-color: var(--btn-hover-bg, #ffffff);
+}
+
+/* Área do Logo com Ancoragem Top-Right */
+.logo-hero-wrap {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  width: calc(100vw * (1.664 / 12));
+  max-width: 205px;
+  min-width: 115px;
+  margin-left: auto;
+  margin-right: calc(30vw + 20px);
+  line-height: 0;
+  z-index: 10;
+  overflow: visible;
+}
+
+.logo-hero-wrap a {
+  display: block;
+  width: 100%;
+  line-height: 0;
+  overflow: visible;
+}
+
+#site-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+  transform-origin: top right;
+  transform: scale(3.3);
+  will-change: transform;
+}
+
+/* Container Estrutural da Experiência Intro no Fluxo da Página */
+.intro-experience-section {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   3. ESPAÇADOR DE ROLAGEM & PALCO 3D
+   RESPIRO-INTRO-SITE: Controla a altura do espaçador e a distância até a Seção Programação.
+   O fade da parede termina em ~338vh. Um valor de 350vh garante respiro mínimo e conexão direta.
+   -------------------------------------------------------------------------- */
+.scroll-spacer {
+  height: 350vh; /* RESPIRO-INTRO-SITE */
+  width: 100%;
+}
+
+.viewport-stage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1400px;
+  perspective-origin: 70% center;
+  pointer-events: none;
+  z-index: 20;
+  will-change: filter, opacity;
+}
+
+/* Parede 3D: Aspect ratio estrito 470/320 e altura 90vh */
+.wall-3d {
+  height: 90vh;
+  max-height: 90vh;
+  aspect-ratio: 470 / 320;
+  max-width: 95vw;
+  position: relative;
+  left: 20vw; /* Deslocada para 70% à esquerda e 30% à direita */
+  transform-style: preserve-3d;
+  will-change: transform;
+  pointer-events: auto;
+}
+
+.wall-face {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.wall-face-front {
+  transform: rotateY(0deg);
+}
+
+.wall-face-back {
+  transform: rotateY(180deg);
+}
+
+#frontContent,
+#backContent {
+  transition: opacity 0.15s ease;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --------------------------------------------------------------------------
+   4. FACE 1 (FRENTE) — TEXTO INSTITUCIONAL MANIFESTO
+   -------------------------------------------------------------------------- */
+.gallery-text {
+  font-family: var(--font-primary, 'Spline Sans', sans-serif);
+  font-size: 8vh;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.015em;
+  color: var(--bg-black, #002424);
+  text-transform: none;
+  padding: 12vh;
+  text-align: left;
+  user-select: none;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   5. FACE 2 (VERSO) — APENAS EM CARTAZ / TÍTULO / CONFIRA NA PROGRAMAÇÃO (+20%)
+   -------------------------------------------------------------------------- */
+.wall-back-layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(36px, 8vh, 88px);
+  box-sizing: border-box;
+}
+
+.wall-back-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  max-width: 90%;
+}
+
+.wall-back-kicker {
+  font-family: var(--font-primary, 'Spline Sans', sans-serif);
+  font-size: clamp(0.85rem, 1.5vh, 1.05rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bg-black, #002424);
+  opacity: 0.65;
+  margin-bottom: 2vh;
+}
+
+.wall-back-title {
+  font-family: var(--font-primary, 'Spline Sans', sans-serif);
+  font-size: clamp(1.7rem, 4.8vh, 3.4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--bg-black, #002424);
+  text-transform: uppercase;
+  margin: 0 0 3.6vh 0;
+}
+
+.wall-back-actions {
+  display: flex;
+  align-items: center;
+}
+
+.wall-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: clamp(44px, 6vh, 56px);
+  padding: 0 28px;
+  background-color: var(--bg-black, #002424);
+  color: #ffffff;
+  border: var(--border-width, 1px) solid var(--bg-black, #002424);
+  border-radius: 4px;
+  font-family: var(--font-primary, 'Spline Sans', sans-serif);
+  font-size: clamp(0.9rem, 1.45vh, 1.05rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.wall-cta-btn:hover {
+  background-color: var(--accent-cyan, #00ffff);
+  color: var(--bg-black, #002424);
+  border-color: var(--bg-black, #002424);
+  transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   6. IMAGEM LATERAL ROLANTE (POSTER)
+   - Posicionada à esquerda da parede com gap de 5vw
+   - Altura máxima de 80vh
+   - Começa na base a 90° e sobe com o scroll
+   -------------------------------------------------------------------------- */
+.intro-side-poster {
+  position: fixed;
+  top: 0;
+  max-height: 85vh;
+  z-index: 82;
+  pointer-events: none;
+  will-change: transform;
+  transform: translate3d(0, 120vh, 0);
+}
+
+.intro-side-poster img {
+  display: block;
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* --------------------------------------------------------------------------
+   7. RESPONSIVIDADE
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .viewport-stage {
+    perspective-origin: center center;
+  }
+
+  .wall-3d {
+    left: 0;
+    max-width: 94vw;
+  }
+
+  .intro-side-poster {
+    display: none;
+  }
+
+  .wall-back-layout {
+    padding: 24px;
+  }
+
+  .gallery-text {
+    font-size: clamp(1.2rem, 3.8vh, 2rem);
+    padding: 24px;
+  }
+}

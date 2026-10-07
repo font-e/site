@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FONTE [07/10 - 11h13]</title>
+  <meta name="description" content="Navegação completa e fluida entre Programação, Residência, Ateliês e Arquivo com grid suíço de 12 colunas.">
+  <meta property="og:title" content="FONTE de la FONTE">
+
+  <!-- Filtro SVG Duotone Canônico (#002424 a #eefffe) para Thumbs -->
+  <svg style="position: absolute; width: 0; height: 0; pointer-events: none; overflow: hidden;" aria-hidden="true" focusable="false">
+    <filter id="duotone-fonte" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0.299 0.587 0.114 0 0
+                                           0.299 0.587 0.114 0 0
+                                           0.299 0.587 0.114 0 0
+                                           0     0     0     1 0" />
+      <feComponentTransfer color-interpolation-filters="sRGB">
+        <feFuncR type="table" tableValues="0.0000 0.9333" />
+        <feFuncG type="table" tableValues="0.1412 1.0000" />
+        <feFuncB type="table" tableValues="0.1412 0.9961" />
+      </feComponentTransfer>
+    </filter>
+  </svg>
+
+  <!-- Fontes Oficiais Pré-carregadas -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@800&family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS Modular Unificado: Design System SPA -->
+  <link rel="stylesheet" href="./src/css/tokens.css">
+  <link rel="stylesheet" href="./src/css/reset.css">
+  <link rel="stylesheet" href="./src/css/layout.css">
+  <link rel="stylesheet" href="./src/css/components.css">
+  <link rel="stylesheet" href="./src/css/zoom-gallery.css">
+  <link rel="stylesheet" href="./src/css/mobile.css">
+  <link rel="stylesheet" href="./intro.css">
+</head>
+<body>
+
+  <!-- AS DUAS CAMADAS DA PADRONAGEM FIXAS NO FUNDO (Renderizadas via geral.js) -->
+  <canvas id="canvas-normal" class="canvas-layer"></canvas>
+  <canvas id="canvas-highlight" class="canvas-layer"></canvas>
+
+  <!-- CABEÇALHO: NAVEGAÇÃO À ESQUERDA + LOGO À DIREITA -->
+  <header id="logo-controller">
+    <nav class="header-nav-left header-nav-collapsible" aria-label="Navegação Principal" id="header-nav-left">
+      <button type="button" class="header-nav-btn menu-toggle-btn" id="menu-toggle-btn" aria-expanded="false" aria-label="Menu de Navegação">
+        <span class="menu-toggle-icon" id="menu-toggle-icon">≡</span>
+      </button>
+      <div class="header-nav-items" id="header-nav-items" aria-hidden="true">
+        
+        <div class="nav-item-dropdown" id="nav-dropdown-programacao">
+          <a href="#sec-programacao" class="header-nav-btn is-active" id="nav-btn-programacao">PROGRAMAÇÃO</a>
+          <div class="header-subnav-menu" id="subnav-programacao" aria-label="Subseções de Programação">
+            <button type="button" class="header-nav-btn header-subnav-btn is-active" data-target-sec="sec-programacao" data-prog-filter="GERAL">GERAL</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-programacao" data-prog-filter="PRESENTE">PRESENTE</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-programacao" data-prog-filter="INSCRIÇÕES ABERTAS">INSCRIÇÕES ABERTAS</button>
+          </div>
+        </div>
+
+        <div class="nav-item-dropdown" id="nav-dropdown-residencia">
+          <a href="#sec-residencia" class="header-nav-btn" id="nav-btn-residencia">RESIDÊNCIA</a>
+          <div class="header-subnav-menu" id="subnav-residencia" aria-label="Subseções de Residência">
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-residencia" data-residencia-mod="programas">PROGRAMAS</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-residencia" data-residencia-mod="individual">INVESTIGAÇÃO INDIVIDUAL</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-residencia" data-residencia-mod="coletiva">RESIDÊNCIA COLETIVA</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-residencia" data-residencia-mod="artistas-residentes">ARTISTAS RESIDENTES</button>
+          </div>
+        </div>
+
+        <div class="nav-item-dropdown" id="nav-dropdown-atelies">
+          <a href="#sec-atelies" class="header-nav-btn" id="nav-btn-atelies">ATELIÊS</a>
+          <div class="header-subnav-menu" id="subnav-atelies" aria-label="Abas de Ateliês">
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-atelies" data-atelies-tab="atuais">ATUAIS</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-atelies" data-atelies-tab="anteriores">ANTERIORES</button>
+          </div>
+        </div>
+
+        <a href="#sec-arquivo" class="header-nav-btn" id="nav-btn-arquivo">ARQUIVO</a>
+
+        <div class="nav-item-dropdown" id="nav-dropdown-info">
+          <a href="#sec-info" class="header-nav-btn" id="nav-btn-info">INFO</a>
+          <div class="header-subnav-menu" id="subnav-info" aria-label="Subseções de Info">
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-info" data-info-tab="historico">HISTÓRICO</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-info" data-info-tab="equipe">EQUIPE</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-info" data-info-tab="visitacao">VISITAÇÃO</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-info" data-info-tab="apoie">APOIE</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="logo-hero-wrap">
+      <a href="#top" title="FONTE - Início">
+        <img id="site-logo" src="https://www.font-e.org/content/logo_fonte_preto.png" alt="FONTE">
+      </a>
+    </div>
+  </header>
+
+  <div id="top"></div>
+
+  <!-- CONTEÚDO PRINCIPAL: ABERTURA, PROGRAMAÇÃO, RESIDÊNCIA, ATELIÊS & ARQUIVO -->
+  <main id="main-content">
+
+    <!-- SEÇÃO INICIAL / ABERTURA: EXPERIÊNCIA INTRO (PAREDE 3D + CARTAZ) -->
+    <section class="intro-experience-section" id="sec-abertura" aria-label="Abertura da Galeria FONTE">
+      <!-- ESPAÇADOR DE ROLAGEM (600vh total: 150vh por 180° de giro) -->
+      <div class="scroll-spacer" aria-hidden="true"></div>
+
+      <!-- PALCO 3D FIXO NA VIEWPORT -->
+      <div id="stage" class="viewport-stage" aria-label="Apresentação 3D da Galeria">
+        <div id="wall" class="wall-3d">
+          
+          <!-- FACE 1: FRENTE (Texto Manifesto de Abertura) -->
+          <div class="wall-face wall-face-front">
+            <div id="frontContent">
+              <p class="gallery-text">
+                é uma plataforma independente em São Paulo dedicada ao fomento da arte contemporânea por meio de exposições, residências, cursos e práticas de ateliê.
+              </p>
+            </div>
+          </div>
+
+          <!-- FACE 2: VERSO (Apenas em cartaz / título abaixo / confira na programação) -->
+          <div class="wall-face wall-face-back">
+            <div id="backContent" class="wall-back-layout">
+              <div class="wall-back-info">
+                <span class="wall-back-kicker">em cartaz</span>
+                <h2 class="wall-back-title">Olho D’água #1: de longe &amp; de perto</h2>
+                <div class="wall-back-actions">
+                  <a href="#sec-programacao" class="wall-cta-btn" data-event-id="olho-d-agua-1-de-longe-de-perto">
+                    confira na programação →
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- IMAGEM LATERAL ROLANTE (À esquerda da parede, gap 5vw, máx 80vh) -->
+      <div id="sidePoster" class="intro-side-poster" aria-hidden="true">
+        <img 
+          src="./src/img/811028616_18631576894055783_1241793499549554803_n.jpg" 
+          alt="Cartaz da exposição Olho D’água #1: de longe &amp; de perto" 
+          loading="eager"
+        >
+      </div>
+    </section>
+
+    <!-- SEÇÃO PROGRAMAÇÃO -->
+    <section class="section-block programacao-section" id="sec-programacao">
+      <div class="section-hero-wrapper">
+        <h1 class="section-hero-title">PROGRAMAÇÃO</h1>
+        <div class="section-folder-tabs-header">
+          <div class="section-folder-tabs-rail" id="programacao-facets-container">
+            <!-- Injetado via JS -->
+          </div>
+        </div>
+      </div>
+      <div class="section-content-panel">
+        <div id="programacao-grid-container">
+          <!-- Injetado via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO RESIDÊNCIA -->
+    <section class="section-block residencia-section" id="sec-residencia">
+      <div class="section-hero-wrapper">
+        <h2 class="section-hero-title">RESIDÊNCIA</h2>
+        <div class="section-folder-tabs-header">
+          <div class="section-folder-tabs-rail" id="residencia-modality-btns">
+            <!-- Injetado via JS -->
+          </div>
+        </div>
+      </div>
+      <div class="section-content-panel">
+        <div class="residencia-layout-grid" id="residencia-layout-container">
+          <div class="residencia-left-column" id="residencia-main-content-col">
+            <!-- Injetado via JS: Cols 1-8 -->
+          </div>
+          <div class="residencia-media-pane hide-scrollbar" id="residencia-gallery">
+            <!-- Injetado via JS: Cols 9-12 (galeria vertical) -->
+          </div>
+        </div>
+        <div class="residencia-drawer-pane" id="residencia-drawer-pane" style="display: none;">
+          <!-- Injetado dinamicamente ao abrir perfil de artista residente -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO ATELIÊS -->
+    <section class="section-block atelies-section" id="sec-atelies">
+      <div class="section-hero-wrapper">
+        <h2 class="section-hero-title">ATELIÊS</h2>
+        <div class="section-folder-tabs-header">
+          <div class="section-folder-tabs-rail" id="atelies-facets-container">
+            <!-- Injetado via JS -->
+          </div>
+        </div>
+      </div>
+      <div class="section-content-panel">
+        <div id="atelies-grid-container">
+          <!-- Injetado via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO ARQUIVO -->
+    <section class="section-block archive-section" id="sec-arquivo">
+      <div class="section-hero-wrapper">
+        <h2 class="section-hero-title">ARQUIVO</h2>
+        <div class="section-folder-tabs-header">
+          <div class="section-folder-tabs-rail" id="archive-facets-container">
+            <!-- Injetado via JS -->
+          </div>
+        </div>
+      </div>
+      <div class="section-content-panel">
+        <div id="search-tags-container" class="search-tags-container"></div>
+        <div class="table-container">
+          <!-- Cabeçalho da tabela de 12 colunas -->
+          <div id="table-header-container"></div>
+          <!-- Corpo da tabela (linhas do acervo com gavetas universais) -->
+          <div id="table-body-container"></div>
+          <!-- Rodapé da tabela (paginação) -->
+          <div id="table-footer-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO INFO -->
+    <section class="section-block info-section" id="sec-info">
+      <div class="section-hero-wrapper">
+        <h2 class="section-hero-title">INFO</h2>
+        <div class="section-folder-tabs-header">
+          <div class="section-folder-tabs-rail" id="info-facets-container">
+            <!-- Injetado via JS -->
+          </div>
+        </div>
+      </div>
+      <div class="section-content-panel" id="info-content-panel">
+        <!-- Injetado via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- HUD do Grid Guide -->
+  <div id="grid-guide-hud" class="grid-guide-hud"></div>
+
+  <!-- Experiência de Abertura Intro (Parede 3D & Cinemática do Logo) -->
+  <script type="module" src="./intro.js"></script>
+
+  <!-- JS Modular SPA -->
+  <script type="module" src="./src/js/app.js"></script>
+</body>
+</html>

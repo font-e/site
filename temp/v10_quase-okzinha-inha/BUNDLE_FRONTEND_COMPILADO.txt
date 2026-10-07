@@ -1,0 +1,4062 @@
+=====================================================================================
+COMPILAÇÃO CONSOLIDADA DE FRONT-END — RESIDÊNCIA FONTE (V8)
+Data/Hora de Geração: 01/10/2026 08:56:25
+Ambiente Local: /app/applet
+Estatísticas: 13 arquivos | 122.31 KB total | 3903 linhas de código
+=====================================================================================
+
+### MANIFESTO DE ARQUIVOS INCLUÍDOS NO BUNDLE:
++-------------------------------------+-------------+---------------+
+| Caminho Relativo                    | Tamanho     | Linhas        |
++-------------------------------------+-------------+---------------+
+| index.html                          |     8.54 KB |    168 linhas |
+| src/css/tokens.css                  |     2.25 KB |     53 linhas |
+| src/css/reset.css                   |     1.25 KB |     63 linhas |
+| src/css/layout.css                  |    23.71 KB |    961 linhas |
+| src/css/components.css              |    25.22 KB |   1093 linhas |
+| src/js/app.js                       |     4.33 KB |    133 linhas |
+| src/js/program.js                   |    14.84 KB |    436 linhas |
+| src/js/geral.js                     |     4.06 KB |    134 linhas |
+| src/js/atelies.js                   |    11.10 KB |    215 linhas |
+| src/js/residencia.js                |     6.57 KB |    157 linhas |
+| src/js/grid-guide.js                |     2.87 KB |     73 linhas |
+| src/js/arq.js                       |    12.12 KB |    304 linhas |
+| src/js/vectors.js                   |     5.44 KB |    113 linhas |
++-------------------------------------+-------------+---------------+
+
+=====================================================================================
+CONTEÚDO COMPLETO DOS ARQUIVOS (INÍCIO DO CÓDIGO-FONTE)
+=====================================================================================
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [1/13]: index.html
+Caminho Absoluto: /app/applet/index.html
+Metadados: 168 linhas | 8.54 KB
+-------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FONTE de la FONTE</title>
+  <meta name="description" content="Navegação completa e fluida entre Programação, Residência, Ateliês e Arquivo com grid suíço de 12 colunas.">
+  <meta property="og:title" content="FONTE de la FONTE">
+
+  <!-- Fontes Oficiais Pré-carregadas -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@800&family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS Modular Unificado: Design System SPA -->
+  <link rel="stylesheet" href="./src/css/tokens.css">
+  <link rel="stylesheet" href="./src/css/reset.css">
+  <link rel="stylesheet" href="./src/css/layout.css">
+  <link rel="stylesheet" href="./src/css/components.css">
+</head>
+<body>
+
+  <!-- AS DUAS CAMADAS DA PADRONAGEM FIXAS NO FUNDO (Renderizadas via geral.js) -->
+  <canvas id="canvas-normal" class="canvas-layer"></canvas>
+  <canvas id="canvas-highlight" class="canvas-layer"></canvas>
+
+  <!-- CABEÇALHO: NAVEGAÇÃO À ESQUERDA + LOGO À DIREITA -->
+  <header id="logo-controller">
+    <nav class="header-nav-left header-nav-collapsible" aria-label="Navegação Principal" id="header-nav-left">
+      <button type="button" class="header-nav-btn menu-toggle-btn" id="menu-toggle-btn" aria-expanded="false" aria-label="Menu de Navegação">
+        <span class="menu-toggle-icon" id="menu-toggle-icon">≡</span>
+      </button>
+      <div class="header-nav-items" id="header-nav-items" aria-hidden="true">
+        
+        <div class="nav-item-dropdown" id="nav-dropdown-programacao">
+          <a href="#sec-programacao" class="header-nav-btn is-active" id="nav-btn-programacao">PROGRAMAÇÃO</a>
+          <div class="header-subnav-menu" id="subnav-programacao" aria-label="Subseções de Programação">
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-programacao" data-prog-filter="PRESENTE">PRESENTE</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-programacao" data-prog-filter="INSCRIÇÕES ABERTAS">INSCRIÇÕES ABERTAS</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-programacao" data-prog-filter="PRÓXIMA">PRÓXIMA</button>
+          </div>
+        </div>
+
+        <div class="nav-item-dropdown" id="nav-dropdown-residencia">
+          <a href="#sec-residencia" class="header-nav-btn" id="nav-btn-residencia">RESIDÊNCIA</a>
+          <div class="header-subnav-menu" id="subnav-residencia" aria-label="Subseções de Residência">
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-residencia" data-residencia-mod="inscricoes">INSCRIÇÕES</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-residencia" data-residencia-mod="individual">INVESTIGAÇÃO INDIVIDUAL</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-residencia" data-residencia-mod="coletiva">RESIDÊNCIA COLETIVA</button>
+          </div>
+        </div>
+
+        <div class="nav-item-dropdown" id="nav-dropdown-atelies">
+          <a href="#sec-atelies" class="header-nav-btn" id="nav-btn-atelies">ATELIÊS</a>
+          <div class="header-subnav-menu" id="subnav-atelies" aria-label="Artistas Residentes dos Ateliês">
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-atelies" data-artist-id="marcelo-amorim">MARCELO AMORIM</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-atelies" data-artist-id="osi">ÓSI</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-atelies" data-artist-id="luah-souza">LUAH SOUZA</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-atelies" data-artist-id="caio-borges">CAIO BORGES</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-atelies" data-artist-id="gustavo-prata">GUSTAVO PRATA</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-atelies" data-artist-id="hudson-senna">HUDSON SENNA</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-atelies" data-artist-id="simone-fontana-reis">SIMONE FONTANA REIS</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-atelies" data-artist-id="jorge-feitosa">JORGE FEITOSA</button>
+            <button type="button" class="header-nav-btn header-subnav-btn" data-target-sec="sec-atelies" data-artist-id="pedro-gallego">PEDRO GALLEGO</button>
+          </div>
+        </div>
+
+        <a href="#sec-arquivo" class="header-nav-btn" id="nav-btn-arquivo">ARQUIVO</a>
+      </div>
+    </nav>
+    <div class="logo-hero-wrap">
+      <a href="#top" title="FONTE - Início">
+        <img id="site-logo" src="https://www.font-e.org/content/logo_fonte_preto.png" alt="FONTE">
+      </a>
+    </div>
+  </header>
+
+  <div id="top"></div>
+
+  <!-- CONTEÚDO PRINCIPAL: PROGRAMAÇÃO, RESIDÊNCIA, ATELIÊS & ARQUIVO -->
+  <main id="main-content">
+
+    <!-- SEÇÃO PROGRAMAÇÃO -->
+    <section class="section-block programacao-section" id="sec-programacao">
+      <div class="section-hero-wrapper">
+        <h1 class="section-hero-title">PROGRAMAÇÃO</h1>
+        <div class="section-folder-tabs-header">
+          <div class="section-folder-tabs-rail" id="programacao-facets-container">
+            <!-- Injetado via JS -->
+          </div>
+        </div>
+      </div>
+      <div class="section-content-panel">
+        <div id="programacao-grid-container">
+          <!-- Injetado via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO RESIDÊNCIA -->
+    <section class="section-block residencia-section" id="sec-residencia">
+      <div class="section-hero-wrapper">
+        <h2 class="section-hero-title">RESIDÊNCIA</h2>
+        <div class="section-folder-tabs-header">
+          <div class="section-folder-tabs-rail" id="residencia-modality-btns">
+            <!-- Injetado via JS -->
+          </div>
+        </div>
+      </div>
+      <div class="section-content-panel">
+        <div class="residencia-top-grid grid-12-master">
+          <div class="residencia-intro-text" id="residencia-subtitulo">
+            <!-- Injetado via JS -->
+          </div>
+          <div class="residencia-content-column" id="residencia-main-content-col">
+            <!-- Injetado via JS -->
+          </div>
+        </div>
+        <div class="residencia-gallery-horizontal hide-scrollbar" id="residencia-gallery">
+          <!-- Injetado via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO ATELIÊS -->
+    <section class="section-block atelies-section" id="sec-atelies">
+      <div class="section-hero-wrapper">
+        <h2 class="section-hero-title">ATELIÊS</h2>
+      </div>
+      <div class="section-content-panel">
+        <div id="atelies-grid-container">
+          <!-- Injetado via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO ARQUIVO -->
+    <section class="section-block archive-section" id="sec-arquivo">
+      <div class="section-hero-wrapper">
+        <h2 class="section-hero-title">ARQUIVO</h2>
+        <div class="section-folder-tabs-header">
+          <div class="section-folder-tabs-rail" id="archive-facets-container">
+            <!-- Injetado via JS -->
+          </div>
+        </div>
+      </div>
+      <div class="section-content-panel">
+        <div id="search-tags-container" class="search-tags-container"></div>
+        <div class="table-container">
+          <!-- Cabeçalho da tabela de 12 colunas -->
+          <div id="table-header-container"></div>
+          <!-- Corpo da tabela (linhas do acervo com gavetas universais) -->
+          <div id="table-body-container"></div>
+          <!-- Rodapé da tabela (paginação) -->
+          <div id="table-footer-container"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- HUD do Grid Guide -->
+  <div id="grid-guide-hud" class="grid-guide-hud"></div>
+
+  <!-- JS Modular SPA -->
+  <script type="module" src="./src/js/app.js"></script>
+</body>
+</html>
+
+# FIM DO ARQUIVO: index.html
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [2/13]: src/css/tokens.css
+Caminho Absoluto: /app/applet/src/css/tokens.css
+Metadados: 53 linhas | 2.25 KB
+-------------------------------------------------------------------------------------
+
+/* ==========================================================================
+   RESIDÊNCIA FONTE — TOKENS.CSS (DESIGN SYSTEM & PALETA OFICIAL)
+   Paleta: #002424 (Preto) | #ffffff (Branco) | #93eaec (Azul) | #00ffff (Ciano)
+   ========================================================================== */
+
+:root {
+  /* 1. TIPOGRAFIA CANÓNICA */
+  --font-primary: 'Spline Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-epilogue: 'Epilogue', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* 2. ESCALA MODULAR TIPOGRÁFICA (CLAMP) */
+  --fs-title: clamp(2.25rem, 5.5vw + 0.5rem, 4.5rem);
+  --fs-name: clamp(1.125rem, 2.75vw + 0.25rem, 2.25rem);
+  --fs-body: clamp(1rem, 0.4vw + 0.85rem, 1.125rem);
+  --fs-meta: clamp(0.75rem, 0.25vw + 0.7rem, 0.875rem);
+  --fs-nav: clamp(0.69rem, 0.2vw + 0.65rem, 0.775rem);
+
+  /* 3. PALETA CROMÁTICA RECALIBRADA */
+  --bg-black: #002424;           /* Preto petróleo estrutural, textos e bordas */
+  --bg-white: #ffffff;           /* Branco puro para painéis e texto invertido */
+  --bg-canvas: #93eaec;          /* Azul padrão do grafismo e do ecrã */
+  --bg-page: var(--bg-canvas);   /* Cor base do documento */
+  --accent-cyan: #00ffff;        /* Ciano elétrico saturado para destaques */
+  --hover-bg: #eefffe;           /* Ciano suave para breadcrumbs e estados inativos */
+  --hover-glass: rgba(255, 255, 255, 0.45); /* Efeito de vidro translúcido no mouseover */
+  --border-color: var(--bg-black);
+
+  /* 4. GEOMETRIA, GRID & ACESSIBILIDADE (WCAG 2.1 AA) */
+  --border-width: 1px;
+  --h-menu: 48px;                /* Touch target mínimo universal */
+  --menu-compact-w: 48px;
+  --menu-gap: 8px;
+  --menu-compact-left: 4px;      /* 4px + 48px + 8px = 60px exatos */
+  --content-indent-left: 60px;   /* Recuo canónico da margem esquerda */
+  --header-height: 64px;
+  --section-spacing: 80px;
+  --folder-tab-radius: 16px 16px 0 0;
+
+  /* 5. GESTÃO CENTRALIZADA DE Z-INDEX */
+  --z-canvas-bg: 10;
+  --z-title: 20;
+  --z-canvas-fg: 30;
+  --z-panel: 50;
+  --z-tabs: 60;
+  --z-drawer: 100;
+  --z-popover: 200;
+  --z-nav: 300;
+}
+
+/* Fixação forçada do fundo atmosférico do documento */
+html, body {
+  background-color: var(--bg-canvas) !important;
+}
+
+# FIM DO ARQUIVO: src/css/tokens.css
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [3/13]: src/css/reset.css
+Caminho Absoluto: /app/applet/src/css/reset.css
+Metadados: 63 linhas | 1.25 KB
+-------------------------------------------------------------------------------------
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+  width: 100%;
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: var(--bg-white);
+  color: var(--bg-black);
+  width: 100%;
+  min-height: 100dvh; /* Substitui vh legado para prevenir corte no iOS */
+  position: relative;
+  overflow-x: clip; /* Bloqueio de transbordamento horizontal seguro */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Foco universal por teclado (WCAG Nível AA) */
+:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--bg-black);
+  border-radius: 2px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Utilitários Base Universais */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.grid-12-master {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+# FIM DO ARQUIVO: src/css/reset.css
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [4/13]: src/css/layout.css
+Caminho Absoluto: /app/applet/src/css/layout.css
+Metadados: 961 linhas | 23.71 KB
+-------------------------------------------------------------------------------------
+
+/* ==========================================================================
+   RESIDÊNCIA FONTE — LAYOUT.CSS (ARQUITETURA MACRO & GRID SUÍÇO)
+   Consolidação canônica: Canvas, Grid 12 colunas, Heros, Seções e Responsividade
+   Paleta: Base #ffffff | Texto/Bordas #002424 | Fundo inativo #eefffe | Ciano #ccfffe
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CAMADAS FIXAS DO CANVAS DE FUNDO (PADRONAGEM FONTE)
+   -------------------------------------------------------------------------- */
+.canvas-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  pointer-events: none;
+  display: block;
+}
+
+#canvas-normal {
+  z-index: var(--z-canvas-bg, 10);
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+
+#canvas-highlight {
+  z-index: var(--z-canvas-fg, 30);
+  mix-blend-mode: color-dodge;
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   2. FLUXO GLOBAL & GRID MESTRE DE 12 COLUNAS
+   -------------------------------------------------------------------------- */
+#main-content {
+  position: relative;
+  z-index: var(--z-panel, 40);
+  width: 100%;
+  padding-bottom: 120px;
+}
+
+.grid-12-master {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   3. SEÇÕES, HEROS & CABEÇALHOS EM DEGRAU (CANÔNICOS)
+   -------------------------------------------------------------------------- */
+.section-block,
+.programacao-section,
+.residencia-section,
+.atelies-section,
+.archive-section {
+  width: 100%;
+  position: relative;
+  background-color: transparent !important;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Wrapper transparente de 700px para visualização da padronagem */
+.section-hero-wrapper {
+  position: relative;
+  width: 100%;
+  height: 700px;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: transparent;
+  z-index: auto;
+}
+
+/* Backgrounds fotográficos de seção em 118dvh */
+.section-hero-bg,
+.programacao-hero-bg,
+.residencia-hero-bg,
+.atelies-hero-bg,
+.archive-hero-bg {
+  width: 100%;
+  height: 118dvh;
+  margin-top: 0;
+  background-size: cover;
+  background-position: center bottom;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 1;
+}
+
+.programacao-hero-bg {
+  background-image: url('https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-3-edicao/c4be8a7d74-1789686604/capa_arquivo-d-2560x2560-q85.webp');
+}
+
+.residencia-hero-bg {
+  background-image: url('https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-terceira-edicao/26fd11888f-1789686302/230225_lava_0097-2560x2560-q85.webp');
+}
+
+.atelies-hero-bg {
+  background-image: url('https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/a-duracao-das-coisas/8a68ff0b92-1789686093/0056-1400x1400-q82.webp');
+}
+
+.archive-hero-bg {
+  background-image: url('https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-3-edicao/7e9c3efa4e-1789686608/capa_arquivo-b-2560x2560-q85.webp');
+}
+
+/* Título vazado gigante no topo do degrau */
+.section-hero-title {
+  position: relative;
+  width: 100%;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 24px;
+  margin-top: 0;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  font-family: var(--font-epilogue) !important;
+  font-size: calc(var(--fs-title) * 1.75);
+  font-weight: 800 !important;
+  font-variation-settings: 'wght' 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--bg-black, #002424) !important;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+  z-index: var(--z-title, 20);
+  white-space: nowrap;
+  overflow: visible;
+  mix-blend-mode: hard-light !important;
+  opacity: 1;
+}
+
+#sec-atelies .section-hero-title,
+#sec-arquivo .section-hero-title {
+  margin-bottom: 16px;
+}
+
+/* Barras de cabeçalho em degrau (Colunas 1 a 4 para título, 5 a 12 para abas/facilidades) */
+.section-header-bar,
+.programacao-header-bar,
+.residencia-header-bar,
+.atelies-header-bar,
+.archive-header-bar {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  background: transparent;
+  position: relative;
+  z-index: 2;
+  align-items: end;
+}
+
+.section-title-box,
+.programacao-title-box,
+.residencia-title-box,
+.atelies-title-box,
+.archive-title-box {
+  grid-column: 1 / 5;
+  background-color: var(--accent-cyan);
+  border: var(--border-width, 1px) solid var(--border-color);
+  height: 96px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-top: 8px;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 12px;
+  box-sizing: border-box;
+}
+
+.section-title,
+.residencia-section-title,
+.programacao-section-title,
+.atelies-section-title,
+.archive-section-title {
+  font-size: var(--fs-name);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: 0.038em;
+  color: var(--bg-black);
+  text-transform: uppercase;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  align-self: flex-start;
+}
+
+/* Painel opaco inferior que barra a transparência e assenta o conteúdo */
+.section-content-panel {
+  width: 100%;
+  background-color: var(--bg-white, #ffffff);
+  border-top: var(--border-width, 1px) solid var(--border-color);
+  position: relative;
+  z-index: var(--z-panel, 50);
+}
+
+/* Transparência controlada para revelação dinâmica do canvas no hover */
+#sec-programacao .section-content-panel,
+#sec-atelies .section-content-panel,
+#sec-arquivo .section-content-panel {
+  background-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+#sec-residencia .section-content-panel,
+#sec-atelies .section-content-panel,
+#sec-arquivo .section-content-panel {
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+}
+
+/* --------------------------------------------------------------------------
+   4. MACRO ESTRUTURA: PROGRAMAÇÃO
+   -------------------------------------------------------------------------- */
+.programacao-container,
+.events-list,
+.programacao-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.programacao-event-item,
+.event-item {
+  position: relative;
+  width: 100%;
+  background-color: var(--bg-white, #ffffff);
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  padding: 0 0 28px 0;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+}
+
+.event-header {
+  width: 100%;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+/* Grade de metadados da linha fechada (Tags 1-4 | Horário 5-8 | Data 9-10) */
+.event-meta-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: stretch;
+  gap: 0;
+  height: 38px;
+  min-height: 38px;
+  margin-bottom: 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.event-meta-tags {
+  grid-column: 1 / span 4;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 10px;
+}
+
+.event-meta-horario {
+  grid-column: 5 / span 4;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-left: var(--border-width, 1px) solid var(--border-color);
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.event-meta-date {
+  grid-column: 9 / span 2;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+  padding-left: 10px;
+  border-left: none;
+}
+
+.event-title {
+  margin-bottom: 8px;
+  line-height: 0.95;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 20px;
+  max-width: calc(100% * 11 / 12);
+  box-sizing: border-box;
+}
+
+.event-names {
+  font-size: var(--fs-name);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--bg-black);
+  word-break: break-word;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 20px;
+  max-width: calc(100% * 11 / 12);
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   5. MACRO ESTRUTURA: RESIDÊNCIA
+   -------------------------------------------------------------------------- */
+.residencia-top-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  background-color: var(--bg-white);
+  min-height: 240px;
+  box-sizing: border-box;
+}
+
+.residencia-intro-text {
+  grid-column: 1 / 7;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  padding: 40px 20px 40px var(--content-indent-left, 60px);
+  font-size: var(--fs-name);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--bg-black);
+  box-sizing: border-box;
+}
+
+.residencia-content-column {
+  grid-column: 7 / 13;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-sizing: border-box;
+  background-color: var(--bg-white);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.residencia-content-column::-webkit-scrollbar {
+  display: none;
+}
+
+/* Galeria horizontal contínua de residentes */
+.residencia-gallery-horizontal {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background-color: var(--bg-white);
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  box-sizing: border-box;
+}
+
+.residencia-gallery-horizontal::-webkit-scrollbar {
+  display: none;
+}
+
+.residencia-media-item {
+  flex: 0 0 calc(25% - 0.375px);
+  width: calc(25% - 0.375px);
+  max-width: 25vw;
+  min-width: 280px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  background-color: var(--bg-white);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.residencia-media-item img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+}
+
+.residencia-media-info {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   6. MACRO ESTRUTURA: ATELIÊS
+   -------------------------------------------------------------------------- */
+.atelies-layout-container {
+  width: 100%;
+  border-top: none;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.atelies-master-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+/* Coluna lateral esquerda: 9 residentes em proporção de 25% (Colunas 1 a 3) */
+.atelies-names-sidebar {
+  grid-column: 1 / span 3;
+  display: grid;
+  grid-template-rows: repeat(9, 1fr);
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  background-color: transparent !important;
+  position: relative;
+  z-index: 20;
+  box-sizing: border-box;
+}
+
+.artist-name-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 16px 20px 16px var(--content-indent-left, 60px);
+  cursor: pointer;
+  user-select: none;
+  background-color: var(--bg-white, #ffffff);
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  transition: background-color 0.2s ease, color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.artist-name-item:last-child {
+  border-bottom: none;
+}
+
+.artist-name-title {
+  font-size: calc(var(--fs-name) * 0.68);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--bg-black);
+  word-break: break-word;
+  transition: color 0.2s ease;
+}
+
+/* Palco dinâmico direito: 75% da largura (Colunas 4 a 12) */
+.atelies-stage-wrapper {
+  grid-column: 4 / span 9;
+  position: relative;
+  overflow: hidden;
+  background-color: transparent;
+  height: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+/* Matriz 3x3 de fotos com aspect ratio rígido 16:7 */
+.atelies-photos-stage {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  position: relative;
+  z-index: 5;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.photo-cell {
+  position: relative;
+  aspect-ratio: 16 / 7;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.photo-cell:not(:nth-child(3n)) {
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.photo-cell:nth-child(-n+6) {
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+}
+
+.photo-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0);
+  transition: filter 0.25s ease, opacity 0.2s ease;
+}
+
+/* Painel de detalhes do residente aberto */
+.atelies-detail-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: none;
+  background-color: var(--bg-white);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.atelies-detail-inner {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.detail-media-column {
+  grid-column: span 4;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  background-color: transparent;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.detail-media-column::-webkit-scrollbar {
+  display: none;
+}
+
+.detail-content-column {
+  grid-column: span 5;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px 24px 20px;
+  background-color: transparent;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   7. MACRO ESTRUTURA: ARQUIVO (PLANILHA SUÍÇA DE 12 COLUNAS)
+   -------------------------------------------------------------------------- */
+.table-container,
+.archive-spreadsheet-wrap {
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.search-tags-container {
+  padding: 8px 20px 8px var(--content-indent-left, 60px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px 0;
+  box-sizing: border-box;
+}
+
+.search-tags-container:empty {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Linha de cabeçalho da tabela */
+.header-row,
+.archive-table-header {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: stretch;
+  gap: 0;
+  height: 38px;
+  min-height: 38px;
+  max-height: 38px;
+  background-color: var(--accent-cyan);
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  padding: 0;
+  margin: 0;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--bg-black);
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.th-cell {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  height: 38px;
+  min-height: 38px;
+  box-sizing: border-box;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--bg-black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+}
+
+/* Linhas do acervo */
+.expo-group-row {
+  width: 100%;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  box-sizing: border-box;
+  background-color: var(--bg-white, #ffffff);
+  position: relative;
+}
+
+.expo-item-clickable,
+.archive-table-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: stretch;
+  gap: 0;
+  min-height: 38px;
+  height: auto;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  user-select: none;
+  background-color: transparent;
+  font-size: var(--fs-meta);
+  letter-spacing: 0.02em;
+  box-sizing: border-box;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  box-sizing: border-box;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.35;
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  color: var(--bg-black);
+}
+
+/* Mapeamento de Colunas do Arquivo — Modo EVENTOS (4 | 4 | 3 | 1) */
+.th-title, .cell-title,
+.archive-th-titulo, .archive-td-titulo {
+  grid-column: 1 / 5;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  font-weight: 500;
+}
+
+.th-artists, .cell-artists,
+.archive-th-artistas, .archive-td-artistas {
+  grid-column: 5 / 9;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.th-category, .cell-category,
+.archive-th-categoria, .archive-td-categoria {
+  grid-column: 9 / 12;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.th-year, .cell-year,
+.archive-th-ano, .archive-td-ano {
+  grid-column: 12 / 13;
+  padding-left: 12px;
+  padding-right: 20px;
+  border-right: none;
+}
+
+/* Mapeamento de Colunas — Modo PESSOAS (4 | 3 | 5) */
+.th-person-name, .cell-person-name {
+  grid-column: 1 / 5;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  font-weight: 500;
+}
+
+.th-person-actions, .cell-person-actions {
+  grid-column: 5 / 8;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.th-person-roles, .cell-person-roles {
+  grid-column: 8 / 13;
+  padding-left: 12px;
+  padding-right: 20px;
+  border-right: none;
+}
+
+/* Mapeamento de Colunas — Modo TEXTOS (4 | 3 | 2 | 3) */
+.th-text-title, .cell-text-title {
+  grid-column: 1 / 5;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  font-weight: 500;
+}
+
+.th-text-author, .cell-text-author {
+  grid-column: 5 / 8;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.th-text-category, .cell-text-category {
+  grid-column: 8 / 10;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.th-text-event, .cell-text-event {
+  grid-column: 10 / 13;
+  padding-left: 12px;
+  padding-right: 20px;
+  border-right: none;
+}
+
+/* --------------------------------------------------------------------------
+   8. PROTEÇÃO TOUCH (HOVER BLINDADO)
+   -------------------------------------------------------------------------- */
+@media (hover: hover) and (pointer: fine) {
+  .event-item:not(.is-open):hover,
+  .event-item:hover,
+  .artist-name-item:hover,
+  .artist-name-item.is-hovered,
+  .expo-item-clickable:hover,
+  .expo-group-row:not(.is-open):hover {
+    background-color: rgba(255, 255, 255, 0.4) !important;
+  }
+
+  .th-cell:hover {
+    background-color: rgba(0, 36, 36, 0.08);
+  }
+
+  .photo-cell:hover img,
+  .photo-cell.is-highlighted img {
+    filter: saturate(1);
+    opacity: 1;
+  }
+}
+
+/* Estados ativos fixos */
+.artist-name-item.is-active {
+  background-color: var(--bg-black);
+}
+
+.artist-name-item.is-active .artist-name-title {
+  color: var(--bg-white, #ffffff);
+}
+
+.expo-group-row.is-open .expo-item-clickable {
+  background-color: var(--hover-bg, #eefffe);
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+}
+
+/* --------------------------------------------------------------------------
+   9. RESPONSIVIDADE ADAPTATIVA (WINDOW SIZE CLASSES)
+   -------------------------------------------------------------------------- */
+/* Size Class: Intermediário e Compacto (<900px) */
+@media (max-width: 899px) {
+  :root {
+    --content-indent-left: 20px;
+  }
+
+  .section-hero-title {
+    padding-left: 16px;
+    font-size: calc(var(--fs-title) * 1.25);
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .section-title-box,
+  .programacao-title-box,
+  .residencia-title-box,
+  .atelies-title-box,
+  .archive-title-box {
+    grid-column: 1 / -1;
+    height: auto;
+    min-height: 64px;
+    padding-left: 16px;
+  }
+
+  /* Residência empilhada */
+  .residencia-intro-text {
+    grid-column: 1 / -1;
+    border-right: none;
+    border-bottom: var(--border-width, 1px) solid var(--border-color);
+    padding: 32px 16px;
+  }
+
+  .residencia-content-column {
+    grid-column: 1 / -1;
+    padding: 32px 16px;
+  }
+
+  .residencia-media-item {
+    flex: 0 0 80vw;
+    width: 80vw;
+    max-width: 320px;
+    min-width: 240px;
+  }
+
+  /* Ateliês reconfigurado para matriz vertical */
+  .atelies-master-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .atelies-names-sidebar {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    border-right: none;
+    border-bottom: var(--border-width, 1px) solid var(--border-color);
+  }
+
+  .artist-name-item {
+    padding: 10px 8px;
+    justify-content: center;
+    text-align: center;
+    min-height: 56px;
+  }
+
+  .artist-name-item:not(:nth-child(3n)) {
+    border-right: var(--border-width, 1px) solid var(--border-color);
+  }
+
+  .artist-name-item:nth-child(-n+6) {
+    border-bottom: var(--border-width, 1px) solid var(--border-color);
+  }
+
+  .artist-name-title {
+    font-size: 0.75rem;
+    text-align: center;
+  }
+
+  .atelies-stage-wrapper {
+    grid-column: 1 / -1;
+  }
+
+  .atelies-detail-inner {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .detail-media-column {
+    grid-column: 1 / -1;
+    border-right: none;
+    border-bottom: var(--border-width, 1px) solid var(--border-color);
+    height: 300px;
+  }
+
+  .detail-content-column {
+    grid-column: 1 / -1;
+    height: auto;
+  }
+
+  /* Arquivo reorganizado em cartões flexíveis */
+  .header-row,
+  .archive-table-header {
+    display: none;
+  }
+
+  .expo-item-clickable,
+  .archive-table-row {
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px;
+    gap: 4px;
+  }
+
+  .th-title, .cell-title,
+  .th-artists, .cell-artists,
+  .th-category, .cell-category,
+  .th-year, .cell-year,
+  .th-person-name, .cell-person-name,
+  .th-person-actions, .cell-person-actions,
+  .th-person-roles, .cell-person-roles,
+  .th-text-title, .cell-text-title,
+  .th-text-author, .cell-text-author,
+  .th-text-category, .cell-text-category,
+  .th-text-event, .cell-text-event {
+    padding: 0;
+    border-right: none;
+    width: 100%;
+  }
+}
+
+/* Size Class: Compacto (<600px) */
+@media (max-width: 599px) {
+  :root {
+    --content-indent-left: 16px;
+  }
+
+  .section-hero-wrapper {
+    height: 520px;
+  }
+
+  .event-meta-row {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    margin-bottom: 12px;
+    gap: 6px;
+  }
+
+  .event-meta-tags,
+  .event-meta-horario,
+  .event-meta-date {
+    padding-left: 16px;
+    padding-right: 16px;
+    border: none;
+  }
+
+  .event-title,
+  .event-names {
+    padding-left: 16px;
+    padding-right: 16px;
+    max-width: 100%;
+  }
+
+  .residencia-media-item {
+    flex: 0 0 85vw;
+    width: 85vw;
+  }
+}
+
+# FIM DO ARQUIVO: src/css/layout.css
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [5/13]: src/css/components.css
+Caminho Absoluto: /app/applet/src/css/components.css
+Metadados: 1093 linhas | 25.22 KB
+-------------------------------------------------------------------------------------
+
+/* ==========================================================================
+   RESIDÊNCIA FONTE — COMPONENTS.CSS (DESIGN SYSTEM & UI MODULAR)
+   Fase 2: Solda de Abas Fichário (Variante 7), Linha Fechada de 3 Andares,
+   Gaveta Universal sem GSAP, Popovers, Galerias e Zoom Contínuo.
+   Paleta: #002424 (Preto) | #ffffff (Branco) | #93eaec (Azul) | #00ffff (Ciano)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CABEÇALHO & NAVEGAÇÃO SUPERIOR STICKY
+   -------------------------------------------------------------------------- */
+#logo-controller {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-nav, 300);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 8px 0;
+  background-color: transparent;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.header-nav-left,
+.logo-hero-wrap {
+  pointer-events: auto;
+}
+
+.header-nav-left {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  gap: var(--menu-gap, 8px);
+  position: relative;
+  z-index: 10;
+}
+
+.menu-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--h-menu, 48px);
+  width: var(--h-menu, 48px);
+  min-width: var(--h-menu, 48px);
+  padding: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  border: var(--border-width, 1px) solid var(--border-color);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--bg-black);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.menu-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+  font-weight: 500;
+  transform: translateY(-1px);
+}
+
+.menu-toggle-btn.is-active {
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+}
+
+.header-nav-items {
+  display: flex;
+  align-items: center;
+  gap: var(--menu-gap, 8px);
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translate3d(-8px, 0, 0);
+  transition: max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.25s ease,
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.header-nav-collapsible.is-open .header-nav-items {
+  max-width: 1200px;
+  opacity: 1;
+  pointer-events: auto;
+  overflow: visible;
+  transform: translate3d(0, 0, 0);
+}
+
+.header-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--h-menu, 48px);
+  font-size: var(--fs-nav);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0 16px;
+  border: var(--border-width, 1px) solid var(--border-color);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--bg-black);
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.header-nav-btn.is-active {
+  background-color: var(--bg-black);
+  color: var(--bg-white);
+  border-color: var(--bg-black);
+}
+
+.nav-item-dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.header-subnav-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding-top: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: max-content;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+  max-height: calc(100dvh - 64px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.header-subnav-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.header-subnav-menu::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 0;
+  right: 0;
+  height: 6px;
+}
+
+.nav-item-dropdown:hover .header-subnav-menu:not(.is-hidden) {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.header-subnav-menu.is-hidden {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.header-subnav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: auto;
+  max-width: max-content;
+  height: 40px;
+  padding: 0 14px;
+  white-space: nowrap;
+  background-color: var(--bg-white);
+  border: var(--border-width, 1px) solid var(--border-color);
+  border-radius: 4px;
+  font-size: var(--fs-nav);
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--bg-black);
+  cursor: pointer;
+  box-shadow: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.logo-hero-wrap {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: calc(100vw * (1.664 / 12));
+  max-width: 205px;
+  min-width: 115px;
+  margin-left: auto;
+  margin-right: 20px;
+  line-height: 0;
+  z-index: 10;
+}
+
+.logo-hero-wrap a {
+  display: block;
+  width: 100%;
+  line-height: 0;
+}
+
+#site-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   2. SISTEMA DE ABAS DE FICHÁRIO (SOLDA CANÔNICA VARIANTE 7)
+   -------------------------------------------------------------------------- */
+.section-folder-tabs-header {
+  position: relative;
+  width: 100%;
+  z-index: var(--z-tabs, 70);
+  display: flex;
+  align-items: flex-end;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 24px;
+  box-sizing: border-box;
+  margin-bottom: -1px; /* Encaixe preciso de 1px sobre a borda do painel */
+}
+
+.section-folder-tabs-rail {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  position: relative;
+  z-index: 65;
+  margin-bottom: 0;
+}
+
+.filter-pill,
+.section-folder-tab-btn,
+.detail-tab-btn,
+.drawer-tab-pill,
+.sandbox-folder-tab-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  border-top: var(--border-width, 1px) solid var(--border-color);
+  border-left: var(--border-width, 1px) solid var(--border-color);
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  border-radius: var(--folder-tab-radius, 16px 16px 0 0);
+  background-color: rgba(238, 255, 254, 0.88);
+  color: var(--bg-black);
+  height: 48px;
+  min-height: 48px;
+  padding: 0 20px;
+  font-family: var(--font-primary);
+  font-size: var(--fs-nav);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+  z-index: 66;
+  box-sizing: border-box;
+  margin-bottom: 0;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  user-select: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-radius 0.13s ease-in-out,
+              background-color 0.13s ease-in-out,
+              transform 0.13s ease-in-out;
+}
+
+/* Fita de solda anti-subpixel: apaga qualquer resquício da borda do painel sob a aba ativa */
+.filter-pill::after,
+.section-folder-tab-btn::after,
+.detail-tab-btn::after,
+.drawer-tab-pill::after,
+.sandbox-folder-tab-btn::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 3px;
+  background-color: var(--bg-white);
+  z-index: 76;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.13s ease-in-out;
+}
+
+/* Estado Ativo: Fundo Branco, sobreposto 1px ao painel */
+.filter-pill.is-active,
+.section-folder-tab-btn.is-active,
+.detail-tab-btn.is-active,
+.drawer-tab-pill.is-active,
+.sandbox-folder-tab-btn.is-active {
+  background-color: var(--bg-white);
+  color: var(--bg-black);
+  height: 48px;
+  min-height: 48px;
+  margin-bottom: 0px;
+  padding: 0 20px 1px;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: translateY(0) !important;
+  z-index: 75;
+}
+
+.filter-pill.is-active::after,
+.section-folder-tab-btn.is-active::after,
+.detail-tab-btn.is-active::after,
+.drawer-tab-pill.is-active::after,
+.sandbox-folder-tab-btn.is-active::after {
+  opacity: 1;
+}
+
+/* Hover exclusivamente nas abas INATIVAS (elevação em pílula preservada) */
+@media (hover: hover) and (pointer: fine) {
+  .filter-pill:not(.is-active):hover,
+  .section-folder-tab-btn:not(.is-active):hover,
+  .detail-tab-btn:not(.is-active):hover,
+  .drawer-tab-pill:not(.is-active):hover,
+  .sandbox-folder-tab-btn:not(.is-active):hover {
+    border: var(--border-width, 1px) solid var(--border-color);
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.95);
+    height: 54px;
+    padding: 24px 20px;
+    transform: translateY(6px);
+    margin-bottom: -6px;
+    margin-top: -12px;
+    z-index: 88;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. PROGRAMAÇÃO — HIERARQUIA EDITORIAL DA LINHA FECHADA (3 ANDARES)
+   -------------------------------------------------------------------------- */
+.programacao-container,
+.events-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.programacao-event-item,
+.event-item {
+  position: relative;
+  width: 100%;
+  background-color: var(--bg-white);
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  padding: 0 0 28px 0;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease;
+}
+
+/* Efeito vidro translúcido no mouseover para revelar o grafismo */
+@media (hover: hover) and (pointer: fine) {
+  .programacao-event-item:not(.is-open):hover,
+  .event-item:not(.is-open):hover {
+    background-color: var(--hover-glass, rgba(255, 255, 255, 0.45)) !important;
+  }
+}
+
+.event-header {
+  width: 100%;
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+/* Andar 1: Linha de Metadados (38px de altura - Grid 12) */
+.event-meta-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: stretch;
+  gap: 0;
+  height: 38px;
+  min-height: 38px;
+  margin-bottom: 18px;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 0px;
+}
+
+.event-meta-tags {
+  grid-column: 1 / span 4;
+  display: flex;
+  align-items: center;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 12px;
+  box-sizing: border-box;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--bg-black);
+}
+
+.event-meta-horario {
+  grid-column: 5 / span 4;
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+  padding-right: 12px;
+  box-sizing: border-box;
+  border-left: var(--border-width, 1px) solid var(--border-color);
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--bg-black);
+}
+
+.event-meta-date {
+  grid-column: 9 / span 4;
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+  padding-right: 24px;
+  box-sizing: border-box;
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--bg-black);
+}
+
+.event-tag-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--fs-nav);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.event-tag-badge.event-tag-inscricoes {
+  padding: 4px 8px;
+  border: var(--border-width, 1px) solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--accent-cyan);
+}
+
+/* Andar 2: Título do Evento (Peso 500 e Entrelinha Rígida) */
+.event-title {
+  margin-bottom: 8px;
+  line-height: 0.95;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 24px;
+  max-width: calc(100% * 11 / 12);
+  box-sizing: border-box;
+}
+
+.event-title-text {
+  display: inline;
+  font-family: var(--font-primary);
+  font-size: var(--fs-title);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: var(--bg-black);
+  word-break: break-word;
+}
+
+.event-subtitle-text {
+  display: block;
+  font-size: calc(var(--fs-name) * 1.35);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--bg-black);
+  word-break: break-word;
+  margin-top: 6px;
+  max-width: calc(100% * 11 / 12);
+}
+
+/* Andar 3: Descrição e Artistas Envolvidos (Peso 400 Indentado a 60px) */
+.event-names {
+  font-size: var(--fs-name);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--bg-black);
+  word-break: break-word;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 24px;
+  max-width: calc(100% * 11 / 12);
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   4. GAVETA UNIVERSAL (ESTRUTURA DESACOPLADA SEM GSAP)
+   -------------------------------------------------------------------------- */
+.event-item.is-open {
+  background-color: var(--bg-white) !important;
+  position: relative;
+}
+
+.event-universal-drawer,
+.universal-drawer {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto 1fr;
+  background-color: var(--bg-white);
+  box-sizing: border-box;
+  min-height: calc(100dvh - var(--header-height, 64px) - 60px);
+  height: calc(100dvh - var(--header-height, 64px) - 60px);
+  max-height: calc(100dvh - var(--header-height, 64px) - 60px);
+  overflow: hidden;
+  position: relative;
+  border-top: var(--border-width, 1px) solid var(--border-color);
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  z-index: var(--z-drawer, 100);
+}
+
+/* Linha Superior: Breadcrumbs (Cols 1-10) e Controles < X > (Cols 11-12) */
+.drawer-top-line {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  background-color: var(--hover-bg);
+  box-sizing: border-box;
+  user-select: none;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.drawer-breadcrumb-col {
+  grid-column: 1 / 11;
+  display: flex;
+  align-items: center;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 12px;
+  overflow: visible;
+  white-space: nowrap;
+  font-size: var(--fs-meta);
+  color: var(--bg-black);
+  background-color: transparent;
+}
+
+.breadcrumb-trail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.breadcrumb-step {
+  color: var(--bg-black);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 2px;
+  font-weight: 500;
+  font-size: var(--fs-meta);
+  transition: background-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.breadcrumb-step.is-current {
+  font-weight: 700;
+  cursor: default;
+}
+
+.breadcrumb-sep {
+  color: var(--bg-black);
+  opacity: 0.5;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.drawer-control-col {
+  grid-column: 11 / 13;
+  display: flex;
+  align-items: stretch;
+  border-left: var(--border-width, 1px) solid var(--border-color);
+}
+
+.drawer-ctrl-box {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+}
+
+.drawer-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  width: 33.333%;
+  height: 100%;
+  min-height: 48px;
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  font-weight: 400;
+  color: var(--bg-black);
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  user-select: none;
+}
+
+.drawer-btn-icon.drawer-btn-close {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.drawer-ctrl-box .drawer-btn-icon:not(:last-child) {
+  border-right: var(--border-width, 1px) solid var(--border-color);
+}
+
+.drawer-btn-icon:disabled,
+.drawer-btn-icon.is-disabled {
+  opacity: 0.25;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Coluna de Conteúdo Editorial (Cols 1-8) */
+.drawer-left-column {
+  grid-column: 1 / 9;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  border-right: var(--border-width, 1px) solid var(--border-color);
+  background-color: var(--bg-white);
+  box-sizing: border-box;
+  position: relative;
+}
+
+.drawer-content-pane {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  padding: 32px 0 48px 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.drawer-content-pane::-webkit-scrollbar {
+  display: none;
+}
+
+.drawer-subsections-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 20px;
+  flex-shrink: 0;
+}
+
+.drawer-dynamic-view {
+  padding-left: var(--content-indent-left, 60px);
+  padding-right: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.section-sobre-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sobre-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sobre-block-label {
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--bg-black);
+}
+
+.sobre-block-content {
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--bg-black);
+}
+
+.sobre-block-content p {
+  margin: 0 0 1em 0;
+}
+
+.sobre-block-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Coluna de Galeria Lateral (Cols 9-12) */
+.drawer-media-pane {
+  grid-column: 9 / 13;
+  grid-row: 2;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-white);
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.drawer-media-pane::-webkit-scrollbar {
+  display: none !important;
+}
+
+.drawer-gallery-track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.drawer-gallery-item {
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  background-color: var(--bg-white);
+}
+
+.drawer-gallery-item:last-child {
+  border-bottom: none;
+}
+
+.drawer-gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: opacity 0.15s ease;
+}
+
+/* Modo Zoom em Tela Inteira */
+.drawer-zoom-wrapper {
+  grid-column: 1 / -1;
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background-color: var(--bg-white);
+  position: relative;
+  z-index: 20;
+}
+
+.drawer-zoom-horizontal-track {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 24px;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 24px 16px 24px;
+  box-sizing: border-box;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.drawer-zoom-horizontal-track::-webkit-scrollbar {
+  display: none !important;
+}
+
+.drawer-zoom-slide-item {
+  display: inline-flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100%;
+  box-sizing: border-box;
+  align-items: flex-start;
+  width: auto;
+}
+
+.drawer-zoom-img-container {
+  flex: 1;
+  min-height: 0;
+  height: calc(100% - 48px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.drawer-zoom-img-container img {
+  height: 100%;
+  max-height: 100%;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  border: none !important;
+  background-color: transparent;
+  display: block;
+}
+
+.drawer-zoom-caption-box {
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  padding-top: 8px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.zoom-caption-text {
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--bg-black);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
+}
+
+.zoom-caption-author {
+  font-size: var(--fs-nav);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--bg-black);
+  opacity: 0.7;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   5. AGENTES & POPOVERS
+   -------------------------------------------------------------------------- */
+.artist-name-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.artist-clickable-tag {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 400;
+  color: var(--bg-black);
+  cursor: pointer;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.artist-popover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  min-width: 220px;
+  max-width: 320px;
+  background-color: var(--bg-white);
+  border: var(--border-width, 1px) solid var(--border-color);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: var(--z-popover, 200);
+  border-radius: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+  pointer-events: none;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.artist-popover.popover-down {
+  bottom: auto;
+  top: calc(100% + 8px);
+  transform: translateY(-4px);
+}
+
+.artist-popover.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.popover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: var(--border-width, 1px) solid var(--border-color);
+  padding-bottom: 6px;
+  gap: 8px;
+  width: 100%;
+}
+
+.popover-title-text {
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  color: var(--bg-black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.popover-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--bg-black);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.popover-count-meta {
+  font-size: var(--fs-nav);
+  font-weight: 500;
+  color: var(--bg-black);
+  opacity: 0.8;
+}
+
+.popover-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.popover-action {
+  background: var(--bg-black);
+  color: var(--bg-white);
+  border: var(--border-width, 1px) solid var(--border-color);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: var(--fs-nav);
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* --------------------------------------------------------------------------
+   6. RESPONSIVIDADE ADAPTATIVA (WINDOW SIZE CLASSES)
+   -------------------------------------------------------------------------- */
+@media (max-width: 899px) {
+  .header-nav-left {
+    margin-left: 0;
+  }
+
+  .logo-hero-wrap {
+    width: 25vw;
+    min-width: 90px;
+  }
+
+  .section-folder-tabs-header {
+    padding-left: 16px;
+    padding-right: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .section-folder-tabs-header::-webkit-scrollbar {
+    display: none;
+  }
+
+  .event-meta-row {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    margin-bottom: 12px;
+  }
+
+  .event-meta-tags,
+  .event-meta-horario,
+  .event-meta-date {
+    padding-left: 16px;
+    padding-right: 16px;
+    border: none;
+    height: 32px;
+  }
+
+  .event-title,
+  .event-names {
+    padding-left: 16px;
+    padding-right: 16px;
+    max-width: 100%;
+  }
+
+  .event-universal-drawer,
+  .universal-drawer {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    max-height: none;
+  }
+
+  .drawer-top-line {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .drawer-breadcrumb-col {
+    padding-left: 16px;
+  }
+
+  .drawer-left-column {
+    border-right: none;
+  }
+
+  .drawer-content-pane {
+    padding: 24px 16px 32px 16px;
+    overflow-y: visible;
+  }
+
+  .drawer-media-pane {
+    border-top: var(--border-width, 1px) solid var(--border-color);
+    height: 320px;
+    max-height: 320px;
+  }
+}
+
+# FIM DO ARQUIVO: src/css/components.css
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [6/13]: src/js/app.js
+Caminho Absoluto: /app/applet/src/js/app.js
+Metadados: 133 linhas | 4.33 KB
+-------------------------------------------------------------------------------------
+
+/**
+ * RESIDÊNCIA FONTE — APP.JS
+ * Maestro da SPA (Orquestração Segura de Módulos)
+ */
+
+import { initProgram } from './program.js';
+import { initCanvasEngine } from './geral.js';
+import { initAtelies } from './atelies.js';
+import { initResidencia } from './residencia.js';
+import { initGridGuide } from './grid-guide.js';
+import { initArqModule } from './arq.js';
+
+function boot() {
+  // 1. Interface Global e Motor Gráfico
+  try {
+    initGlobalUI();
+  } catch (err) {
+    console.error('[App] Erro em initGlobalUI:', err);
+  }
+
+  try {
+    initCanvasEngine();
+  } catch (err) {
+    console.error('[App] Erro em initCanvasEngine:', err);
+  }
+
+  try {
+    initGridGuide();
+  } catch (err) {
+    console.error('[App] Erro em initGridGuide:', err);
+  }
+
+  // 2. Módulos de Conteúdo Isolados
+  const programContainer = document.getElementById('sec-programacao');
+  if (programContainer) {
+    try {
+      initProgram(programContainer);
+    } catch (err) {
+      console.error('[App] Erro em initProgram:', err);
+    }
+  }
+
+  const ateliesContainer = document.getElementById('sec-atelies');
+  if (ateliesContainer) {
+    try {
+      initAtelies(ateliesContainer);
+    } catch (err) {
+      console.error('[App] Erro em initAtelies:', err);
+    }
+  }
+
+  const residenciaContainer = document.getElementById('sec-residencia');
+  if (residenciaContainer) {
+    try {
+      initResidencia(residenciaContainer);
+    } catch (err) {
+      console.error('[App] Erro em initResidencia:', err);
+    }
+  }
+
+  const arquivoContainer = document.getElementById('sec-arquivo');
+  if (arquivoContainer) {
+    try {
+      initArqModule();
+    } catch (err) {
+      console.error('[App] Erro em initArqModule:', err);
+    }
+  }
+}
+
+// Inicialização segura: se o DOM já carregou, roda imediatamente; senão, aguarda o evento
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
+
+function initGlobalUI() {
+  document.body.addEventListener('click', (e) => {
+    // Menu mobile toggle
+    const menuToggle = e.target.closest('#menu-toggle-btn');
+    if (menuToggle) {
+      const navContainer = document.getElementById('header-nav-left');
+      const icon = document.getElementById('menu-toggle-icon');
+      const isExpanded = navContainer.classList.toggle('is-open');
+      menuToggle.setAttribute('aria-expanded', isExpanded);
+      if (icon) icon.textContent = isExpanded ? '✕' : '≡';
+    }
+
+    // Submenu buttons
+    const subnavBtn = e.target.closest('.header-subnav-btn');
+    if (subnavBtn) {
+      e.preventDefault();
+      const targetSec = subnavBtn.getAttribute('data-target-sec');
+      if (targetSec) {
+        const secEl = document.getElementById(targetSec);
+        if (secEl) {
+          const headerHeight = document.getElementById('logo-controller')?.offsetHeight || 64;
+          const targetPosition = secEl.getBoundingClientRect().top + window.scrollY - headerHeight;
+          window.scrollTo({ top: Math.max(0, targetPosition), behavior: 'smooth' });
+        }
+      }
+
+      if (subnavBtn.dataset.progFilter && window._progSetFilter) {
+        window._progSetFilter(subnavBtn.dataset.progFilter);
+      }
+
+      if (subnavBtn.dataset.residenciaMod && window._selectResidenciaModality) {
+        window._selectResidenciaModality(subnavBtn.dataset.residenciaMod);
+      }
+
+      if (subnavBtn.dataset.artistId) {
+        const artistBtn = document.querySelector(`.artist-name-btn[data-id="${subnavBtn.dataset.artistId}"]`);
+        if (artistBtn) artistBtn.click();
+      }
+    }
+
+    // Scroll suave para links âncora
+    const navLink = e.target.closest('.header-nav-btn[href^="#"]');
+    if (navLink) {
+      e.preventDefault();
+      const targetId = navLink.getAttribute('href').substring(1);
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        const headerHeight = document.getElementById('logo-controller')?.offsetHeight || 64;
+        const targetPosition = targetEl.getBoundingClientRect().top + window.scrollY - headerHeight;
+        window.scrollTo({ top: Math.max(0, targetPosition), behavior: 'smooth' });
+        document.querySelectorAll('.header-nav-btn').forEach(btn => btn.classList.remove('is-active'));
+        navLink.classList.add('is-active');
+      }
+    }
+  });
+}
+
+# FIM DO ARQUIVO: src/js/app.js
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [7/13]: src/js/program.js
+Caminho Absoluto: /app/applet/src/js/program.js
+Metadados: 436 linhas | 14.84 KB
+-------------------------------------------------------------------------------------
+
+/**
+ * RESIDÊNCIA FONTE — PROGRAM.JS
+ * Módulo SPA de Programação (Zero GSAP, Estado Centralizado, 3 Andares Suíços)
+ */
+
+const state = {
+  events: [],
+  filter: 'TODA',
+  activeId: null,
+  activeTab: 'sobre',
+  zoomIndex: null
+};
+
+export async function initProgram(sectionEl) {
+  try {
+    const urls = ['./programacao.json', '/programacao.json', './public/programacao.json'];
+    let json = null;
+    for (const u of urls) {
+      try {
+        const res = await fetch(u);
+        if (res.ok) {
+          json = await res.json();
+          break;
+        }
+      } catch (_) {}
+    }
+
+    if (json) {
+      state.events = flattenEvents(json);
+    } else {
+      throw new Error('Fallback acionado');
+    }
+  } catch (err) {
+    state.events = getMockEvents();
+  }
+
+  renderFacets();
+  renderGrid();
+  attachEvents(sectionEl);
+
+  window._progSetFilter = (filterKey) => {
+    state.filter = filterKey;
+    state.activeId = null;
+    state.zoomIndex = null;
+    renderFacets();
+    renderGrid();
+  };
+}
+
+function flattenEvents(data) {
+  if (!Array.isArray(data)) return getMockEvents();
+  const list = [];
+  data.forEach((item, idx) => {
+    if (Array.isArray(item.events)) {
+      const sub = item.subsection || '';
+      item.events.forEach((evt, eIdx) => {
+        list.push({
+          ...evt,
+          id: evt.id || `prog-${idx}-${eIdx}`,
+          subsection: evt.subsection || sub,
+          rawTitle: evt.title || ''
+        });
+      });
+    } else {
+      list.push({
+        ...item,
+        id: item.id || `prog-${idx}`,
+        subsection: item.subsection || item.status || 'PRESENTE',
+        rawTitle: item.title || ''
+      });
+    }
+  });
+  return list.length > 0 ? list : getMockEvents();
+}
+
+function getMockEvents() {
+  return [
+    {
+      id: 'mock-1',
+      title: 'Montagem',
+      subtitle: '',
+      category: 'Exposição',
+      subsection: 'PRESENTE',
+      horario: 'Qua a Dom, 14h–19h',
+      date: '20 Ago — 15 Nov',
+      desc: 'Marcelo Amorim',
+      sobre: 'A exposição individual Montagem, de Marcelo Amorim, reúne trabalhos baseados em imagens vernaculares para questionar o olhar voyeurístico e as construções da memória coletiva.',
+      artistas: ['Marcelo Amorim'],
+      curadoria: [],
+      fotos: [
+        { url: 'https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/a-duracao-das-coisas/8a68ff0b92-1789686093/0056-1400x1400-q82.webp', legenda: 'Vista da exposição' }
+      ]
+    },
+    {
+      id: 'mock-2',
+      title: 'Romper a superfície é abrir um rio',
+      subtitle: '',
+      category: 'Exposição Coletiva',
+      subsection: 'PRESENTE',
+      horario: 'Qua a Dom, 14h–19h',
+      date: 'Até 10 Dez',
+      desc: 'Greta Fausto, Adriano Franchini, Clovis Teodorico, Corina Ishikura, Débora Rayel Eva, Diego Marciano, Fefa Lins, Fernanda Isola, Guilherme Borsetto, Gustavo Aragoni, Jamila Maria, Jussara Marangoni, Lorena Bernardes, Marcelo Barros, Maria Luiza Mazzeto, Mércia Morelli, Mari Nagem, Roberto Unterladstaetter, Tomie Savaget, Arlette Kalaigian, Cláudio Souza, Corina Ishikura, Cyra Moreira, Denis Moreira, Érica Jassuda, Heloísa Lodder, Jussara Marangoni, Nil Sanchez e Rosa Grizzo',
+      sobre: 'Investigação coletiva sobre o fluxo das águas e os transbordamentos formais no espaço urbano.',
+      artistas: ['Greta Fausto', 'Adriano Franchini', 'Diego Marciano'],
+      curadoria: ['Ana Roman'],
+      fotos: [
+        { url: 'https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/lava-terceira-edicao/26fd11888f-1789686302/230225_lava_0097-2560x2560-q85.webp', legenda: 'Abertura oficial' }
+      ]
+    }
+  ];
+}
+
+function renderFacets() {
+  const container = document.getElementById('programacao-facets-container');
+  if (!container) return;
+
+  const filters = ['TODA', 'PRESENTE', 'INSCRIÇÕES ABERTAS', 'PRÓXIMA'];
+  container.innerHTML = filters.map(f => `
+    <button type="button" 
+            class="filter-pill ${state.filter === f ? 'is-active' : ''}" 
+            data-filter="${f}">
+      ${f}
+    </button>
+  `).join('');
+}
+
+function renderGrid() {
+  const container = document.getElementById('programacao-grid-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  let list = state.events;
+  if (state.filter !== 'TODA') {
+    list = list.filter(e => (e.subsection || '').toUpperCase().includes(state.filter));
+  }
+
+  if (list.length === 0) {
+    container.innerHTML = `<div style="padding: 48px var(--content-indent-left); font-size: var(--fs-meta); text-transform: uppercase;">Nenhum evento registrado nesta categoria.</div>`;
+    return;
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'programacao-container';
+
+  list.forEach(evt => {
+    const isOpen = state.activeId === evt.id;
+    const article = document.createElement('article');
+    article.className = `programacao-event-item ${isOpen ? 'is-open' : ''}`;
+    article.dataset.id = evt.id;
+
+    const isInscricoes = (evt.subsection || '').toUpperCase().includes('INSCRIÇÕES') || (evt.category || '').toUpperCase().includes('INSCRIÇÕES');
+
+    article.innerHTML = `
+      <div class="event-header" role="button" tabindex="0" aria-expanded="${isOpen}">
+        <div class="event-meta-row">
+          <div class="event-meta-tags">
+            ${isInscricoes ? `<span class="event-tag-badge event-tag-inscricoes">Inscrições Abertas</span>` : `<span>${evt.category || 'Programação'}</span>`}
+          </div>
+          <div class="event-meta-horario">
+            <span>${evt.horario || '—'}</span>
+          </div>
+          <div class="event-meta-date">
+            <span>${evt.date || ''}</span>
+          </div>
+        </div>
+        <h2 class="event-title">
+          <span class="event-title-text">${evt.title}</span>
+          ${evt.subtitle ? `<span class="event-subtitle-text">${evt.subtitle}</span>` : ''}
+        </h2>
+        <div class="event-names">${evt.desc || ''}</div>
+      </div>
+    `;
+
+    if (isOpen) {
+      article.appendChild(createDrawerElement(evt));
+    }
+
+    wrapper.appendChild(article);
+  });
+
+  container.appendChild(wrapper);
+}
+
+function formatPeopleList(val, fallback = '') {
+  if (Array.isArray(val)) return val.filter(Boolean).join(', ') || fallback;
+  if (typeof val === 'string' && val.trim().length > 0) return val.trim();
+  return fallback;
+}
+
+function formatCriticalText(raw) {
+  if (!raw) return 'Em fase de digitalização no acervo.';
+  if (typeof raw === 'string') {
+    const match = raw.match(/texto:\s*'([\s\S]*?)'/i);
+    if (match && match[1]) {
+      return match[1];
+    }
+    return raw;
+  }
+  return 'Em fase de digitalização no acervo.';
+}
+
+function createDrawerElement(evt) {
+  const drawer = document.createElement('div');
+  drawer.className = 'event-universal-drawer';
+
+  const isZoom = state.zoomIndex !== null;
+  const images = (Array.isArray(evt.fotos) && evt.fotos.length > 0)
+    ? evt.fotos
+    : (Array.isArray(evt.images) && evt.images.length > 0)
+      ? evt.images
+      : (evt.url ? [{ url: evt.url, legenda: evt.title }] : [
+          { url: 'https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/a-duracao-das-coisas/8a68ff0b92-1789686093/0056-1400x1400-q82.webp', legenda: evt.title }
+        ]);
+
+  if (isZoom) {
+    drawer.innerHTML = `
+      <div class="drawer-zoom-wrapper">
+        <div class="drawer-top-line">
+          <div class="drawer-breadcrumb-col">
+            <div class="breadcrumb-trail">
+              <span class="breadcrumb-step" data-action="back-event">PROGRAMAÇÃO</span>
+              <span class="breadcrumb-sep">&gt;</span>
+              <span class="breadcrumb-step is-current">GALERIA: ${images.length} FOTOS</span>
+            </div>
+          </div>
+          <div class="drawer-control-col">
+            <div class="drawer-ctrl-box">
+              <button type="button" class="drawer-btn-icon drawer-btn-close" data-action="close-zoom" title="Fechar galeria">✕</button>
+            </div>
+          </div>
+        </div>
+        <div class="drawer-zoom-horizontal-track">
+          ${images.map((img, idx) => `
+            <div class="drawer-zoom-slide-item">
+              <div class="drawer-zoom-img-container" data-action="close-zoom">
+                <img src="${img.url || img}" alt="${img.legenda || evt.title}">
+              </div>
+              <div class="drawer-zoom-caption-box">
+                <span class="zoom-caption-text">${img.legenda || evt.title}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    return drawer;
+  }
+
+  const tabs = [
+    { id: 'sobre', label: 'Sobre' },
+    { id: 'textos', label: 'Textos' },
+    { id: 'mapa', label: 'Mapa de Exposição' }
+  ];
+
+  const tabsHtml = tabs.map(t => `
+    <button type="button" class="drawer-tab-pill ${state.activeTab === t.id ? 'is-active' : ''}" data-tab="${t.id}">
+      ${t.label}
+    </button>
+  `).join('');
+
+  let contentHtml = '';
+  if (state.activeTab === 'sobre') {
+    const artistasDisplay = formatPeopleList(evt.artistas, evt.desc || '—');
+    const curadoriaDisplay = formatPeopleList(evt.curadoria, '');
+
+    contentHtml = `
+      <div class="section-sobre-wrap">
+        <div class="sobre-block">
+          <span class="sobre-block-label">Artistas</span>
+          <div class="sobre-block-content">${artistasDisplay}</div>
+        </div>
+        ${curadoriaDisplay ? `
+          <div class="sobre-block">
+            <span class="sobre-block-label">Curadoria</span>
+            <div class="sobre-block-content">${curadoriaDisplay}</div>
+          </div>
+        ` : ''}
+        <div class="sobre-block">
+          <span class="sobre-block-label">Resumo</span>
+          <div class="sobre-block-content"><p>${evt.sobre || evt.content || 'Sem detalhes disponíveis.'}</p></div>
+        </div>
+      </div>
+    `;
+  } else if (state.activeTab === 'textos') {
+    contentHtml = `
+      <div class="sobre-block">
+        <span class="sobre-block-label">Texto Crítico</span>
+        <div class="sobre-block-content">${formatCriticalText(evt.texto_critico)}</div>
+      </div>
+    `;
+  } else {
+    contentHtml = `<p>Informações de montagem disponíveis no ateliê.</p>`;
+  }
+
+  drawer.innerHTML = `
+    <div class="drawer-top-line">
+      <div class="drawer-breadcrumb-col">
+        <div class="breadcrumb-trail">
+          <span class="breadcrumb-step" data-action="close">PROGRAMAÇÃO</span>
+          <span class="breadcrumb-sep">&gt;</span>
+          <span class="breadcrumb-step is-current">${evt.title.toUpperCase()}</span>
+        </div>
+      </div>
+      <div class="drawer-control-col">
+        <div class="drawer-ctrl-box">
+          <button type="button" class="drawer-btn-icon" data-action="prev" title="Anterior">‹</button>
+          <button type="button" class="drawer-btn-icon drawer-btn-close" data-action="close" title="Fechar">✕</button>
+          <button type="button" class="drawer-btn-icon" data-action="next" title="Próximo">›</button>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-left-column">
+      <div class="drawer-content-pane">
+        <div class="drawer-subsections-toolbar">
+          ${tabsHtml}
+        </div>
+        <div class="drawer-dynamic-view">
+          ${contentHtml}
+        </div>
+      </div>
+    </div>
+    <div class="drawer-media-pane">
+      <div class="drawer-gallery-track">
+        ${images.map((img, idx) => `
+          <div class="drawer-gallery-item" data-action="open-zoom" data-idx="${idx}">
+            <img src="${img.url || img}" alt="${img.legenda || evt.title}" loading="lazy">
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
+  return drawer;
+}
+
+function attachEvents(sectionEl) {
+  const facets = document.getElementById('programacao-facets-container');
+  const gridContainer = document.getElementById('programacao-grid-container');
+
+  if (facets) {
+    facets.addEventListener('click', (e) => {
+      const pill = e.target.closest('.filter-pill');
+      if (pill) {
+        state.filter = pill.dataset.filter;
+        state.activeId = null;
+        state.zoomIndex = null;
+        renderFacets();
+        renderGrid();
+      }
+    });
+  }
+
+  if (gridContainer) {
+    gridContainer.addEventListener('click', (e) => {
+      // 1. Fechar gaveta
+      if (e.target.closest('[data-action="close"]')) {
+        state.activeId = null;
+        state.zoomIndex = null;
+        renderGrid();
+        return;
+      }
+
+      // 2. Fechar Zoom
+      if (e.target.closest('[data-action="close-zoom"]') || e.target.closest('[data-action="back-event"]')) {
+        state.zoomIndex = null;
+        renderGrid();
+        return;
+      }
+
+      // 3. Abrir Zoom
+      const zoomTrigger = e.target.closest('[data-action="open-zoom"]');
+      if (zoomTrigger) {
+        state.zoomIndex = parseInt(zoomTrigger.dataset.idx, 10) || 0;
+        renderGrid();
+        return;
+      }
+
+      // 4. Troca de abas internas
+      const tabBtn = e.target.closest('.drawer-tab-pill');
+      if (tabBtn) {
+        state.activeTab = tabBtn.dataset.tab;
+        renderGrid();
+        return;
+      }
+
+      // 5. Navegação Próximo/Anterior
+      if (e.target.closest('[data-action="prev"]')) {
+        navigateEvent(-1);
+        return;
+      }
+      if (e.target.closest('[data-action="next"]')) {
+        navigateEvent(1);
+        return;
+      }
+
+      // 6. Clique na linha do evento
+      const header = e.target.closest('.event-header');
+      if (header) {
+        const article = header.closest('.programacao-event-item');
+        const id = article.dataset.id;
+        state.activeId = (state.activeId === id) ? null : id;
+        state.activeTab = 'sobre';
+        state.zoomIndex = null;
+        renderGrid();
+
+        if (state.activeId) {
+          setTimeout(() => {
+            const targetEl = document.querySelector(`.programacao-event-item[data-id="${id}"]`);
+            if (targetEl) {
+              const headerHeight = document.getElementById('logo-controller')?.offsetHeight || 64;
+              const targetTop = targetEl.getBoundingClientRect().top + window.scrollY - headerHeight;
+              window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+            }
+          }, 30);
+        }
+      }
+    });
+  }
+}
+
+function navigateEvent(delta) {
+  let list = state.events;
+  if (state.filter !== 'TODA') {
+    list = list.filter(e => (e.subsection || '').toUpperCase().includes(state.filter));
+  }
+  const currentIdx = list.findIndex(e => e.id === state.activeId);
+  if (currentIdx === -1) return;
+
+  const nextIdx = currentIdx + delta;
+  if (nextIdx >= 0 && nextIdx < list.length) {
+    state.activeId = list[nextIdx].id;
+    state.zoomIndex = null;
+    state.activeTab = 'sobre';
+    renderGrid();
+  }
+}
+
+# FIM DO ARQUIVO: src/js/program.js
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [8/13]: src/js/geral.js
+Caminho Absoluto: /app/applet/src/js/geral.js
+Metadados: 134 linhas | 4.06 KB
+-------------------------------------------------------------------------------------
+
+/**
+ * RESIDÊNCIA FONTE — GERAL.JS
+ * Motor da Padronagem Vetorial (Canvas de Fundo com Duas Camadas)
+ * Consome o módulo canônico vectors.js e sincroniza destaques via IntersectionObserver.
+ */
+
+import { generateCrossMatrix } from './vectors.js';
+
+export function initCanvasEngine() {
+  const canvasNormal = document.getElementById('canvas-normal');
+  const canvasHighlight = document.getElementById('canvas-highlight');
+  if (!canvasNormal || !canvasHighlight) return;
+
+  const ctxNormal = canvasNormal.getContext('2d', { alpha: true });
+  const ctxHighlight = canvasHighlight.getContext('2d', { alpha: true });
+  if (!ctxNormal || !ctxHighlight) return;
+
+  const CONFIG = {
+    strokeWidth: 3.5,
+    colorNormal: '#ffffff',
+    colorHighlight: '#ffffff'
+  };
+
+  let cells = [];
+  let canvasWidth = 0;
+  let canvasHeight = 0;
+  let isCompleteMode = false;
+  let activeHighlightSet = new Set(['f', 'n']); // Destaque padrão da primeira seção (Programação)
+
+  /* Dicionário Oficial de Destaques por Seção */
+  const sectionHighlightsMap = {
+    'sec-programacao': ['f', 'n'],
+    'sec-residencia':  ['e', 't'],
+    'sec-atelies':     ['o', 'n'],
+    'sec-arquivo':     ['f', 't']
+  };
+
+  function updateGrid() {
+    const isMobile = canvasWidth < 600;
+    const matrix = generateCrossMatrix({
+      width: canvasWidth,
+      height: canvasHeight,
+      isMobile
+    });
+    cells = matrix.cells;
+  }
+
+  function drawPattern() {
+    ctxNormal.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctxHighlight.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    ctxNormal.lineCap = 'square';
+    ctxNormal.lineJoin = 'miter';
+    ctxHighlight.lineCap = 'square';
+    ctxHighlight.lineJoin = 'miter';
+
+    for (let i = 0; i < cells.length; i++) {
+      const cell = cells[i];
+      const isHighlight = activeHighlightSet.has(cell.letter);
+      const ctx = isHighlight ? ctxHighlight : ctxNormal;
+      const path = isCompleteMode ? cell.completePath : cell.path;
+
+      if (!path) continue;
+
+      ctx.save();
+      ctx.translate(cell.cx, cell.cy);
+      ctx.scale(cell.scale, cell.scale);
+      ctx.translate(-530, -530); // 1060 / 2 para ancoragem no centro exato da célula
+
+      ctx.lineWidth = CONFIG.strokeWidth / cell.scale;
+      ctx.strokeStyle = isHighlight ? CONFIG.colorHighlight : CONFIG.colorNormal;
+      ctx.stroke(path);
+
+      ctx.restore();
+    }
+  }
+
+  function resizeCanvases() {
+    const dpr = window.devicePixelRatio || 1;
+    canvasWidth = window.innerWidth;
+    canvasHeight = window.innerHeight;
+
+    canvasNormal.width = Math.floor(canvasWidth * dpr);
+    canvasNormal.height = Math.floor(canvasHeight * dpr);
+    ctxNormal.setTransform(1, 0, 0, 1, 0, 0);
+    ctxNormal.scale(dpr, dpr);
+
+    canvasHighlight.width = Math.floor(canvasWidth * dpr);
+    canvasHighlight.height = Math.floor(canvasHeight * dpr);
+    ctxHighlight.setTransform(1, 0, 0, 1, 0, 0);
+    ctxHighlight.scale(dpr, dpr);
+
+    updateGrid();
+    drawPattern();
+  }
+
+  function initObserver() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id;
+          const lettersToHighlight = sectionHighlightsMap[sectionId];
+          if (lettersToHighlight) {
+            activeHighlightSet = new Set(lettersToHighlight);
+            drawPattern();
+          }
+        }
+      });
+    }, { threshold: 0.35 });
+
+    document.querySelectorAll('.section-block').forEach(section => {
+      observer.observe(section);
+    });
+  }
+
+  resizeCanvases();
+  window.addEventListener('resize', resizeCanvases, { passive: true });
+  initObserver();
+
+  /* Alternância de Modo Completo via Tecla 'P' */
+  window.addEventListener('keydown', (e) => {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) return;
+    if (e.key === 'p' || e.key === 'P') {
+      isCompleteMode = !isCompleteMode;
+      drawPattern();
+    }
+  });
+
+  // Expõe a função de redesenho para integração com o futuro laboratório sandbox
+  window._fonteRedrawCanvas = () => {
+    updateGrid();
+    drawPattern();
+  };
+}
+
+# FIM DO ARQUIVO: src/js/geral.js
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [9/13]: src/js/atelies.js
+Caminho Absoluto: /app/applet/src/js/atelies.js
+Metadados: 215 linhas | 11.10 KB
+-------------------------------------------------------------------------------------
+
+// ==========================================================================
+// MÓDULO SPA: ATELIÊS (Component-Scoped CSS + Grid 3x9)
+// ==========================================================================
+
+const state = {
+  data: [],
+  activeArtistId: null,
+  currentTab: 'sobre'
+};
+
+const MOCK_DATA = [
+  { id: 'marcelo', nome: 'Marcelo Amorim', imagem: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=1000', sobre: 'Marcelo Amorim desenvolve trabalhos baseados em imagens vernaculares, cinema de arquivo e apropriação.', pesquisa: 'Apropriação de arquivos analógicos e digitais.', links: { instagram: '@marcelo_amorim' } },
+  { id: 'luah', nome: 'Luah Souza', imagem: 'https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?q=80&w=1000', sobre: 'Luah Souza trabalha com têxteis, memória e arquitetura local.', pesquisa: 'Tramas e urdiduras como linguagem espacial.', links: {} },
+  { id: 'pedro', nome: 'Pedro Gallego', imagem: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000', sobre: 'Pedro Gallego investiga interfaces e a estética suíço-brutalista.', pesquisa: 'Acessibilidade estrutural e performance em ambientes SPA.', links: { portfolio: 'pedrogallego.com' } }
+];
+
+export async function initAtelies(sectionEl) {
+  injectScopedStyles();
+  
+  try {
+    const res = await fetch('./atelies.json').catch(() => null);
+    state.data = (res && res.ok) ? await res.json() : MOCK_DATA;
+  } catch (e) {
+    state.data = MOCK_DATA;
+  }
+
+  // Completa a matriz até 9 posições para fechar o grid canônico matematicamente
+  while (state.data.length < 9) {
+    state.data.push({ 
+      id: `mock-${state.data.length}`, 
+      nome: `Residente ${state.data.length + 1}`, 
+      imagem: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000', 
+      sobre: 'Informações indisponíveis no momento.' 
+    });
+  }
+
+  renderLayout(sectionEl);
+  attachEvents(sectionEl);
+}
+
+function injectScopedStyles() {
+  if (document.getElementById('atelies-scoped-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'atelies-scoped-styles';
+  style.textContent = `
+    .atelies-master-grid { display: grid; grid-template-columns: repeat(12, 1fr); border-top: var(--border-width) solid var(--border-color); border-bottom: var(--border-width) solid var(--border-color); background: var(--bg-page); }
+    .atelies-sidebar { grid-column: 1 / 4; border-right: var(--border-width) solid var(--border-color); display: flex; flex-direction: column; z-index: 20; position: relative; background: var(--bg-page); }
+    .artist-name-btn { flex: 1; display: flex; align-items: center; padding: 0 20px 0 var(--content-indent-left, 60px); font-size: calc(var(--fs-name) * 0.7); font-weight: 500; text-transform: uppercase; background: transparent; border-bottom: var(--border-width) solid var(--border-color); cursor: pointer; transition: background 0.2s, color 0.2s; text-align: left; letter-spacing: -0.01em; }
+    .artist-name-btn:last-child { border-bottom: none; }
+    @media (hover: hover) and (pointer: fine) { .artist-name-btn:hover, .artist-name-btn.is-hovered { background: rgba(255,255,255,0.4); } }
+    .artist-name-btn.is-active { background: var(--bg-black); color: var(--bg-white); }
+    .atelies-stage { grid-column: 4 / 13; position: relative; overflow: hidden; min-height: 600px; background: transparent; }
+    .photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); height: 100%; position: absolute; inset: 0; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .photo-cell { border-right: var(--border-width) solid var(--border-color); border-bottom: var(--border-width) solid var(--border-color); cursor: pointer; overflow: hidden; background: transparent; }
+    .photo-cell:nth-child(3n) { border-right: none; }
+    .photo-cell:nth-child(n+7) { border-bottom: none; }
+    .photo-cell img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2); opacity: 0.8; transition: filter 0.3s, opacity 0.3s; }
+    @media (hover: hover) and (pointer: fine) { .photo-cell:hover img, .photo-cell.is-hovered img { filter: grayscale(0%) contrast(1); opacity: 1; } }
+    .atelies-drawer { position: absolute; inset: 0; background: var(--bg-page); display: grid; grid-template-columns: 4fr 5fr; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10; border-left: var(--border-width) solid var(--border-color); }
+    .atelies-drawer.is-open { transform: translateX(0); }
+    .atelies-drawer-media { border-right: var(--border-width) solid var(--border-color); }
+    .atelies-drawer-media img { width: 100%; height: 100%; object-fit: cover; }
+    .atelies-drawer-content { display: flex; flex-direction: column; padding: 24px; max-height: 100%; overflow-y: auto; }
+    .atelies-drawer-close { align-self: flex-end; font-size: 1.5rem; background: transparent; cursor: pointer; border: none; padding: 8px; line-height: 1; color: var(--bg-black); }
+    .atelies-drawer-tabs { display: flex; gap: 8px; border-bottom: var(--border-width) solid var(--border-color); padding-bottom: 16px; margin-bottom: 24px; margin-top: 16px; }
+    .atelies-drawer-tab { font-size: var(--fs-nav); text-transform: uppercase; font-weight: 600; padding: 6px 12px; border: var(--border-width) solid transparent; border-radius: 4px; background: transparent; cursor: pointer; transition: all 0.2s; }
+    .atelies-drawer-tab.is-active { border-color: var(--border-color); background: var(--bg-black); color: var(--bg-white); }
+    .atelies-drawer-body { font-size: var(--fs-body); line-height: 1.6; color: var(--bg-black); }
+    @media (max-width: 899px) {
+      .atelies-sidebar { grid-column: 1 / -1; border-right: none; border-bottom: var(--border-width) solid var(--border-color); display: grid; grid-template-columns: repeat(3, 1fr); min-height: 180px; }
+      .artist-name-btn { padding: 12px 8px; border-right: var(--border-width) solid var(--border-color); justify-content: center; text-align: center; }
+      .artist-name-btn:nth-child(3n) { border-right: none; }
+      .atelies-stage { grid-column: 1 / -1; min-height: 400px; }
+      .atelies-drawer { grid-template-columns: 1fr; overflow-y: visible; border-left: none; }
+      .atelies-drawer-media { border-right: none; border-bottom: var(--border-width) solid var(--border-color); min-height: 300px; max-height: 300px; }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+function renderLayout(sectionEl) {
+  const container = sectionEl.querySelector('#atelies-grid-container');
+  if (!container) return;
+
+  const namesHtml = state.data.map(artist => `
+    <button type="button" class="artist-name-btn" data-id="${artist.id}" aria-label="Ver perfil de ${artist.nome}">
+      <span>${artist.nome.split(' ').join('<br>')}</span>
+    </button>
+  `).join('');
+
+  const photosHtml = state.data.map(artist => `
+    <div class="photo-cell" data-id="${artist.id}">
+      <img src="${artist.imagem}" alt="${artist.nome}" loading="lazy">
+    </div>
+  `).join('');
+
+  container.innerHTML = `
+    <div class="atelies-master-grid">
+      <aside class="atelies-sidebar">
+        ${namesHtml}
+      </aside>
+      <div class="atelies-stage">
+        <div class="photos-grid">
+          ${photosHtml}
+        </div>
+        <div class="atelies-drawer" id="atelies-active-drawer">
+          <!-- Conteúdo Injetado Dinamicamente -->
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function attachEvents(sectionEl) {
+  const sidebar = sectionEl.querySelector('.atelies-sidebar');
+  const photosGrid = sectionEl.querySelector('.photos-grid');
+  
+  // Hover Bidirecional Otimizado e Event Delegation
+  const syncHover = (id, isHovering) => {
+    const btn = sectionEl.querySelector(`.artist-name-btn[data-id="${id}"]`);
+    const cell = sectionEl.querySelector(`.photo-cell[data-id="${id}"]`);
+    if (btn) btn.classList.toggle('is-hovered', isHovering);
+    if (cell) cell.classList.toggle('is-hovered', isHovering);
+  };
+
+  sidebar.addEventListener('mouseover', (e) => {
+    const btn = e.target.closest('.artist-name-btn');
+    if (btn && !state.activeArtistId) syncHover(btn.dataset.id, true);
+  });
+  sidebar.addEventListener('mouseout', (e) => {
+    const btn = e.target.closest('.artist-name-btn');
+    if (btn && !state.activeArtistId) syncHover(btn.dataset.id, false);
+  });
+  
+  photosGrid.addEventListener('mouseover', (e) => {
+    const cell = e.target.closest('.photo-cell');
+    if (cell && !state.activeArtistId) syncHover(cell.dataset.id, true);
+  });
+  photosGrid.addEventListener('mouseout', (e) => {
+    const cell = e.target.closest('.photo-cell');
+    if (cell && !state.activeArtistId) syncHover(cell.dataset.id, false);
+  });
+
+  // Abertura de Perfil
+  const handleSelect = (e) => {
+    const el = e.target.closest('.artist-name-btn') || e.target.closest('.photo-cell');
+    if (el) openArtistProfile(el.dataset.id, sectionEl);
+  };
+  
+  sidebar.addEventListener('click', handleSelect);
+  photosGrid.addEventListener('click', handleSelect);
+}
+
+function openArtistProfile(id, sectionEl) {
+  if (state.activeArtistId === id) {
+    closeArtistProfile(sectionEl);
+    return;
+  }
+  
+  state.activeArtistId = id;
+  const artist = state.data.find(a => a.id === id);
+  if (!artist) return;
+
+  // Atualiza Visual Ativo
+  sectionEl.querySelectorAll('.artist-name-btn, .photo-cell').forEach(el => {
+    el.classList.remove('is-active', 'is-hovered');
+    if (el.dataset.id === id) el.classList.add('is-active');
+  });
+
+  const drawer = sectionEl.querySelector('#atelies-active-drawer');
+  drawer.innerHTML = `
+    <div class="atelies-drawer-media">
+      <img src="${artist.imagem}" alt="${artist.nome}">
+    </div>
+    <div class="atelies-drawer-content">
+      <button class="atelies-drawer-close" aria-label="Fechar perfil">✕</button>
+      <div class="atelies-drawer-tabs">
+        <button class="atelies-drawer-tab is-active" data-tab="sobre">Sobre</button>
+        <button class="atelies-drawer-tab" data-tab="pesquisa">Pesquisa</button>
+      </div>
+      <div class="atelies-drawer-body" id="atelies-drawer-body">
+        ${artist.sobre}
+      </div>
+    </div>
+  `;
+
+  drawer.classList.add('is-open');
+  const photosGrid = sectionEl.querySelector('.photos-grid');
+  photosGrid.style.transform = 'translateX(-100%)';
+
+  // Lógica Interna da Gaveta
+  drawer.querySelector('.atelies-drawer-close').addEventListener('click', () => closeArtistProfile(sectionEl));
+  
+  const tabs = drawer.querySelectorAll('.atelies-drawer-tab');
+  const body = drawer.querySelector('#atelies-drawer-body');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('is-active'));
+      tab.classList.add('is-active');
+      const target = tab.dataset.tab;
+      body.textContent = target === 'sobre' ? artist.sobre : (artist.pesquisa || artist.sobre);
+    });
+  });
+}
+
+function closeArtistProfile(sectionEl) {
+  state.activeArtistId = null;
+  sectionEl.querySelectorAll('.artist-name-btn, .photo-cell').forEach(el => el.classList.remove('is-active'));
+  
+  const drawer = sectionEl.querySelector('#atelies-active-drawer');
+  const photosGrid = sectionEl.querySelector('.photos-grid');
+  
+  drawer.classList.remove('is-open');
+  photosGrid.style.transform = 'translateX(0)';
+}
+
+# FIM DO ARQUIVO: src/js/atelies.js
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [10/13]: src/js/residencia.js
+Caminho Absoluto: /app/applet/src/js/residencia.js
+Metadados: 157 linhas | 6.57 KB
+-------------------------------------------------------------------------------------
+
+// ==========================================================================
+// MÓDULO SPA: RESIDÊNCIA
+// ==========================================================================
+
+const state = {
+  data: null,
+  activeModality: 'inscricoes'
+};
+
+// Fallback visual para caso o fetch.json falhe no seu ambiente local
+const MOCK_DATA = {
+  institucional: {
+    subtitulo: "A Residência FONTE é um espaço de investigação contínua que fomenta a pesquisa e o pensamento crítico na arte contemporânea."
+  },
+  candidatura: {
+    titulo: "CHAMADA ABERTA",
+    chamada: "Buscamos artistas, curadores e pesquisadores para o novo ciclo de residência.",
+    email: "residencia@font-e.org",
+    requisitos: [
+      "Portfólio atualizado (máximo 10MB)",
+      "Carta de intenção (até 1 lauda)",
+      "Currículo resumido"
+    ]
+  },
+  modalidades: [
+    { 
+      id: "individual", 
+      nome: "Investigação Individual", 
+      duracao: "6 meses",
+      descricao: "Foco no desenvolvimento de pesquisa prática e teórica com suporte curatorial contínuo.", 
+      destaques: ["Ateliê exclusivo no espaço FONTE", "Acompanhamento crítico mensal", "Acesso irrestrito ao acervo"] 
+    },
+    { 
+      id: "coletiva", 
+      nome: "Residência Coletiva", 
+      duracao: "3 meses",
+      descricao: "Ciclo focado em práticas colaborativas e intercâmbio de processos entre os residentes.", 
+      destaques: ["Espaço de trabalho compartilhado", "Verba de produção para projeto final", "Participação em open studio"] 
+    }
+  ],
+  artistas_residentes: [
+    { nome: "Marcelo Amorim", modalidade: "individual", ano: 2026, imagem: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=1000" },
+    { nome: "Ósi", modalidade: "coletiva", ano: 2026, imagem: "https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?q=80&w=1000" },
+    { nome: "Luah Souza", modalidade: "individual", ano: 2026, imagem: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000" },
+    { nome: "Pedro Gallego", modalidade: "individual", ano: 2026, imagem: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000" }
+  ]
+};
+
+export async function initResidencia(sectionEl) {
+  try {
+    const res = await fetch('./residencia.json').catch(() => null);
+    state.data = (res && res.ok) ? await res.json() : MOCK_DATA;
+  } catch (e) {
+    state.data = MOCK_DATA;
+  }
+
+  renderLayout(sectionEl);
+  attachEvents(sectionEl);
+
+  // Expõe a função estritamente para o roteamento do menu principal no app.js
+  window._selectResidenciaModality = (mod) => {
+    state.activeModality = mod;
+    renderTabs(sectionEl);
+    renderContent(sectionEl);
+  };
+}
+
+function renderLayout(sectionEl) {
+  const introEl = sectionEl.querySelector('#residencia-subtitulo');
+  if (introEl && state.data.institucional) {
+    introEl.textContent = state.data.institucional.subtitulo;
+  }
+
+  renderTabs(sectionEl);
+  renderContent(sectionEl);
+  renderGallery(sectionEl);
+}
+
+function renderTabs(sectionEl) {
+  const container = sectionEl.querySelector('#residencia-modality-btns');
+  if (!container) return;
+
+  const validModalities = state.data.modalidades.filter(m => m.id !== 'institucional');
+  
+  let html = `<button class="filter-pill ${state.activeModality === 'inscricoes' ? 'is-active' : ''}" data-mod="inscricoes">INSCRIÇÕES</button>`;
+  
+  validModalities.forEach(mod => {
+    html += `<button class="filter-pill ${state.activeModality === mod.id ? 'is-active' : ''}" data-mod="${mod.id}">${mod.nome.toUpperCase()}</button>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function renderContent(sectionEl) {
+  const container = sectionEl.querySelector('#residencia-main-content-col');
+  if (!container) return;
+
+  if (state.activeModality === 'inscricoes') {
+    const cand = state.data.candidatura;
+    const reqHtml = cand.requisitos.map(r => `<li style="margin-bottom: 8px; font-size: var(--fs-body);">— ${r}</li>`).join('');
+    
+    container.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 32px; animation: fadeIn 0.3s ease;">
+        <div>
+          <h3 style="font-size: var(--fs-name); font-weight: 500; margin-bottom: 12px;">${cand.titulo}</h3>
+          <p style="font-size: var(--fs-body); line-height: 1.5; margin-bottom: 12px;">${cand.chamada}</p>
+          <p style="font-size: var(--fs-body);">Envio de propostas: <a href="mailto:${cand.email}" style="text-decoration: underline;">${cand.email}</a></p>
+        </div>
+        <div>
+          <h4 style="font-size: var(--fs-meta); font-weight: 700; margin-bottom: 16px;">DOSSIÊ DE CANDIDATURA (PDF):</h4>
+          <ul style="list-style: none;">${reqHtml}</ul>
+        </div>
+      </div>
+    `;
+  } else {
+    const mod = state.data.modalidades.find(m => m.id === state.activeModality);
+    if (!mod) return;
+
+    const hlHtml = mod.destaques ? `<ul style="list-style: none; margin-top: 24px;">${mod.destaques.map(d => `<li style="font-size: var(--fs-body); margin-bottom: 8px;">• ${d}</li>`).join('')}</ul>` : '';
+
+    container.innerHTML = `
+      <div style="animation: fadeIn 0.3s ease;">
+        <h4 style="font-size: var(--fs-name); font-weight: 500; margin-bottom: 12px; text-transform: uppercase;">${mod.nome}</h4>
+        ${mod.duracao ? `<span style="display: block; font-size: var(--fs-meta); font-weight: 600; margin-bottom: 16px;">${mod.duracao}</span>` : ''}
+        <p style="font-size: var(--fs-body); line-height: 1.5;">${mod.descricao}</p>
+        ${hlHtml}
+      </div>
+    `;
+  }
+}
+
+function renderGallery(sectionEl) {
+  const container = sectionEl.querySelector('#residencia-gallery');
+  if (!container || !state.data.artistas_residentes) return;
+
+  container.innerHTML = state.data.artistas_residentes.map(res => `
+    <div style="flex: 0 0 auto; width: clamp(280px, 25vw, 400px); border-right: var(--border-width) solid var(--border-color); display: flex; flex-direction: column;">
+      <img src="${res.imagem}" alt="${res.nome}" loading="lazy" style="width: 100%; height: 320px; object-fit: cover; border-bottom: var(--border-width) solid var(--border-color);">
+      <div style="padding: 16px 20px;">
+        <div style="font-size: var(--fs-body); font-weight: 600; margin-bottom: 4px;">${res.nome}</div>
+        <div style="font-size: var(--fs-meta); text-transform: uppercase;">${res.modalidade} / ${res.ano}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function attachEvents(sectionEl) {
+  const rail = sectionEl.querySelector('#residencia-modality-btns');
+  rail.addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-pill');
+    if (btn) {
+      state.activeModality = btn.dataset.mod;
+      renderTabs(sectionEl);
+      renderContent(sectionEl);
+    }
+  });
+}
+
+# FIM DO ARQUIVO: src/js/residencia.js
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [11/13]: src/js/grid-guide.js
+Caminho Absoluto: /app/applet/src/js/grid-guide.js
+Metadados: 73 linhas | 2.87 KB
+-------------------------------------------------------------------------------------
+
+// ==========================================================================
+// UTILITÁRIO DE DESENVOLVEDOR: GRID MATEMÁTICO 12 COLUNAS
+// ==========================================================================
+
+const STATE = {
+  mode: 0,
+  labels: ['GRID: OCULTO [G]', 'GRID: AO FUNDO [G]', 'GRID: À FRENTE [G]']
+};
+
+export function initGridGuide() {
+  injectDevStyles();
+  buildGridDOM();
+
+  window.addEventListener('keydown', (e) => {
+    const tag = e.target?.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target?.isContentEditable) return;
+    
+    if (e.key.toLowerCase() === 'g') {
+      e.preventDefault();
+      STATE.mode = (STATE.mode + 1) % 3;
+      updateGridRender();
+    }
+  });
+}
+
+function injectDevStyles() {
+  if (document.getElementById('grid-guide-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'grid-guide-styles';
+  style.textContent = `
+    .dev-grid-overlay { position: fixed; inset: 0; width: 100%; height: 100dvh; display: grid; grid-template-columns: repeat(12, 1fr); pointer-events: none; transition: opacity 0.2s; opacity: 0; z-index: -1; }
+    .dev-grid-overlay.mode-1 { opacity: 1; z-index: 5; }
+    .dev-grid-overlay.mode-2 { opacity: 1; z-index: 999999; }
+    .dev-grid-col { border-right: 1px dashed rgba(255, 66, 0, 0.4); background-color: rgba(255, 66, 0, 0.02); position: relative; }
+    .dev-grid-col:last-child { border-right: none; }
+    .dev-grid-num { position: absolute; right: 0; top: 4px; transform: translateX(50%); font-size: 10px; font-weight: 700; color: #ff4200; font-family: monospace; }
+    .dev-grid-hud { position: fixed; top: 12px; right: 20px; background: #ff4200; color: #fff; padding: 4px 8px; font-size: 10px; font-weight: 700; border-radius: 4px; z-index: 9999999; pointer-events: none; opacity: 0; transform: translateY(-4px); transition: all 0.2s; }
+    .dev-grid-hud.is-visible { opacity: 1; transform: translateY(0); }
+  `;
+  document.head.appendChild(style);
+}
+
+function buildGridDOM() {
+  const grid = document.createElement('div');
+  grid.id = 'dev-grid-overlay';
+  grid.className = 'dev-grid-overlay';
+  
+  let cols = '';
+  for (let i = 1; i <= 12; i++) {
+    cols += `<div class="dev-grid-col">${i < 12 ? `<span class="dev-grid-num">${i}|${i + 1}</span>` : ''}</div>`;
+  }
+  grid.innerHTML = cols;
+  document.body.appendChild(grid);
+
+  const hud = document.createElement('div');
+  hud.id = 'dev-grid-hud';
+  hud.className = 'dev-grid-hud';
+  document.body.appendChild(hud);
+}
+
+let hudTimeout;
+function updateGridRender() {
+  const grid = document.getElementById('dev-grid-overlay');
+  const hud = document.getElementById('dev-grid-hud');
+  if (!grid || !hud) return;
+  
+  grid.className = `dev-grid-overlay mode-${STATE.mode}`;
+  hud.textContent = STATE.labels[STATE.mode];
+  hud.classList.add('is-visible');
+  
+  clearTimeout(hudTimeout);
+  hudTimeout = setTimeout(() => hud.classList.remove('is-visible'), 1500);
+}
+
+# FIM DO ARQUIVO: src/js/grid-guide.js
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [12/13]: src/js/arq.js
+Caminho Absoluto: /app/applet/src/js/arq.js
+Metadados: 304 linhas | 12.12 KB
+-------------------------------------------------------------------------------------
+
+// ==========================================================================
+// MÓDULO SPA: ARQUIVO (Refatorado, Isolado e Auto-Contido)
+// ==========================================================================
+
+const state = {
+  data: { EVENTOS: [], PESSOAS: [], TEXTOS: [] },
+  viewMode: 'EVENTOS', // 'EVENTOS' | 'PESSOAS' | 'TEXTOS'
+  activeId: null,
+  drawerTab: 'sobre'
+};
+
+export async function initArqModule() {
+  injectScopedStyles();
+  
+  try {
+    const res = await fetch('./EVENTOS_CONSOLIDADO.json').catch(() => null);
+    if (res && res.ok) {
+      const json = await res.json();
+      buildDerivedDatasets(json);
+    } else {
+      throw new Error('Fallback acionado');
+    }
+  } catch (e) {
+    console.warn("JSON não encontrado no servidor. Por favor, inclua o mock na raiz.");
+  }
+
+  renderFacets();
+  renderTable();
+  attachGlobalEvents();
+}
+
+// Injeção limpa e segura do CSS da tabela
+function injectScopedStyles() {
+  if (document.getElementById('arq-scoped-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'arq-scoped-styles';
+  style.textContent = `
+    .arq-header-row { display: grid; grid-template-columns: repeat(12, 1fr); border-bottom: var(--border-width) solid var(--border-color); background: var(--accent-cyan); font-size: var(--fs-meta); font-weight: 600; text-transform: uppercase; height: 48px; }
+    .arq-table-row { display: grid; grid-template-columns: repeat(12, 1fr); min-height: 48px; border-bottom: var(--border-width) solid var(--border-color); cursor: pointer; transition: background 0.15s; font-size: var(--fs-meta); }
+    .arq-group-row { background: var(--bg-page); }
+    .arq-th, .arq-td { display: flex; align-items: center; padding: 0 16px; border-right: var(--border-width) solid var(--border-color); }
+    .arq-th:last-child, .arq-td:last-child { border-right: none; }
+    
+    @media (hover: hover) { .arq-table-row:hover { background: rgba(255,255,255,0.4); } }
+    .arq-group-row.is-open { background: var(--hover-bg); }
+    .arq-group-row.is-open .arq-table-row { border-bottom: none; }
+    
+    .col-title { grid-column: 1 / 5; padding-left: var(--content-indent-left, 60px); font-weight: 500; }
+    .col-artists { grid-column: 5 / 9; }
+    .col-category { grid-column: 9 / 12; }
+    .col-year { grid-column: 12 / 13; }
+    
+    .arq-drawer-inner-grid { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, 1fr); border-top: var(--border-width) solid var(--border-color); border-bottom: var(--border-width) solid var(--border-color); }
+    .arq-drawer-media { grid-column: 1 / 5; border-right: var(--border-width) solid var(--border-color); padding: 24px; overflow-y: auto; max-height: 600px; background: #fafafa; }
+    .arq-drawer-media img { width: 100%; height: auto; border: var(--border-width) solid var(--border-color); margin-bottom: 16px; }
+    .arq-drawer-content { grid-column: 5 / 13; padding: 32px 24px 48px var(--content-indent-left, 60px); overflow-y: auto; max-height: 600px; background: var(--bg-page); }
+    
+    @media (max-width: 899px) {
+      .arq-header-row { display: none; }
+      .arq-table-row { display: flex; flex-direction: column; padding: 16px 0; gap: 8px; }
+      .arq-th, .arq-td { border-right: none; padding: 0 16px; }
+      .col-title { font-size: var(--fs-name); padding-left: 16px; margin-bottom: 8px; }
+      .arq-drawer-inner-grid { grid-template-columns: 1fr; }
+      .arq-drawer-media { grid-column: 1 / -1; border-right: none; border-bottom: var(--border-width) solid var(--border-color); max-height: 320px; }
+      .arq-drawer-content { grid-column: 1 / -1; padding: 24px 16px; }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+function toList(val) {
+  if (Array.isArray(val)) return val.filter(Boolean);
+  if (typeof val === 'string' && val.trim().length > 0) return [val.trim()];
+  return [];
+}
+
+// Deriva Pessoas e Textos a partir dos Eventos (Dispensa o pesado PESSOAS_CONSOLIDADO)
+function buildDerivedDatasets(events) {
+  state.data.EVENTOS = events.sort((a, b) => (b.ano || 0) - (a.ano || 0));
+  
+  const personsMap = new Map();
+  const textsList = [];
+
+  events.forEach(evt => {
+    const allPeople = [...toList(evt.artistas), ...toList(evt.curadoria)];
+    allPeople.forEach(name => {
+      if (!personsMap.has(name)) {
+        personsMap.set(name, { id: name.replace(/\s+/g, '-').toLowerCase(), nome: name, acoes: [] });
+      }
+      personsMap.get(name).acoes.push(evt);
+    });
+
+    if (evt.textos && Array.isArray(evt.textos)) {
+      evt.textos.forEach((txt, idx) => {
+        textsList.push({
+          id: `${evt.id}-txt-${idx}`,
+          eventoId: evt.id,
+          eventoTitle: evt.title,
+          ano: evt.ano,
+          ...txt
+        });
+      });
+    }
+  });
+
+  state.data.PESSOAS = Array.from(personsMap.values()).sort((a, b) => b.acoes.length - a.acoes.length);
+  state.data.TEXTOS = textsList;
+}
+
+function renderFacets() {
+  const container = document.getElementById('archive-facets-container');
+  if (!container) return;
+  const modes = ['EVENTOS', 'PESSOAS', 'TEXTOS'];
+  
+  container.innerHTML = `
+    <div class="archive-facet-bar" style="display:flex; gap:8px;">
+      ${modes.map(m => `
+        <button type="button" class="filter-pill ${state.viewMode === m ? 'is-active' : ''}" data-mode="${m}">${m}</button>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderTable() {
+  const head = document.getElementById('table-header-container');
+  const body = document.getElementById('table-body-container');
+  if (!head || !body) return;
+
+  if (state.viewMode === 'EVENTOS') {
+    head.innerHTML = `
+      <div class="arq-header-row">
+        <div class="arq-th col-title">Título</div>
+        <div class="arq-th col-artists">Artistas</div>
+        <div class="arq-th col-category">Categoria</div>
+        <div class="arq-th col-year">Ano</div>
+      </div>
+    `;
+    
+    body.innerHTML = state.data.EVENTOS.map(evt => {
+      const isOpen = state.activeId === evt.id;
+      return `
+        <div class="arq-group-row ${isOpen ? 'is-open' : ''}" data-id="${evt.id}">
+          <div class="arq-table-row">
+            <div class="arq-td col-title">${evt.title}</div>
+            <div class="arq-td col-artists">${toList(evt.artistas).join(', ') || '—'}</div>
+            <div class="arq-td col-category">${evt.categoria || '—'}</div>
+            <div class="arq-td col-year">${evt.ano || '—'}</div>
+          </div>
+          ${isOpen ? createDrawerHtml(evt, 'evento') : ''}
+        </div>
+      `;
+    }).join('');
+  } 
+  else if (state.viewMode === 'PESSOAS') {
+    head.innerHTML = `
+      <div class="arq-header-row">
+        <div class="arq-th col-title">Agente Cultural</div>
+        <div class="arq-th col-artists">Total de Ações</div>
+        <div class="arq-th col-category">Atuações</div>
+      </div>
+    `;
+    body.innerHTML = state.data.PESSOAS.map(p => {
+      const isOpen = state.activeId === p.id;
+      return `
+        <div class="arq-group-row ${isOpen ? 'is-open' : ''}" data-id="${p.id}">
+          <div class="arq-table-row">
+            <div class="arq-td col-title">${p.nome}</div>
+            <div class="arq-td col-artists">${p.acoes.length} registros</div>
+            <div class="arq-td col-category" style="grid-column: 9/13;">${p.acoes.map(a => a.categoria).join(', ')}</div>
+          </div>
+          ${isOpen ? createDrawerHtml(p, 'pessoa') : ''}
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+function createDrawerHtml(item, type) {
+  let content = '';
+  let media = '';
+
+  if (type === 'evento') {
+    const hasFotos = item.fotos && item.fotos.length > 0;
+    media = hasFotos 
+      ? item.fotos.map(f => `<img src="${f.url}" alt="${f.legenda}" loading="lazy">`).join('')
+      : '<div style="color:#888; text-align:center; padding-top:40px; font-size:var(--fs-meta);">Sem registros fotográficos</div>';
+
+    const tabsHtml = `
+      <div class="section-folder-tabs-header" style="padding-left:0; margin-bottom: 32px;">
+        <button class="drawer-tab-pill ${state.drawerTab === 'sobre' ? 'is-active' : ''}" data-dtab="sobre">SOBRE</button>
+        ${item.textos && item.textos.length ? `<button class="drawer-tab-pill ${state.drawerTab === 'textos' ? 'is-active' : ''}" data-dtab="textos">TEXTOS</button>` : ''}
+      </div>
+    `;
+
+    let bodyHtml = '';
+    if (state.drawerTab === 'sobre') {
+      const artList = toList(item.artistas);
+      const curList = toList(item.curadoria);
+      bodyHtml = `
+        <div style="margin-bottom: 24px;"><strong style="font-size:var(--fs-meta); text-transform:uppercase;">Artistas</strong><br>${artList.join(', ') || '—'}</div>
+        ${curList.length ? `<div style="margin-bottom: 24px;"><strong style="font-size:var(--fs-meta); text-transform:uppercase;">Curadoria</strong><br>${curList.join(', ')}</div>` : ''}
+        <div><strong style="font-size:var(--fs-meta); text-transform:uppercase;">Resumo</strong><br><p style="margin-top:8px;">${item.sobre || '—'}</p></div>
+      `;
+    } else {
+      bodyHtml = item.textos.map(t => `
+        <div style="margin-bottom:40px;">
+          <h4 style="font-size:var(--fs-name); margin-bottom:8px;">${t.titulo}</h4>
+          <span style="font-size:var(--fs-meta); display:block; margin-bottom:16px;">Por ${t.autoria}</span>
+          <p>${t.texto}</p>
+        </div>
+      `).join('');
+    }
+
+    content = tabsHtml + bodyHtml;
+  } else if (type === 'pessoa') {
+    media = '<div style="color:#888; text-align:center; padding-top:40px; font-size:var(--fs-meta);">Recorte pessoal de acervo</div>';
+    content = `
+      <h3 style="font-size:var(--fs-name); margin-bottom: 24px; text-transform:uppercase;">Atuações (${item.acoes.length})</h3>
+      <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:12px;">
+        ${item.acoes.map(a => `
+          <li style="padding: 12px; border: var(--border-width) solid var(--border-color); background: var(--bg-white);">
+            <strong>${a.ano}</strong> —${a.title} <span style="color:#666; font-size:var(--fs-meta);">(${a.categoria})</span>
+          </li>
+        `).join('')}
+      </ul>
+    `;
+  }
+
+  return `
+    <div class="universal-drawer">
+      <div class="drawer-top-line">
+        <div class="drawer-breadcrumb-col" style="font-size:var(--fs-meta); font-weight:500;">
+          ARQUIVO > ${item.title || item.nome}
+        </div>
+        <div class="drawer-control-col">
+          <button class="drawer-btn-icon drawer-action-close" aria-label="Fechar">✕</button>
+        </div>
+      </div>
+      <div class="arq-drawer-inner-grid">
+        <div class="arq-drawer-media hide-scrollbar">${media}</div>
+        <div class="arq-drawer-content">${content}</div>
+      </div>
+    </div>
+  `;
+}
+
+function attachGlobalEvents() {
+  // Troca de Visão (Eventos / Pessoas)
+  document.getElementById('archive-facets-container').addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-pill');
+    if (btn) {
+      state.viewMode = btn.dataset.mode;
+      state.activeId = null;
+      renderFacets();
+      renderTable();
+    }
+  });
+
+  // Interações na Tabela e Gaveta
+  document.getElementById('table-body-container').addEventListener('click', (e) => {
+    
+    // Fechar Gaveta
+    if (e.target.closest('.drawer-action-close')) {
+      state.activeId = null;
+      renderTable();
+      return;
+    }
+
+    // Troca de Abas dentro da Gaveta
+    const tabBtn = e.target.closest('.drawer-tab-pill');
+    if (tabBtn) {
+      state.drawerTab = tabBtn.dataset.dtab;
+      renderTable();
+      return;
+    }
+
+    // Clicar na Linha para abrir Gaveta
+    const row = e.target.closest('.arq-table-row');
+    if (row) {
+      const parent = row.closest('.arq-group-row');
+      const id = parent.dataset.id;
+      
+      if (state.activeId === id) {
+        state.activeId = null; // Fecha se já estiver aberta
+      } else {
+        state.activeId = id;
+        state.drawerTab = 'sobre';
+      }
+      
+      renderTable();
+
+      // Auto-Scroll para topo da linha
+      if (state.activeId) {
+        setTimeout(() => {
+          const el = document.querySelector(`.arq-group-row[data-id="${id}"]`);
+          if(el) {
+            const headerHeight = document.getElementById('logo-controller').offsetHeight;
+            window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - headerHeight, behavior: 'smooth' });
+          }
+        }, 50);
+      }
+    }
+  });
+}
+
+# FIM DO ARQUIVO: src/js/arq.js
+
+
+-------------------------------------------------------------------------------------
+ARQUIVO [13/13]: src/js/vectors.js
+Caminho Absoluto: /app/applet/src/js/vectors.js
+Metadados: 113 linhas | 5.44 KB
+-------------------------------------------------------------------------------------
+
+/**
+ * RESIDÊNCIA FONTE — VECTORS.JS
+ * Fonte Canônica dos Vetores Tipográficos do Design System FONTE
+ * Exporta strings SVG puras, instâncias de Path2D e gerador de matriz cruzada.
+ */
+
+export const VIEWBOX_SIZE = 1060;
+export const LETTERS = ['f', 'o', 'n', 't', 'e'];
+
+/* 1. CAMINHOS VETORIAIS BRUTOS (STRINGS SVG) */
+export const RAW_FRAGMENTS = {
+  // Letra E (5 variantes)
+  'e1': 'M538.226 406.93V292.36M148.067 1025.09H911.422',
+  'e2': 'M900.11 292.36V34.91m11.31 990.18V774.72m-131.47 -367.79H538.23',
+  'e3': 'M900.11 34.91H148.07m763.35 739.81H538.23',
+  'e4': 'M538.23 774.72v-125.9h241.72m-631.88 -613.91v990.18',
+  'e5': 'M779.95 648.82V406.93m-241.72 -114.57h361.88',
+
+  // Letra F (5 variantes)
+  'f1': 'M708.665 873.189H901.589M595.243 807.425v-202.6',
+  'f2': 'M408.68 604.827v202.6m186.56 -202.6h113.43',
+  'f3': 'M159.57 604.827h249.11m492.91 268.362V312.069',
+  'f4': 'M159.57 312.069V604.827m249.11 202.6h186.56',
+  'f5': 'M708.67 604.827V873.189m192.92 -561.12H159.57',
+
+  // Letra N (5 variantes)
+  'n1': 'M681.805 463.52h-4.241L448.558 34.91H65.466',
+  'n2': 'M994.21 34.91H681.8m-616.33 990.18h312.41',
+  'n3': 'M994.21 1025.09V34.91m-312.41 0v428.61h-4.24',
+  'n4': 'M377.88 1025.09V546.97h4.24l257.28 478.12',
+  'n5': 'M639.4 1025.09h354.81m-928.74 -990.18v990.18',
+
+  // Letra O (5 variantes)
+  'o1': 'M136.286 654.48q0 181.08 111.767 282.91 M485.88 531.06q15.256 -35.01 43.826 -35.01 29.368 0 44.707 35.36',
+  'o2': 'M248.05 937.39q111.765 101.85 281.66 101.85 M574.41 531.41q15.33 35.385 15.33 125.9m-18.1 134.11q-14.865 34.215 -41.93 34.22',
+  'o3': 'M813.28 365.21q-109.875 -103.98 -283.57 -103.97M248.69 364.5q-112.41 103.275 -112.4 289.98 M589.74 657.31q0 92.43 -18.1 134.11',
+  'o4': 'M529.71 1039.24q168.6 0 281.01 -99.73m112.41 -285.03q0 -185.3 -109.85 -289.27 M468.39 657.31h0q0 -86.115 17.49 -126.25',
+  'o5': 'M810.72 939.51q112.38 -99.72 112.41 -285.03m-393.42 -393.24q-168.615 0 -281.02 103.26 M529.71 825.64q-27.645 0 -42.82 -34.19 -18.495 -41.67 -18.5 -134.14h0',
+
+  // Letra T (5 variantes)
+  't1': 'M116.878 299.43h217.7m390.159 725.66V299.43',
+  't2': 'M724.74 299.43h217.69V34.91',
+  't3': 'M334.58 299.43v725.66',
+  't4': 'M334.58 1025.09h390.16m-607.86 -990.18v264.52',
+  't5': 'M942.43 34.91H116.88'
+};
+
+export const RAW_COMPLETES = {
+  'f': 'M708.665,604.83v268.36m192.924-561.12H159.573 M159.573,312.07v292.76m249.106,202.59H595.243 M159.573,604.83H408.679M901.59,873.19V312.07 M408.679,604.83v202.59m186.564-202.59H708.665 M708.665,873.19H901.589m-306.346-65.77V604.83',
+  'o': 'M136.29,654.48q0,181.08,111.76,282.91 M485.88,531.06q15.255-35.01,43.83-35.01,29.37,0,44.7,35.36 M248.05,937.39q111.765,101.85,281.66,101.85 M574.41,531.41q15.33,35.385,15.33,125.9m-18.1,134.11q-14.865,34.215-41.93,34.22 M813.28,365.21q-109.875-103.98-283.57-103.97M248.69,364.5q-112.41,103.275-112.4,289.98 M589.74,657.31q0,92.43-18.1,134.11 M810.72,939.51q112.38-99.72,112.41-285.03m-393.42-393.24q-168.615,0-281.02,103.26 M529.71,825.64q-27.645,0-42.82-34.19-18.5-41.67-18.5-134.14h0 M529.71,1039.24q168.6,0,281.01-99.73m112.41-285.03q0-185.3-109.85-289.27 M468.39,657.31h0q0-86.115,17.49-126.25',
+  'n': 'M681.8,463.52h-4.24l-229-428.61H65.47 M994.21,34.91H681.8m-616.33,990.18h312.41 M994.21,1025.09V34.91m-312.41,0v428.61h-4.24 M377.88,1025.09V546.97h4.24l257.28,478.12 M639.4,1025.09h354.81m-928.74-990.18v990.18',
+  't': 'M116.88,299.43h217.7m390.16,725.66V299.43 M724.74,299.43h217.69V34.91 M334.58,299.43v725.66 M334.58,1025.09h390.15m-607.85-990.18v264.52 M942.43,34.91H116.88',
+  'e': 'M538.23,406.93V292.36m-390.16,732.73h763.35 M900.11,292.36V34.91m11.31,990.18V774.72m-131.46-367.79H538.23 M900.11,34.91H148.07m763.35,739.81H538.23 M538.23,774.72v-125.9h241.73m-631.89-613.91v990.18 M779.96,648.82V406.93m-241.73-114.57h361.88'
+};
+
+/* 2. INSTÂNCIAS DE PATH2D (COMPILADAS PARA CANVAS 2D) */
+export const FRAGMENT_PATHS = Object.fromEntries(
+  Object.entries(RAW_FRAGMENTS).map(([key, d]) => [key, new Path2D(d)])
+);
+
+export const COMPLETE_PATHS = Object.fromEntries(
+  Object.entries(RAW_COMPLETES).map(([key, d]) => [key, new Path2D(d)])
+);
+
+/* 3. GERADOR DE MATRIZ TIPOGRÁFICA CRUZADA (FONTE VERTICAL & HORIZONTAL) */
+export function generateCrossMatrix({ width, height, isMobile }) {
+  const cols = isMobile ? 6 : 12;
+  const colWidth = width / cols;
+  const colHeight = colWidth; // Proporção quadrada estrita
+  const rows = Math.ceil(height / colHeight) + 1;
+  const usableSize = colWidth * 0.76;
+  const scale = usableSize / VIEWBOX_SIZE;
+
+  // Contadores independentes de versão (1 a 5) para cada letra
+  const versionCounters = {
+    f: 1,
+    o: 1,
+    n: 1,
+    t: 1,
+    e: 1
+  };
+
+  const cells = [];
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      // 1. Identificação da letra com leitura cruzada: (r + c) % 5
+      const letter = LETTERS[(r + c) % 5];
+
+      // 2. Extração da versão atual da letra e rotação circular para a próxima
+      const version = versionCounters[letter];
+      versionCounters[letter] = (version % 5) + 1;
+
+      const cx = c * colWidth + colWidth / 2;
+      const cy = r * colHeight + colHeight / 2;
+
+      cells.push({
+        r,
+        c,
+        cx,
+        cy,
+        letter,
+        version,
+        scale,
+        key: `${letter}${version}`,
+        path: FRAGMENT_PATHS[`${letter}${version}`],
+        completePath: COMPLETE_PATHS[letter]
+      });
+    }
+  }
+
+  return { cells, cols, rows, colWidth, colHeight };
+}
+
+# FIM DO ARQUIVO: src/js/vectors.js

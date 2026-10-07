@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parede 3D Interativa</title>
+
+  <!-- Tipografia: Spline Sans & Epilogue -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@800&family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --bg-black: #002424;
+      --gallery-bg: #affffa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--gallery-bg);
+      font-family: 'Spline Sans', sans-serif;
+      overflow-x: hidden;
+      color: var(--bg-black);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 150vh por rotação (180°) -> 300vh para 360° + 300vh extras vazios = 600vh total */
+    .scroll-spacer {
+      height: 600vh;
+      width: 100%;
+    }
+
+    /* Palco 3D fixo na viewport */
+    .viewport-stage {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1400px;
+      perspective-origin: center center;
+      pointer-events: none;
+      z-index: 10;
+      will-change: filter, opacity;
+    }
+
+    /* Parede: Altura base em 90vh, aspecto estrito 470/320 */
+    .wall-3d {
+      height: 90vh;
+      max-height: 90vh;
+      aspect-ratio: 470 / 320;
+      max-width: 95vw;
+      position: relative;
+      transform-style: preserve-3d;
+      will-change: transform;
+      pointer-events: auto;
+    }
+
+    /* Estrutura das duas faces */
+    .wall-face {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 1);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Face 1: Frente */
+    .wall-face-front {
+      transform: rotateY(0deg);
+    }
+
+    /* Face 2: Verso */
+    .wall-face-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Transição suave do conteúdo ao sumir/aparecer */
+    #frontContent, #backContent {
+      transition: opacity 0.001s ease;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Tipografia solicitada para a Face 1 */
+    .gallery-text {
+      font-size: 8vh;
+      font-weight: 500;
+      line-height: 1.18;
+      letter-spacing: 0.015em;
+      color: var(--bg-black, #002424);
+      text-transform: none;
+      padding: 12vh;
+      text-align: left;
+      user-select: none;
+    }
+
+    /* Imagem solicitada para a Face 2 */
+    .gallery-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* Estilização dos Sliders */
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(0, 36, 36, 0.1);
+      border-radius: 9999px;
+      height: 5px;
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #002424;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    input[type=range]::-moz-range-thumb {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #002424;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Espaçador do Scroll (600vh) -->
+  <div class="scroll-spacer"></div>
+
+  <!-- Camada Fixa com a Parede 3D -->
+  <div id="stage" class="viewport-stage">
+    <div id="wall" class="wall-3d">
+      
+      <!-- Face 1 (Frente) -->
+      <div class="wall-face wall-face-front">
+        <div id="frontContent">
+          <p class="gallery-text">
+            é uma plataforma independente em São Paulo dedicada ao fomento da arte contemporânea por meio de exposições, residências, cursos e práticas de ateliê.
+          </p>
+        </div>
+      </div>
+
+      <!-- Face 2 (Verso) -->
+      <div class="wall-face wall-face-back">
+        <div id="backContent">
+          <img 
+            class="gallery-img" 
+            src="https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/montagem/c1e8fc1a00-1789686092/250123_marcelo-amorim_0095-2560x2560-q85.webp" 
+            alt="Exposição"
+            loading="eager"
+          />
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Painel de Controles Flutuante -->
+  <aside class="fixed top-5 right-5 z-40 bg-white/90 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-black/5 w-72 text-[#002424]">
+    <div class="flex items-center justify-between pb-3 mb-3 border-b border-black/10">
+      <h2 class="text-xs font-bold uppercase tracking-wider">Controles</h2>
+      <button id="btnReset" class="text-xs px-2 py-0.5 bg-black/5 hover:bg-black/10 rounded transition font-medium">
+        Reset
+      </button>
+    </div>
+
+    <div class="space-y-3.5 text-xs font-medium">
+      <!-- Velocidade -->
+      <div>
+        <div class="flex justify-between mb-1">
+          <span>Velocidade Rotação</span>
+          <span id="txtSpeed" class="font-mono text-black/60">1.0x</span>
+        </div>
+        <input type="range" id="inputSpeed" min="0.2" max="3.0" step="0.1" value="1.0" class="w-full">
+      </div>
+
+      <!-- Eixo X (Pitch) - Começa em -2° -->
+      <div>
+        <div class="flex justify-between mb-1">
+          <span>Eixo X (Pitch)</span>
+          <span id="txtRotX" class="font-mono text-black/60">-2°</span>
+        </div>
+        <input type="range" id="inputRotX" min="-45" max="45" step="1" value="-2" class="w-full">
+      </div>
+
+      <!-- Eixo Y (Yaw) - Começa em -36° -->
+      <div>
+        <div class="flex justify-between mb-1">
+          <span>Eixo Y Base</span>
+          <span id="txtRotY" class="font-mono text-black/60">-36°</span>
+        </div>
+        <input type="range" id="inputRotY" min="-180" max="180" step="1" value="-36" class="w-full">
+      </div>
+
+      <!-- Eixo Z (Roll) - Começa em 0° -->
+      <div>
+        <div class="flex justify-between mb-1">
+          <span>Eixo Z (Roll)</span>
+          <span id="txtRotZ" class="font-mono text-black/60">0°</span>
+        </div>
+        <input type="range" id="inputRotZ" min="-45" max="45" step="1" value="0" class="w-full">
+      </div>
+
+      <!-- Distância Z -->
+      <div>
+        <div class="flex justify-between mb-1">
+          <span>Distância (Z)</span>
+          <span id="txtDistZ" class="font-mono text-black/60">0px</span>
+        </div>
+        <input type="range" id="inputDistZ" min="-500" max="300" step="10" value="0" class="w-full">
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    // Elementos da interface
+    const stage = document.getElementById('stage');
+    const wall = document.getElementById('wall');
+    const frontContent = document.getElementById('frontContent');
+    const backContent = document.getElementById('backContent');
+
+    const inputSpeed = document.getElementById('inputSpeed');
+    const inputRotX = document.getElementById('inputRotX');
+    const inputRotY = document.getElementById('inputRotY');
+    const inputRotZ = document.getElementById('inputRotZ');
+    const inputDistZ = document.getElementById('inputDistZ');
+    const btnReset = document.getElementById('btnReset');
+
+    const txtSpeed = document.getElementById('txtSpeed');
+    const txtRotX = document.getElementById('txtRotX');
+    const txtRotY = document.getElementById('txtRotY');
+    const txtRotZ = document.getElementById('txtRotZ');
+    const txtDistZ = document.getElementById('txtDistZ');
+
+    // Estado com os valores iniciais solicitados (X = 4°, Y = -36°)
+    const state = {
+      speed: 1.0,
+      baseRotX: -2,
+      baseRotY: -36,
+      baseRotZ: 0,
+      distZ: -500,
+      currentScrollRotY: 0,
+      targetScrollRotY: 0
+    };
+
+    function updateInputs() {
+      state.speed = parseFloat(inputSpeed.value);
+      state.baseRotX = parseFloat(inputRotX.value);
+      state.baseRotY = parseFloat(inputRotY.value);
+      state.baseRotZ = parseFloat(inputRotZ.value);
+      state.distZ = parseFloat(inputDistZ.value);
+
+      txtSpeed.textContent = state.speed.toFixed(1) + 'x';
+      txtRotX.textContent = state.baseRotX + '°';
+      txtRotY.textContent = state.baseRotY + '°';
+      txtRotZ.textContent = state.baseRotZ + '°';
+      txtDistZ.textContent = state.distZ + 'px';
+    }
+
+    [inputSpeed, inputRotX, inputRotY, inputRotZ, inputDistZ].forEach(input => {
+      input.addEventListener('input', updateInputs);
+    });
+
+    // Reset para os valores padrão
+    btnReset.addEventListener('click', () => {
+      inputSpeed.value = 1.0;
+      inputRotX.value = -2;
+      inputRotY.value = -36;
+      inputRotZ.value = 0;
+      inputDistZ.value = -500;
+      updateInputs();
+    });
+
+    // Loop de animação contínuo
+    function loop() {
+      const vh = window.innerHeight;
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+      // Cada 150vh = 180° de giro
+      const scrollDegrees = (scrollY / (1.5 * vh)) * 180 * state.speed;
+      state.targetScrollRotY = scrollDegrees;
+
+      // Suavização do movimento
+      state.currentScrollRotY += (state.targetScrollRotY - state.currentScrollRotY) * 0.08;
+
+      // Rotação Y total da parede
+      const totalY = state.currentScrollRotY + state.baseRotY;
+
+      /* 
+        Controle de visibilidade bidirecional:
+        Calculado diretamente a partir do scroll Degrees real, permitindo
+        rolar para baixo e voltar para cima sem perder os conteúdos.
+      */
+      
+      // Face 1 (Frente com texto):
+      // Visível no primeiro giro da frente (enquanto o scroll estiver antes do verso virar, < 90°).
+      // Ao ultrapassar 90° e depois quando a parede completar a volta (> 270°), a face 1 fica em branco.
+      const showFront = (state.currentScrollRotY < 138);
+      frontContent.style.opacity = showFront ? '1' : '0';
+
+      // Face 2 (Verso com imagem):
+      // Visível quando o verso estiver virado para a frente na 1ª passagem (entre 90° e 270°).
+      // Ao passar de 270° ou voltar para antes de 90°, ela se apaga.
+      const showBack = (state.currentScrollRotY >= 126 && state.currentScrollRotY <= 318);
+      backContent.style.opacity = showBack ? '1' : '0';
+
+      // Efeito de Fade e Blur com os valores do print (Início: 300°, Blur: 88px, Duração: 88vh)
+      const fadeStartDeg = 300;
+      const fadeDurationDeg = 88 * (180 / 150) * state.speed;
+      let blurPx = 0;
+      let opacityVal = 1;
+
+      if (state.currentScrollRotY > fadeStartDeg) {
+        const progress = Math.min(1, Math.max(0, (state.currentScrollRotY - fadeStartDeg) / fadeDurationDeg));
+        blurPx = progress * 88;
+        opacityVal = 1 - progress;
+      }
+
+      stage.style.filter = `blur(${blurPx}px)`;
+      stage.style.opacity = opacityVal;
+
+      // Aplicação das transformações 3D
+      wall.style.transform = `
+        translate3d(0, 0, ${state.distZ}px)
+        rotateX(${state.baseRotX}deg)
+        rotateY(${totalY}deg)
+        rotateZ(${state.baseRotZ}deg)
+      `;
+
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
