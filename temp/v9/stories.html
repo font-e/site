@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Stories - Volante: a ilusão do brilho</title>
+    <!-- Importando o CSS base do site para manter a tipografia -->
+    <link rel="stylesheet" href="intro.css">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .preview-container {
+            width: 100%;
+            max-width: 360px; /* Tamanho de preview celular */
+            aspect-ratio: 9 / 16;
+            background: #000;
+            position: relative;
+            border: 2px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* O Canvas será o "palco" de toda a renderização do vídeo */
+        #storyCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            transition: opacity 0.2s;
+        }
+
+        button:hover { opacity: 0.8; }
+        
+        #btnGerar { background-color: #007bff; color: white; }
+        #btnBaixar { background-color: #28a745; color: white; display: none; }
+        #btnCompartilhar { background-color: #e1306c; color: white; display: none; }
+        
+        #status {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvases invisíveis necessários para o motor vetorial (geral.js / intro.js) -->
+<canvas id="canvas-normal" style="display:none;"></canvas>
+<canvas id="canvas-highlight" style="display:none;"></canvas>
+
+<!-- Importação do motor original do site como módulo ES -->
+<script type="module" src="intro.js"></script>
+
+<div class="preview-container">
+        <!-- Canvas configurado para a resolução do Story (1080x1920) -->
+        <canvas id="storyCanvas" width="1080" height="1920"></canvas>
+    </div>
+
+    <div class="controls">
+        <button id="btnGerar">Gerar Vídeo (5s)</button>
+        <button id="btnBaixar">Baixar Vídeo</button>
+        <button id="btnCompartilhar">Compartilhar nos Stories</button>
+    </div>
+
+    <div id="status">Aguardando dados...</div>
+
+    <script>
+        const canvas = document.getElementById('storyCanvas');
+        const ctx = canvas.getContext('2d');
+        const btnGerar = document.getElementById('btnGerar');
+        const btnBaixar = document.getElementById('btnBaixar');
+        const btnCompartilhar = document.getElementById('btnCompartilhar');
+        const statusEl = document.getElementById('status');
+
+        let dadosEvento = null;
+        let imagemCarregada = null;
+        let logoCarregado = null;
+        
+        let videoBlob = null;
+        let mediaRecorder = null;
+        let gravacaoAtiva = false;
+        
+        // Loop de animação a 12fps
+        let fps = 4;
+        let fpsInterval = 1000 / fps;
+        let then = Date.now();
+        let frameCount = 0;
+        let animationId;
+
+        // 1. CARREGAR DADOS DO EVENTO E IMAGEM
+        async function inicializar() {
+            try {
+                statusEl.innerText = "Carregando dados (EVENTOS_CONSOLIDADO.json)...";
+                // Lendo o JSON que está na mesma pasta
+                const response = await fetch('EVENTOS_CONSOLIDADO.json'); 
+                const eventos = await response.json();
+                
+                // Pegar o evento específico
+                dadosEvento = eventos.find(e => e.id === "volante-a-ilusao-do-brilho");
+                
+                if (!dadosEvento) throw new Error("Evento não encontrado no JSON.");
+
+                statusEl.innerText = "Carregando imagem...";
+                
+                // Pegar a primeira imagem disponível na galeria
+                const urlImagem = (dadosEvento.galeria && dadosEvento.galeria.length > 0) 
+                                    ? dadosEvento.galeria[0].zoom 
+                                    : null;
+
+                if (urlImagem) {
+                    imagemCarregada = new Image();
+                    // Importante para não dar erro de CORS ao desenhar no Canvas
+                    imagemCarregada.crossOrigin = "anonymous"; 
+                    imagemCarregada.src = urlImagem;
+                    await new Promise(resolve => imagemCarregada.onload = resolve);
+                }
+
+                statusEl.innerText = "Pronto para gerar o vídeo.";
+                iniciarAnimacaoPreview(); // Mostra como vai ficar antes de gravar
+
+            } catch (erro) {
+                statusEl.innerText = "Erro: " + erro.message;
+                console.error(erro);
+            }
+        }
+
+        // 2. LÓGICA DE RENDERIZAÇÃO DO CANVAS
+        function desenharFrame() {
+            // A. Fundo Animado (Simulando a tecla "C")
+            // AQUI VOCÊ DEVE INSERIR A LÓGICA DO SEU intro.js
+            desenharGrafismoFundo();
+
+            // B. Imagem do Evento
+            if (imagemCarregada) {
+                // Centralizar e cortar a imagem estilo "cover" num box no meio da tela
+                const imgBoxWidth = 800;
+                const imgBoxHeight = 800;
+                const imgX = (canvas.width - imgBoxWidth) / 2;
+                const imgY = (canvas.height - imgBoxHeight) / 2 - 100; // um pouco pra cima
+                
+                ctx.save();
+                // Borda estilizada
+                ctx.lineWidth = 10;
+                ctx.strokeStyle = '#fff';
+                ctx.strokeRect(imgX, imgY, imgBoxWidth, imgBoxHeight);
+                
+                // Desenhar a imagem dentro do quadrado
+                ctx.drawImage(imagemCarregada, imgX, imgY, imgBoxWidth, imgBoxHeight);
+                ctx.restore();
+            }
+
+            // C. Texto (Título do Evento)
+            if (dadosEvento) {
+                ctx.fillStyle = "#fff";
+                ctx.textAlign = "center";
+                ctx.font = "bold 60px Arial";
+                
+                // Título
+                const tituloY = 1450;
+                ctx.fillText(dadosEvento.titulo, canvas.width / 2, tituloY);
+                
+                // Tipo / Data
+                ctx.font = "40px Arial";
+                ctx.fillStyle = "#ccc";
+                ctx.fillText(`${dadosEvento.tipo} | ${dadosEvento.inicio}`, canvas.width / 2, tituloY + 70);
+            }
+            
+            // D. Logotipo Animado Base (Simulado)
+            // Se você tiver o logo_animado.mp4, teria que desenhar os frames dele aqui
+            // Por enquanto, vou fazer um logo desenhado simples piscando
+            ctx.fillStyle = frameCount % 2 === 0 ? "#FF5722" : "#fff";
+            ctx.font = "bold 80px Arial";
+            ctx.fillText("FONTE", canvas.width / 2, 250);
+        }
+
+function desenharGrafismoFundo() {
+    // 1. Executa o avanço de variação do motor do site (equivalente à tecla 'C')
+    if (typeof window._fonteCycleNextVersion === 'function') {
+        window._fonteCycleNextVersion();
+    }
+
+    // 2. Limpa o Canvas do Story com fundo preto
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 3. Captura os dois canvases processados pelo geral.js
+    const cn = document.getElementById('canvas-normal');
+    const ch = document.getElementById('canvas-highlight');
+
+    // 4. Compõe as duas camadas vetoriais no Canvas do Story (1080x1920)
+    if (cn && cn.width > 0) {
+        ctx.drawImage(cn, 0, 0, canvas.width, canvas.height);
+    }
+    if (ch && ch.width > 0) {
+        ctx.drawImage(ch, 0, 0, canvas.width, canvas.height);
+    }
+}
+
+        // 3. LOOP DE ANIMAÇÃO A 12 FPS
+        function iniciarAnimacaoPreview() {
+            function loop() {
+                animationId = requestAnimationFrame(loop);
+                
+                let now = Date.now();
+                let elapsed = now - then;
+
+                if (elapsed > fpsInterval) {
+                    then = now - (elapsed % fpsInterval);
+                    frameCount++;
+                    desenharFrame();
+                }
+            }
+            loop();
+        }
+
+        // 4. GRAVAÇÃO DO VÍDEO
+        btnGerar.addEventListener('click', () => {
+            if(gravacaoAtiva) return;
+            gravacaoAtiva = true;
+            btnGerar.innerText = "Gravando (5s)...";
+            btnGerar.disabled = true;
+            statusEl.innerText = "Capturando frames do Canvas a 12fps...";
+
+            const stream = canvas.captureStream(4); // Captura o Canvas a 12 FPS
+            
+            // Tentar usar mp4 se suportado, senão webm
+            let options = { mimeType: 'video/webm; codecs=vp9' };
+            if (MediaRecorder.isTypeSupported('video/mp4')) {
+                options = { mimeType: 'video/mp4' };
+            }
+
+            mediaRecorder = new MediaRecorder(stream, options);
+            const gravacoes = [];
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) {
+                    gravacoes.push(e.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                videoBlob = new Blob(gravacoes, { type: options.mimeType });
+                statusEl.innerText = "Vídeo gerado com sucesso!";
+                
+                btnGerar.innerText = "Gerar Novo Vídeo";
+                btnGerar.disabled = false;
+                btnBaixar.style.display = "inline-block";
+                
+                // Mostrar botão de compartilhar apenas se a API for suportada
+                if (navigator.canShare) {
+                    btnCompartilhar.style.display = "inline-block";
+                }
+
+                gravacaoAtiva = false;
+            };
+
+            mediaRecorder.start();
+
+            // Parar a gravação após 5 segundos
+            setTimeout(() => {
+                mediaRecorder.stop();
+            }, 5000);
+        });
+
+        // 5. DOWNLOAD E COMPARTILHAMENTO
+        btnBaixar.addEventListener('click', () => {
+            if (!videoBlob) return;
+            const url = URL.createObjectURL(videoBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'stories_volante.webm'; // Troque para mp4 se garantir o suporte do navegador
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        btnCompartilhar.addEventListener('click', async () => {
+            if (!videoBlob) return;
+            
+            // Converte o blob num File para a Web Share API
+            // A extensão deve bater com o mimeType gravado
+            const extensao = videoBlob.type.includes('mp4') ? 'mp4' : 'webm';
+            const file = new File([videoBlob], `storie.${extensao}`, { type: videoBlob.type });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Compartilhar Story',
+                        text: 'Confira esta exposição!'
+                    });
+                    statusEl.innerText = "Menu de compartilhamento aberto!";
+                } catch (err) {
+                    statusEl.innerText = "Erro ao compartilhar: " + err.name;
+                }
+            } else {
+                alert("Seu navegador não suporta envio direto de arquivos para os Stories.");
+            }
+        });
+
+        // Iniciar
+        inicializar();
+
+    </script>
+</body>
+</html>
