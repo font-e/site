@@ -298,7 +298,6 @@ width: 100%;
   z-index: var(--z-title, 20);
   white-space: nowrap;
   overflow: visible;
-  mix-blend-mode: hard-light !important;
   opacity: 1;
 }
 
