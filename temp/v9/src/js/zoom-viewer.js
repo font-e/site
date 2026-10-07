@@ -92,7 +92,7 @@ if (typeof document !== 'undefined') {
       } else if (action === 'share-whatsapp') {
         const text = encodeURIComponent(`FONTE — ${currentUrl}`);
         // Telefone de destino para envio (substituir os XXXX pelo número real)
-        const targetPhone = '+55 11 94253-XXXX';
+        const targetPhone = '+55 11 94253-0023';
         const cleanPhone = targetPhone.replace(/\D/g, '');
         const phoneParam = cleanPhone ? `&phone=${cleanPhone}` : '';
         window.open(`https://api.whatsapp.com/send?text=${text}${phoneParam}`, '_blank', 'noopener,noreferrer');
