@@ -107,7 +107,7 @@ function loop() {
     const wallWidth = (0.90 * vh) * (470 / 320);
     const wallLeft = (window.innerWidth * 0.70) - (wallWidth / 2);
     // Borda direita da imagem fica a 5vw da borda esquerda da parede
-    const targetRightEdge = wallLeft - (window.innerWidth * 0.05);
+    const targetRightEdge = wallLeft - (window.innerWidth * 0.01);
     const rightOffsetPx = Math.max(12, window.innerWidth - targetRightEdge);
     sidePoster.style.right = `${rightOffsetPx.toFixed(1)}px`;
 
