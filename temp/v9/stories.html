@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste de Stories - Volante: a ilusão do brilho</title>
-    <!-- Importando o CSS base do site para manter a tipografia -->
+    <title>Gerador de Stories - FONTE</title>
     <link rel="stylesheet" href="intro.css">
     <style>
         body {
@@ -22,9 +21,9 @@
 
         .preview-container {
             width: 100%;
-            max-width: 360px; /* Tamanho de preview celular */
+            max-width: 360px; /* Proporção de preview no celular */
             aspect-ratio: 9 / 16;
-            background: #000;
+            background: #aefffa;
             position: relative;
             border: 2px solid #333;
             border-radius: 12px;
@@ -33,11 +32,15 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* O Canvas será o "palco" de toda a renderização do vídeo */
         #storyCanvas {
             width: 100%;
             height: 100%;
             display: block;
+        }
+
+        /* Vídeo de fundo mantido oculto mas ativo na memória */
+        #bgVideo {
+            display: none;
         }
 
         .controls {
@@ -59,7 +62,7 @@
 
         button:hover { opacity: 0.8; }
         
-        #btnGerar { background-color: #007bff; color: white; }
+        #btnGerar { background-color: #002424; color: #aefffa; }
         #btnBaixar { background-color: #28a745; color: white; display: none; }
         #btnCompartilhar { background-color: #e1306c; color: white; display: none; }
         
@@ -72,224 +75,195 @@
 </head>
 <body>
 
-    <!-- Canvases invisíveis necessários para o motor vetorial (geral.js / intro.js) -->
-<canvas id="canvas-normal" style="display:none;"></canvas>
-<canvas id="canvas-highlight" style="display:none;"></canvas>
+    <!-- Elemento do vídeo modelo mantido oculto para servir de fonte para o Canvas -->
+    <video id="bgVideo" src="img/stories.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
 
-<!-- Importação do motor original do site como módulo ES -->
-<script type="module" src="intro.js"></script>
-
-<div class="preview-container">
-        <!-- Canvas configurado para a resolução do Story (1080x1920) -->
+    <div class="preview-container">
+        <!-- Canvas oficial na resolução nativa do Story (1080x1920) -->
         <canvas id="storyCanvas" width="1080" height="1920"></canvas>
     </div>
 
     <div class="controls">
         <button id="btnGerar">Gerar Vídeo (5s)</button>
-        <button id="btnBaixar">Baixar Vídeo</button>
+        <button id="btnBaixar">Baixar Vídeo (MP4)</button>
         <button id="btnCompartilhar">Compartilhar nos Stories</button>
     </div>
 
-    <div id="status">Aguardando dados...</div>
+    <div id="status">Carregando assets...</div>
 
     <script>
         const canvas = document.getElementById('storyCanvas');
         const ctx = canvas.getContext('2d');
+        const bgVideo = document.getElementById('bgVideo');
         const btnGerar = document.getElementById('btnGerar');
         const btnBaixar = document.getElementById('btnBaixar');
         const btnCompartilhar = document.getElementById('btnCompartilhar');
         const statusEl = document.getElementById('status');
 
-        let dadosEvento = null;
         let imagemCarregada = null;
-        let logoCarregado = null;
-        
         let videoBlob = null;
         let mediaRecorder = null;
         let gravacaoAtiva = false;
         
-        // Loop de animação a 12fps
-        let fps = 4;
-        let fpsInterval = 1000 / fps;
+        // Frequência de atualização: 12 FPS
+        const fps = 12;
+        const fpsInterval = 1000 / fps;
         let then = Date.now();
-        let frameCount = 0;
-        let animationId;
 
-        // 1. CARREGAR DADOS DO EVENTO E IMAGEM
-async function inicializar() {
-    try {
-        statusEl.innerText = "Carregando imagem...";
-        
-        // Tentamos carregar prioritariamente o asset local seguro para evitar bloqueio por CORS no Canvas
-        const urlsCandidatas = [
-            "/media/eventos/250523_fonte_023-2560x2560-q85.webp",
-            "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/volante-a-ilusao-do-brilho/6a404f751a-1789686092/250523_fonte_023-2560x2560-q85.webp"
-        ];
+        // Configurações do evento "Volante: a ilusão do brilho"
+        const tituloTexto = "Volante: a ilusão do brilho";
+        const urlImagem = "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/volante-a-ilusao-do-brilho/6a404f751a-1789686092/250523_fonte_023-2560x2560-q85.webp";
 
-        let carregouComSucesso = false;
-
-        for (const url of urlsCandidatas) {
+        // 1. CARREGAMENTO DOS ASSETS
+        async function inicializar() {
             try {
-                await new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.crossOrigin = "anonymous";
-                    img.onload = () => {
-                        imagemCarregada = img;
-                        carregouComSucesso = true;
-                        resolve();
-                    };
-                    img.onerror = () => {
-                        // Tentar sem crossOrigin se for mesma origem
-                        const imgFallback = new Image();
-                        imgFallback.onload = () => {
-                            imagemCarregada = imgFallback;
-                            carregouComSucesso = true;
-                            resolve();
-                        };
-                        imgFallback.onerror = () => reject(new Error("Falha ao carregar"));
-                        imgFallback.src = url;
-                    };
-                    img.src = url;
+                statusEl.innerText = "Carregando mídia...";
+
+                // Garante carregamento do vídeo de fundo
+                await new Promise((resolve) => {
+                    if (bgVideo.readyState >= 2) resolve();
+                    else bgVideo.onloadeddata = resolve;
                 });
-                if (carregouComSucesso) break;
-            } catch (e) {
-                // Tenta próxima URL candidata
+
+                // Carrega a imagem do evento
+                imagemCarregada = new Image();
+                imagemCarregada.crossOrigin = "anonymous";
+                imagemCarregada.src = urlImagem;
+                await new Promise((resolve, reject) => {
+                    imagemCarregada.onload = resolve;
+                    imagemCarregada.onerror = () => reject(new Error("Erro ao carregar a imagem do evento."));
+                });
+
+                statusEl.innerText = "Pronto para gerar o vídeo.";
+                iniciarLoopRenderizacao();
+
+            } catch (erro) {
+                statusEl.innerText = "Erro: " + erro.message;
+                console.error(erro);
             }
         }
 
-        if (!carregouComSucesso) {
-            throw new Error("Erro ao carregar a imagem.");
+        // Função utilitária para quebrar linha no Canvas com margens laterais
+        function desenharTextoComQuebra(texto, x, y, maxWidth, lineHeight) {
+            const palavras = texto.split(' ');
+            let linha = '';
+            let currentY = y;
+
+            for (let n = 0; n < palavras.length; n++) {
+                const testLine = linha + palavras[n] + ' ';
+                const metrics = ctx.measureText(testLine);
+                const testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    ctx.fillText(linha.trim(), x, currentY);
+                    linha = palavras[n] + ' ';
+                    currentY += lineHeight;
+                } else {
+                    linha = testLine;
+                }
+            }
+            ctx.fillText(linha.trim(), x, currentY);
         }
 
-        statusEl.innerText = "Pronto para gerar o vídeo.";
-        iniciarAnimacaoPreview();
+        // 2. DESENHO DOS FRAMES NO CANVAS
+        function desenharFrame() {
+            // A. Desenha o fundo animado extraído do mp4 modelo
+            if (bgVideo.readyState >= 2) {
+                ctx.drawImage(bgVideo, 0, 0, canvas.width, canvas.height);
+            } else {
+                ctx.fillStyle = "#aefffa";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
 
-    } catch (erro) {
-        statusEl.innerText = "Erro: " + erro.message;
-        console.error(erro);
-    }
-}
+            // B. Desenha a Imagem (Centralizada abaixo do Logo, Y = ~480px)
+            if (imagemCarregada) {
+                const imgWidth = 960;
+                const imgHeight = 640; // Proporção 1.5
+                const imgX = (canvas.width - imgWidth) / 2;
+                const imgY = 480; // Posicionada abaixo do espaço ocupado pelo logo
 
-        // 2. LÓGICA DE RENDERIZAÇÃO DO CANVAS
-function desenharFrame() {
-    // A. Fundo Animado
-    desenharGrafismoFundo();
+                ctx.save();
+                ctx.drawImage(imagemCarregada, imgX, imgY, imgWidth, imgHeight);
+                ctx.restore();
+            }
 
-    // B. Imagem do Evento (Proporção 1.5 -> 960x640px)
-    if (imagemCarregada) {
-        const imgWidth = 960;
-        const imgHeight = 640; // 960 / 1.5
-        const imgX = (canvas.width - imgWidth) / 2;
-        const imgY = (canvas.height - imgHeight) / 2 - 80;
-
-        ctx.save();
-        // Borda simples
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = '#ffffff';
-        ctx.strokeRect(imgX, imgY, imgWidth, imgHeight);
-
-        // Renderiza a imagem no Canvas
-        ctx.drawImage(imagemCarregada, imgX, imgY, imgWidth, imgHeight);
-        ctx.restore();
-    }
-
-    // C. Textos (Título e Link do Site)
-    ctx.save();
-    ctx.fillStyle = "#ffffff";
-    ctx.textAlign = "center";
-    
-    // Título Principal
-    ctx.font = "bold 56px Arial, sans-serif";
-    ctx.fillText("Volante: a ilusão do brilho", canvas.width / 2, 1420);
-    
-    // Subtítulo / URL
-    ctx.font = "38px Arial, sans-serif";
-    ctx.fillStyle = "#cccccc";
-    ctx.fillText("font-e.org", canvas.width / 2, 1490);
-    ctx.restore();
+            // C. Desenha o Texto (#002424, Bold 700, Alinhado e Centralizado)
+            ctx.save();
+            ctx.fillStyle = "#002424";
+            ctx.textAlign = "center";
+            ctx.font = "700 58px Arial, sans-serif"; // Equivalente ao clamp configurado para 1080px
             
-            // D. Logotipo Animado Base (Simulado)
-            // Se você tiver o logo_animado.mp4, teria que desenhar os frames dele aqui
-            // Por enquanto, vou fazer um logo desenhado simples piscando
-            ctx.fillStyle = frameCount % 2 === 0 ? "#FF5722" : "#fff";
-            ctx.font = "bold 80px Arial";
-            ctx.fillText("FONTE", canvas.width / 2, 250);
+            // Margem lateral de 54px (proporcional aos 18px do layout original)
+            const paddingLateral = 54;
+            const maxLarguraTexto = canvas.width - (paddingLateral * 2);
+            
+            // Posição Y do texto abaixo da imagem
+            const textoY = 1200;
+            desenharTextoComQuebra(tituloTexto, canvas.width / 2, textoY, maxLarguraTexto, 72);
+
+            ctx.restore();
         }
 
-function desenharGrafismoFundo() {
-    // 1. Executa o avanço de variação do motor do site (equivalente à tecla 'C')
-    if (typeof window._fonteCycleNextVersion === 'function') {
-        window._fonteCycleNextVersion();
-    }
-
-    // 2. Limpa o Canvas do Story com fundo preto
-    ctx.fillStyle = "#000000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // 3. Captura os dois canvases processados pelo geral.js
-    const cn = document.getElementById('canvas-normal');
-    const ch = document.getElementById('canvas-highlight');
-
-    // 4. Compõe as duas camadas vetoriais no Canvas do Story (1080x1920)
-    if (cn && cn.width > 0) {
-        ctx.drawImage(cn, 0, 0, canvas.width, canvas.height);
-    }
-    if (ch && ch.width > 0) {
-        ctx.drawImage(ch, 0, 0, canvas.width, canvas.height);
-    }
-}
-
-        // 3. LOOP DE ANIMAÇÃO A 12 FPS
-        function iniciarAnimacaoPreview() {
+        // 3. LOOP DE RENDERIZAÇÃO A 12 FPS
+        function iniciarLoopRenderizacao() {
             function loop() {
-                animationId = requestAnimationFrame(loop);
-                
+                requestAnimationFrame(loop);
                 let now = Date.now();
                 let elapsed = now - then;
 
                 if (elapsed > fpsInterval) {
                     then = now - (elapsed % fpsInterval);
-                    frameCount++;
                     desenharFrame();
                 }
             }
             loop();
         }
 
-        // 4. GRAVAÇÃO DO VÍDEO
+        // 4. GRAVAÇÃO E EXPORTAÇÃO EM MP4
         btnGerar.addEventListener('click', () => {
-            if(gravacaoAtiva) return;
+            if (gravacaoAtiva) return;
             gravacaoAtiva = true;
-            btnGerar.innerText = "Gravando (5s)...";
+            btnGerar.innerText = "Gravando MP4 (5s)...";
             btnGerar.disabled = true;
-            statusEl.innerText = "Capturando frames do Canvas a 12fps...";
+            statusEl.innerText = "Renderizando vídeo...";
 
-            const stream = canvas.captureStream(4); // Captura o Canvas a 12 FPS
-            
-            // Tentar usar mp4 se suportado, senão webm
-            let options = { mimeType: 'video/webm; codecs=vp9' };
-            if (MediaRecorder.isTypeSupported('video/mp4')) {
-                options = { mimeType: 'video/mp4' };
+            // Captura o stream do Canvas em 12 FPS
+            const stream = canvas.captureStream(12);
+
+            // Seleciona o melhor mimeType para garantir a exportação em MP4
+            let options = { mimeType: 'video/mp4;codecs=avc1' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                if (MediaRecorder.isTypeSupported('video/mp4')) {
+                    options = { mimeType: 'video/mp4' };
+                } else if (MediaRecorder.isTypeSupported('video/webm;codecs=h264')) {
+                    options = { mimeType: 'video/webm;codecs=h264' };
+                } else {
+                    options = { mimeType: 'video/webm' };
+                }
             }
 
-            mediaRecorder = new MediaRecorder(stream, options);
+            try {
+                mediaRecorder = new MediaRecorder(stream, options);
+            } catch (e) {
+                mediaRecorder = new MediaRecorder(stream);
+            }
+
             const gravacoes = [];
 
             mediaRecorder.ondataavailable = (e) => {
-                if (e.data.size > 0) {
+                if (e.data && e.data.size > 0) {
                     gravacoes.push(e.data);
                 }
             };
 
             mediaRecorder.onstop = () => {
-                videoBlob = new Blob(gravacoes, { type: options.mimeType });
-                statusEl.innerText = "Vídeo gerado com sucesso!";
-                
+                const mimeFinal = options.mimeType || 'video/mp4';
+                videoBlob = new Blob(gravacoes, { type: mimeFinal });
+                statusEl.innerText = "Vídeo MP4 gerado com sucesso!";
+
                 btnGerar.innerText = "Gerar Novo Vídeo";
                 btnGerar.disabled = false;
                 btnBaixar.style.display = "inline-block";
-                
-                // Mostrar botão de compartilhar apenas se a API for suportada
+
                 if (navigator.canShare) {
                     btnCompartilhar.style.display = "inline-block";
                 }
@@ -299,7 +273,7 @@ function desenharGrafismoFundo() {
 
             mediaRecorder.start();
 
-            // Parar a gravação após 5 segundos
+            // Grava exatos 5 segundos
             setTimeout(() => {
                 mediaRecorder.stop();
             }, 5000);
@@ -311,38 +285,34 @@ function desenharGrafismoFundo() {
             const url = URL.createObjectURL(videoBlob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'stories_volante.webm'; // Troque para mp4 se garantir o suporte do navegador
+            a.download = 'stories_volante.mp4';
             a.click();
             URL.revokeObjectURL(url);
         });
 
         btnCompartilhar.addEventListener('click', async () => {
             if (!videoBlob) return;
-            
-            // Converte o blob num File para a Web Share API
-            // A extensão deve bater com o mimeType gravado
-            const extensao = videoBlob.type.includes('mp4') ? 'mp4' : 'webm';
-            const file = new File([videoBlob], `storie.${extensao}`, { type: videoBlob.type });
+
+            const file = new File([videoBlob], 'stories_volante.mp4', { type: 'video/mp4' });
 
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 try {
                     await navigator.share({
                         files: [file],
-                        title: 'Compartilhar Story',
-                        text: 'Confira esta exposição!'
+                        title: 'Compartilhar nos Stories',
+                        text: 'Exposição Volante: a ilusão do brilho'
                     });
-                    statusEl.innerText = "Menu de compartilhamento aberto!";
+                    statusEl.innerText = "Compartilhamento iniciado!";
                 } catch (err) {
-                    statusEl.innerText = "Erro ao compartilhar: " + err.name;
+                    statusEl.innerText = "Erro ao compartilhar: " + err.message;
                 }
             } else {
-                alert("Seu navegador não suporta envio direto de arquivos para os Stories.");
+                alert("Seu navegador não suporta compartilhamento direto de arquivos de vídeo.");
             }
         });
 
-        // Iniciar
+        // Inicia o processo
         inicializar();
-
     </script>
 </body>
 </html>
