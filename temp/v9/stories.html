@@ -76,7 +76,7 @@
 <body>
 
     <!-- Elemento do vídeo modelo mantido oculto para servir de fonte para o Canvas -->
-    <video id="bgVideo" src="https://www.font-e.org/temp/v9/src/img/stories.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+    <video id="bgVideo" src="src/img/stories.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
 
     <div class="preview-container">
         <!-- Canvas oficial na resolução nativa do Story (1080x1920) -->
@@ -112,36 +112,37 @@
 
         // Configurações do evento "Volante: a ilusão do brilho"
         const tituloTexto = "Volante: a ilusão do brilho";
-        const urlImagem = "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/volante-a-ilusao-do-brilho/6a404f751a-1789686092/250523_fonte_023-2560x2560-q85.webp";
+        const urlImagem = "https://corsproxy.io/?" + encodeURIComponent("https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/volante-a-ilusao-do-brilho/6a404f751a-1789686092/250523_fonte_023-2560x2560-q85.webp");
 
         // 1. CARREGAMENTO DOS ASSETS
-        async function inicializar() {
-            try {
-                statusEl.innerText = "Carregando mídia...";
+       async function inicializar() {
+    try {
+        statusEl.innerText = "Carregando mídia...";
 
-                // Garante carregamento do vídeo de fundo
-                await new Promise((resolve) => {
-                    if (bgVideo.readyState >= 2) resolve();
-                    else bgVideo.onloadeddata = resolve;
-                });
+        // Força o vídeo a rodar
+        bgVideo.play().catch(() => {});
 
-                // Carrega a imagem do evento
-                imagemCarregada = new Image();
-                imagemCarregada.crossOrigin = "anonymous";
-                imagemCarregada.src = urlImagem;
-                await new Promise((resolve, reject) => {
-                    imagemCarregada.onload = resolve;
-                    imagemCarregada.onerror = () => reject(new Error("Erro ao carregar a imagem do evento."));
-                });
+        // Carrega a imagem sem travar o canvas por erro de CORS
+        imagemCarregada = new Image();
+        imagemCarregada.crossOrigin = "anonymous";
+        imagemCarregada.src = urlImagem;
 
-                statusEl.innerText = "Pronto para gerar o vídeo.";
-                iniciarLoopRenderizacao();
+        await new Promise((resolve) => {
+            imagemCarregada.onload = resolve;
+            imagemCarregada.onerror = () => {
+                console.warn("Imagem não pôde ser carregada via CORS, prosseguindo sem ela.");
+                resolve(); // Permite renderizar o fundo e o texto mesmo se a imagem falhar
+            };
+        });
 
-            } catch (erro) {
-                statusEl.innerText = "Erro: " + erro.message;
-                console.error(erro);
-            }
-        }
+        statusEl.innerText = "Pronto para gerar o vídeo.";
+        iniciarLoopRenderizacao();
+
+    } catch (erro) {
+        statusEl.innerText = "Erro: " + erro.message;
+        console.error(erro);
+    }
+}
 
         // Função utilitária para quebrar linha no Canvas com margens laterais
         function desenharTextoComQuebra(texto, x, y, maxWidth, lineHeight) {
