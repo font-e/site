@@ -116,82 +116,97 @@
         let animationId;
 
         // 1. CARREGAR DADOS DO EVENTO E IMAGEM
-        async function inicializar() {
+async function inicializar() {
+    try {
+        statusEl.innerText = "Carregando imagem...";
+        
+        // Tentamos carregar prioritariamente o asset local seguro para evitar bloqueio por CORS no Canvas
+        const urlsCandidatas = [
+            "/media/eventos/250523_fonte_023-2560x2560-q85.webp",
+            "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/volante-a-ilusao-do-brilho/6a404f751a-1789686092/250523_fonte_023-2560x2560-q85.webp"
+        ];
+
+        let carregouComSucesso = false;
+
+        for (const url of urlsCandidatas) {
             try {
-                statusEl.innerText = "Carregando dados (EVENTOS_CONSOLIDADO.json)...";
-                // Lendo o JSON que está na mesma pasta
-                const response = await fetch('EVENTOS_CONSOLIDADO.json'); 
-                const eventos = await response.json();
-                
-                // Pegar o evento específico
-                dadosEvento = eventos.find(e => e.id === "volante-a-ilusao-do-brilho");
-                
-                if (!dadosEvento) throw new Error("Evento não encontrado no JSON.");
-
-                statusEl.innerText = "Carregando imagem...";
-                
-                // Pegar a primeira imagem disponível na galeria
-                const urlImagem = (dadosEvento.galeria && dadosEvento.galeria.length > 0) 
-                                    ? dadosEvento.galeria[0].zoom 
-                                    : null;
-
-                if (urlImagem) {
-                    imagemCarregada = new Image();
-                    // Importante para não dar erro de CORS ao desenhar no Canvas
-                    imagemCarregada.crossOrigin = "anonymous"; 
-                    imagemCarregada.src = urlImagem;
-                    await new Promise(resolve => imagemCarregada.onload = resolve);
-                }
-
-                statusEl.innerText = "Pronto para gerar o vídeo.";
-                iniciarAnimacaoPreview(); // Mostra como vai ficar antes de gravar
-
-            } catch (erro) {
-                statusEl.innerText = "Erro: " + erro.message;
-                console.error(erro);
+                await new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = "anonymous";
+                    img.onload = () => {
+                        imagemCarregada = img;
+                        carregouComSucesso = true;
+                        resolve();
+                    };
+                    img.onerror = () => {
+                        // Tentar sem crossOrigin se for mesma origem
+                        const imgFallback = new Image();
+                        imgFallback.onload = () => {
+                            imagemCarregada = imgFallback;
+                            carregouComSucesso = true;
+                            resolve();
+                        };
+                        imgFallback.onerror = () => reject(new Error("Falha ao carregar"));
+                        imgFallback.src = url;
+                    };
+                    img.src = url;
+                });
+                if (carregouComSucesso) break;
+            } catch (e) {
+                // Tenta próxima URL candidata
             }
         }
 
+        if (!carregouComSucesso) {
+            throw new Error("Erro ao carregar a imagem.");
+        }
+
+        statusEl.innerText = "Pronto para gerar o vídeo.";
+        iniciarAnimacaoPreview();
+
+    } catch (erro) {
+        statusEl.innerText = "Erro: " + erro.message;
+        console.error(erro);
+    }
+}
+
         // 2. LÓGICA DE RENDERIZAÇÃO DO CANVAS
-        function desenharFrame() {
-            // A. Fundo Animado (Simulando a tecla "C")
-            // AQUI VOCÊ DEVE INSERIR A LÓGICA DO SEU intro.js
-            desenharGrafismoFundo();
+function desenharFrame() {
+    // A. Fundo Animado
+    desenharGrafismoFundo();
 
-            // B. Imagem do Evento
-            if (imagemCarregada) {
-                // Centralizar e cortar a imagem estilo "cover" num box no meio da tela
-                const imgBoxWidth = 800;
-                const imgBoxHeight = 800;
-                const imgX = (canvas.width - imgBoxWidth) / 2;
-                const imgY = (canvas.height - imgBoxHeight) / 2 - 100; // um pouco pra cima
-                
-                ctx.save();
-                // Borda estilizada
-                ctx.lineWidth = 10;
-                ctx.strokeStyle = '#fff';
-                ctx.strokeRect(imgX, imgY, imgBoxWidth, imgBoxHeight);
-                
-                // Desenhar a imagem dentro do quadrado
-                ctx.drawImage(imagemCarregada, imgX, imgY, imgBoxWidth, imgBoxHeight);
-                ctx.restore();
-            }
+    // B. Imagem do Evento (Proporção 1.5 -> 960x640px)
+    if (imagemCarregada) {
+        const imgWidth = 960;
+        const imgHeight = 640; // 960 / 1.5
+        const imgX = (canvas.width - imgWidth) / 2;
+        const imgY = (canvas.height - imgHeight) / 2 - 80;
 
-            // C. Texto (Título do Evento)
-            if (dadosEvento) {
-                ctx.fillStyle = "#fff";
-                ctx.textAlign = "center";
-                ctx.font = "bold 60px Arial";
-                
-                // Título
-                const tituloY = 1450;
-                ctx.fillText(dadosEvento.titulo, canvas.width / 2, tituloY);
-                
-                // Tipo / Data
-                ctx.font = "40px Arial";
-                ctx.fillStyle = "#ccc";
-                ctx.fillText(`${dadosEvento.tipo} | ${dadosEvento.inicio}`, canvas.width / 2, tituloY + 70);
-            }
+        ctx.save();
+        // Borda simples
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#ffffff';
+        ctx.strokeRect(imgX, imgY, imgWidth, imgHeight);
+
+        // Renderiza a imagem no Canvas
+        ctx.drawImage(imagemCarregada, imgX, imgY, imgWidth, imgHeight);
+        ctx.restore();
+    }
+
+    // C. Textos (Título e Link do Site)
+    ctx.save();
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "center";
+    
+    // Título Principal
+    ctx.font = "bold 56px Arial, sans-serif";
+    ctx.fillText("Volante: a ilusão do brilho", canvas.width / 2, 1420);
+    
+    // Subtítulo / URL
+    ctx.font = "38px Arial, sans-serif";
+    ctx.fillStyle = "#cccccc";
+    ctx.fillText("font-e.org", canvas.width / 2, 1490);
+    ctx.restore();
             
             // D. Logotipo Animado Base (Simulado)
             // Se você tiver o logo_animado.mp4, teria que desenhar os frames dele aqui
