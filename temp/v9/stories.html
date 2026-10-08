@@ -87,8 +87,13 @@
         <button id="btnGerar">Gerar Vídeo (5s)</button>
         <button id="btnBaixar">Baixar Vídeo (MP4)</button>
         <button id="btnCompartilhar">Compartilhar nos Stories</button>
-    </div>
 
+            <div id="progressBarContainer" style="width: 100%; max-width: 360px; background: #333; height: 6px; border-radius: 3px; margin-bottom: 15px; display: none; overflow: hidden;">
+    <div id="progressBar" style="width: 0%; height: 100%; background: #28a745; transition: width 0.1s linear;"></div>
+</div>
+    
+    </div>
+    
     <div id="status">Carregando assets...</div>
 
     <script>
@@ -112,7 +117,7 @@
 
         // Configurações do evento "Volante: a ilusão do brilho"
         const tituloTexto = "Volante: a ilusão do brilho";
-        const urlImagem = "https://corsproxy.io/?" + encodeURIComponent("https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/volante-a-ilusao-do-brilho/6a404f751a-1789686092/250523_fonte_023-2560x2560-q85.webp");
+        const urlImagem = "https://firebrick-mallard-266745.hostingersite.com/media/pages/eventos/volante-a-ilusao-do-brilho/6a404f751a-1789686092/250523_fonte_023-2560x2560-q85.webp";
 
         // 1. CARREGAMENTO DOS ASSETS
        async function inicializar() {
@@ -166,43 +171,38 @@
         }
 
         // 2. DESENHO DOS FRAMES NO CANVAS
-        function desenharFrame() {
-            // A. Desenha o fundo animado extraído do mp4 modelo
-            if (bgVideo.readyState >= 2) {
-                ctx.drawImage(bgVideo, 0, 0, canvas.width, canvas.height);
-            } else {
-                ctx.fillStyle = "#aefffa";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
+  function desenharFrame() {
+    if (bgVideo.readyState >= 2) {
+        ctx.drawImage(bgVideo, 0, 0, canvas.width, canvas.height);
+    } else {
+        ctx.fillStyle = "#aefffa";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
 
-            // B. Desenha a Imagem (Centralizada abaixo do Logo, Y = ~480px)
-            if (imagemCarregada) {
-                const imgWidth = 960;
-                const imgHeight = 640; // Proporção 1.5
-                const imgX = (canvas.width - imgWidth) / 2;
-                const imgY = 480; // Posicionada abaixo do espaço ocupado pelo logo
+    // Só desenha se a imagem estiver 100% carregada e válida
+    if (imagemCarregada && imagemCarregada.complete && imagemCarregada.naturalWidth !== 0) {
+        const imgWidth = 960;
+        const imgHeight = 640;
+        const imgX = (canvas.width - imgWidth) / 2;
+        const imgY = 480;
 
-                ctx.save();
-                ctx.drawImage(imagemCarregada, imgX, imgY, imgWidth, imgHeight);
-                ctx.restore();
-            }
+        ctx.save();
+        ctx.drawImage(imagemCarregada, imgX, imgY, imgWidth, imgHeight);
+        ctx.restore();
+    }
 
-            // C. Desenha o Texto (#002424, Bold 700, Alinhado e Centralizado)
-            ctx.save();
-            ctx.fillStyle = "#002424";
-            ctx.textAlign = "center";
-            ctx.font = "700 58px Arial, sans-serif"; // Equivalente ao clamp configurado para 1080px
-            
-            // Margem lateral de 54px (proporcional aos 18px do layout original)
-            const paddingLateral = 54;
-            const maxLarguraTexto = canvas.width - (paddingLateral * 2);
-            
-            // Posição Y do texto abaixo da imagem
-            const textoY = 1200;
-            desenharTextoComQuebra(tituloTexto, canvas.width / 2, textoY, maxLarguraTexto, 72);
-
-            ctx.restore();
-        }
+    ctx.save();
+    ctx.fillStyle = "#002424";
+    ctx.textAlign = "center";
+    ctx.font = "700 58px Arial, sans-serif";
+    
+    const paddingLateral = 54;
+    const maxLarguraTexto = canvas.width - (paddingLateral * 2);
+    const textoY = 1200;
+    
+    desenharTextoComQuebra(tituloTexto, canvas.width / 2, textoY, maxLarguraTexto, 72);
+    ctx.restore();
+}
 
         // 3. LOOP DE RENDERIZAÇÃO A 12 FPS
         function iniciarLoopRenderizacao() {
@@ -221,64 +221,60 @@
 
         // 4. GRAVAÇÃO E EXPORTAÇÃO EM MP4
         btnGerar.addEventListener('click', () => {
-            if (gravacaoAtiva) return;
-            gravacaoAtiva = true;
-            btnGerar.innerText = "Gravando MP4 (5s)...";
-            btnGerar.disabled = true;
-            statusEl.innerText = "Renderizando vídeo...";
+    if (gravacaoAtiva) return;
+    gravacaoAtiva = true;
+    btnGerar.innerText = "Gravando MP4 (5s)...";
+    btnGerar.disabled = true;
+    statusEl.innerText = "Renderizando vídeo...";
+    
+    const progressContainer = document.getElementById('progressBarContainer');
+    const progressBar = document.getElementById('progressBar');
+    progressContainer.style.display = "block";
+    progressBar.style.width = "0%";
 
-            // Captura o stream do Canvas em 12 FPS
-            const stream = canvas.captureStream(12);
+    const stream = canvas.captureStream(12);
+    let options = { mimeType: 'video/mp4;codecs=avc1' };
+    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        options = MediaRecorder.isTypeSupported('video/mp4') ? { mimeType: 'video/mp4' } : { mimeType: 'video/webm' };
+    }
 
-            // Seleciona o melhor mimeType para garantir a exportação em MP4
-            let options = { mimeType: 'video/mp4;codecs=avc1' };
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                if (MediaRecorder.isTypeSupported('video/mp4')) {
-                    options = { mimeType: 'video/mp4' };
-                } else if (MediaRecorder.isTypeSupported('video/webm;codecs=h264')) {
-                    options = { mimeType: 'video/webm;codecs=h264' };
-                } else {
-                    options = { mimeType: 'video/webm' };
-                }
-            }
+    try {
+        mediaRecorder = new MediaRecorder(stream, options);
+    } catch (e) {
+        mediaRecorder = new MediaRecorder(stream);
+    }
 
-            try {
-                mediaRecorder = new MediaRecorder(stream, options);
-            } catch (e) {
-                mediaRecorder = new MediaRecorder(stream);
-            }
+    const gravacoes = [];
+    mediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) gravacoes.push(e.data);
+    };
 
-            const gravacoes = [];
+    mediaRecorder.onstop = () => {
+        videoBlob = new Blob(gravacoes, { type: options.mimeType || 'video/mp4' });
+        statusEl.innerText = "Vídeo MP4 gerado com sucesso!";
+        btnGerar.innerText = "Gerar Novo Vídeo";
+        btnGerar.disabled = false;
+        btnBaixar.style.display = "inline-block";
+        if (navigator.canShare) btnCompartilhar.style.display = "inline-block";
+        progressContainer.style.display = "none";
+        gravacaoAtiva = false;
+    };
 
-            mediaRecorder.ondataavailable = (e) => {
-                if (e.data && e.data.size > 0) {
-                    gravacoes.push(e.data);
-                }
-            };
+    mediaRecorder.start();
 
-            mediaRecorder.onstop = () => {
-                const mimeFinal = options.mimeType || 'video/mp4';
-                videoBlob = new Blob(gravacoes, { type: mimeFinal });
-                statusEl.innerText = "Vídeo MP4 gerado com sucesso!";
+    // Animação da barra de progresso em 5 segundos (5000ms)
+    let startTime = Date.now();
+    let intervalProgresso = setInterval(() => {
+        let elapsed = Date.now() - startTime;
+        let percent = Math.min(100, (elapsed / 5000) * 100);
+        progressBar.style.width = percent + "%";
+        if (percent >= 100) clearInterval(intervalProgresso);
+    }, 50);
 
-                btnGerar.innerText = "Gerar Novo Vídeo";
-                btnGerar.disabled = false;
-                btnBaixar.style.display = "inline-block";
-
-                if (navigator.canShare) {
-                    btnCompartilhar.style.display = "inline-block";
-                }
-
-                gravacaoAtiva = false;
-            };
-
-            mediaRecorder.start();
-
-            // Grava exatos 5 segundos
-            setTimeout(() => {
-                mediaRecorder.stop();
-            }, 5000);
-        });
+    setTimeout(() => {
+        mediaRecorder.stop();
+    }, 5000);
+});
 
         // 5. DOWNLOAD E COMPARTILHAMENTO
         btnBaixar.addEventListener('click', () => {
