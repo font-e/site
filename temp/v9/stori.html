@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Residência FONTE - Preview de Stories</title>
+    <style>
+        :root {
+            --bg-color: #111;
+            --text-color: #fff;
+            --accent-color: #e0e0e0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        select {
+            padding: 10px 15px;
+            font-size: 16px;
+            background: #222;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .story-container {
+            width: 360px;
+            height: 640px;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+        }
+
+        .story-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .story-slide.active {
+            display: flex;
+        }
+
+        .story-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .story-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: #fff;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .no-events {
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <label for="event-select">Selecione a Exposição Individual: </label>
+        <select id="event-select">
+            <option value="">Carregando exposições...</option>
+        </select>
+    </div>
+
+    <div class="story-container" id="story-container">
+        <div class="no-events">Selecione um evento para visualizar os stories.</div>
+    </div>
+
+    <script>
+        let exposicoesIndividuais = [];
+
+        async function carregarDados() {
+            try {
+                // Buscando o arquivo JSON local ou do repositório
+                const response = await fetch('site-teste.json');
+                const data = await response.json();
+
+                // Filtrando apenas as exposições individuais na chave "arquivo" conforme solicitado
+                if (data.arquivo && Array.isArray(data.arquivo)) {
+                    exposicoesIndividuais = data.arquivo.filter(item => item.tipo === "Exposição individual");
+                }
+
+                popularSelect();
+            } catch (error) {
+                console.error("Erro ao carregar o JSON:", error);
+                document.getElementById('event-select').innerHTML = '<option value="">Erro ao carregar dados</option>';
+            }
+        }
+
+        function popularSelect() {
+            const select = document.getElementById('event-select');
+            select.innerHTML = '<option value="">-- Escolha um evento --</option>';
+
+            exposicoesIndividuais.forEach((evento, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${evento.titulo} (${evento.ano})`;
+                select.appendChild(option);
+            });
+
+            if (exposicoesIndividuais.length > 0) {
+                // Seleciona o primeiro evento por padrão opcionalmente
+                select.value = "0";
+                atualizarPreview(0);
+            }
+
+            select.addEventListener('change', (e) => {
+                const idx = e.target.value;
+                atualizarPreview(idx);
+            });
+        }
+
+        function atualizarPreview(index) {
+            const container = document.getElementById('story-container');
+            container.innerHTML = '';
+
+            if (index === "" || isNaN(index)) {
+                container.innerHTML = '<div class="no-events">Selecione um evento para visualizar os stories.</div>';
+                return;
+            }
+
+            const evento = exposicoesIndividuais[index];
+            
+            // Tratando as imagens em zoom (maiores) e garantindo uso do WebP e metadados de aspect ratio/medidas
+            if (evento.galeria && evento.galeria.length > 0) {
+                evento.galeria.forEach((foto, fotoIdx) => {
+                    const slide = document.createElement('div');
+                    slide.className = `story-slide ${fotoIdx === 0 ? 'active' : ''}`;
+
+                    const img = document.createElement('img');
+                    // Utilizando sempre a versão zoom (maior resolução em webp) conforme instrução
+                    img.src = foto.zoom;
+                    img.alt = evento.titulo;
+                    
+                    // Aplicando dados de medidas e aspect ratio fornecidos no JSON para renderização otimizada
+                    if (foto.width && foto.height) {
+                        img.setAttribute('width', foto.width);
+                        img.setAttribute('height', foto.height);
+                    }
+
+                    slide.appendChild(img);
+
+                    if (foto.legenda) {
+                        const caption = document.createElement('div');
+                        caption.className = 'story-caption';
+                        caption.innerHTML = foto.legenda;
+                        slide.appendChild(caption);
+                    }
+
+                    container.appendChild(slide);
+                });
+            } else {
+                container.innerHTML = '<div class="no-events">Nenhuma imagem disponível para esta exposição.</div>';
+            }
+        }
+
+        // Inicializa o carregamento ao abrir a página
+        carregarDados();
+    </script>
+</body>
+</html>
